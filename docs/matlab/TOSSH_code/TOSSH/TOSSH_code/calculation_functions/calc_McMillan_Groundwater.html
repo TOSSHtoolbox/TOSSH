@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_McMillan_Groundwater</title>
+  <meta name="keywords" content="calc_McMillan_Groundwater">
+  <meta name="description" content="calc_McMillan_Groundwater calculates various groundwater signatures.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_McMillan_Groundwater.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_McMillan_Groundwater
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_McMillan_Groundwater calculates various groundwater signatures.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_McMillan_Groundwater calculates various groundwater signatures.
+   Calculates 15 signatures from McMillan (2020), related to groundwater 
+   storage, groundwater dynamics and baseflow. These signatures come from 
+   previous experimental studies that link watershed or hillslope 
+   processes to streamflow reponse dynamics. Some signatures are 
+   implemented direct from the original papers, others are interpreted
+   from a qualitative description in the paper.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+   P_mat: precipitation [mm/timestep] matrix (cell array)
+   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   % create consistent cell arrays
+   Q_mat = {data.Q};
+   t_mat = {data.t};
+   P_mat = {data.P};
+   PET_mat = {data.PET};
+   results = calc_McMillan_Groundwater(Q_mat,t_mat,P_mat,PET_mat);
+
+   References
+   McMillan, H., 2020. Linking hydrologic signatures to hydrologic
+   processes: A review. Hydrological Processes, 34(6), pp.1393-1409.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, varargin)</a>
+0002 <span class="comment">%calc_McMillan_Groundwater calculates various groundwater signatures.</span>
+0003 <span class="comment">%   Calculates 15 signatures from McMillan (2020), related to groundwater</span>
+0004 <span class="comment">%   storage, groundwater dynamics and baseflow. These signatures come from</span>
+0005 <span class="comment">%   previous experimental studies that link watershed or hillslope</span>
+0006 <span class="comment">%   processes to streamflow reponse dynamics. Some signatures are</span>
+0007 <span class="comment">%   implemented direct from the original papers, others are interpreted</span>
+0008 <span class="comment">%   from a qualitative description in the paper.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   INPUT</span>
+0011 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0012 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0013 <span class="comment">%   P_mat: precipitation [mm/timestep] matrix (cell array)</span>
+0014 <span class="comment">%   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0018 <span class="comment">%       series and associated error strings)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   EXAMPLE</span>
+0021 <span class="comment">%   % load example data</span>
+0022 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0023 <span class="comment">%   % create consistent cell arrays</span>
+0024 <span class="comment">%   Q_mat = {data.Q};</span>
+0025 <span class="comment">%   t_mat = {data.t};</span>
+0026 <span class="comment">%   P_mat = {data.P};</span>
+0027 <span class="comment">%   PET_mat = {data.PET};</span>
+0028 <span class="comment">%   results = calc_McMillan_Groundwater(Q_mat,t_mat,P_mat,PET_mat);</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   References</span>
+0031 <span class="comment">%   McMillan, H., 2020. Linking hydrologic signatures to hydrologic</span>
+0032 <span class="comment">%   processes: A review. Hydrological Processes, 34(6), pp.1393-1409.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%   Copyright (C) 2020</span>
+0035 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0036 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0037 
+0038 <span class="comment">% check input parameters</span>
+0039 <span class="keyword">if</span> nargin &lt; 4
+0040     error(<span class="string">'Not enough input arguments.'</span>)
+0041 <span class="keyword">end</span>
+0042 
+0043 ip = inputParser;
+0044 ip.CaseSensitive = true;
+0045 
+0046 <span class="comment">% required input arguments</span>
+0047 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0048 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0049 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0050 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0051 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0052 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0053 addRequired(ip, <span class="string">'P_mat'</span>, @(P_mat) iscell(P_mat))
+0054 addRequired(ip, <span class="string">'PET_mat'</span>, @(PET_mat) iscell(PET_mat))
+0055 
+0056 <span class="comment">% optional input arguments</span>
+0057 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0058 
+0059 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
+0060 
+0061 plot_results = ip.Results.plot_results;
+0062 
+0063 <span class="comment">% calculate signatures</span>
+0064 
+0065 <span class="comment">% initialise arrays</span>
+0066 
+0067 <span class="comment">% Section: Groundwater</span>
+0068 <span class="comment">% Signatures referring to double peaks in streamflow are not coded due to</span>
+0069 <span class="comment">% subjectivity in identification of the peaks.</span>
+0070 <span class="comment">% Total runoff ratio describes overall water loss to deep groundwater.</span>
+0071 TotalRR = NaN(size(Q_mat,1),1);
+0072 TotalRR_error_str = strings(size(Q_mat,1),1);
+0073 <span class="comment">% Ratio between summer and winter runoff ratios, Low ratios show high</span>
+0074 <span class="comment">% bedrock permeability, Pfister et al. (2017).</span>
+0075 RR_Seasonality = NaN(size(Q_mat,1),1);
+0076 RR_Seasonality_error_str = strings(size(Q_mat,1),1);
+0077 <span class="comment">% Low event runoff ratios show show rapid vertical drainage of water to</span>
+0078 <span class="comment">% groundwater, McMillan et al (2011), Noguchi et al. (1997).</span>
+0079 EventRR = NaN(size(Q_mat,1),1);
+0080 EventRR_error_str = strings(size(Q_mat,1),1);
+0081 <span class="comment">% Ratio of active to total storage volumes, low ratios show permeable</span>
+0082 <span class="comment">% bedrock and high total storage, Pfister et al. (2017).</span>
+0083 StorageFraction = NaN(size(Q_mat,1),3);
+0084 StorageFraction_error_str = strings(size(Q_mat,1),1);
+0085 
+0086 <span class="comment">% Section: Storage (especially groundwater)</span>
+0087 <span class="comment">% Seasonal variations in recession rate (Shaw and Riha; 2012).</span>
+0088 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
+0089 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
+0090 <span class="comment">% Average storage from average baseflow and storage-discharge relationship</span>
+0091 <span class="comment">% (McNamara et al., 2011).</span>
+0092 AverageStorage = NaN(size(Q_mat,1),1);
+0093 AverageStorage_error_str = strings(size(Q_mat,1),1);
+0094 <span class="comment">% Recession analysis parameters approximate storage-discharge relationship.</span>
+0095 <span class="comment">% This fits a single relationship to the point cloud.</span>
+0096 RecessionParameters = NaN(size(Q_mat,1),2);
+0097 RecessionParameters_error_str = strings(size(Q_mat,1),1);
+0098 <span class="comment">% Changes of slope in a master recession curve or recession analysis plot</span>
+0099 <span class="comment">% indicate multiple linear reservoirs.</span>
+0100 MRC_num_segments = NaN(size(Q_mat,1),1);
+0101 MRC_num_segments_error_str = strings(size(Q_mat,1),1);
+0102 <span class="comment">% First, steep section of the master recession curve = storage that is</span>
+0103 <span class="comment">% quickly depleted (Estrany et al., 2010).</span>
+0104 First_Recession_Slope = NaN(size(Q_mat,1),1);
+0105 <span class="comment">% Mid section of the master recession curve = Water retention capacity of</span>
+0106 <span class="comment">% the watershed (Estrany et al., 2010).</span>
+0107 Mid_Recession_Slope = NaN(size(Q_mat,1),1);
+0108 <span class="comment">% Non-uniqueness in the recession relationship (McMillan et al., 2011;</span>
+0109 <span class="comment">% Harman et al., 2009). Tested using spearman rank correlation on Q vs dQdt.</span>
+0110 Spearmans_rho = NaN(size(Q_mat,1),1);
+0111 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
+0112 <span class="comment">% Ratio between event and total Runoff coefficient: Low = Large storage</span>
+0113 <span class="comment">% capacity (Blume et al., 2008).</span>
+0114 EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
+0115 <span class="comment">% Variability index of flow. Low variability index shows higher water</span>
+0116 <span class="comment">% storage (Estrany et al., 2010).</span>
+0117 VariabilityIndex = NaN(size(Q_mat,1),1);
+0118 VariabilityIndex_error_str = strings(size(Q_mat,1),1);
+0119 
+0120 <span class="comment">% Section: Baseflow</span>
+0121 <span class="comment">% Visual inspection of hydrograph for stable baseflow: not coded.</span>
+0122 <span class="comment">% Baseflow index indicates baseflow proportion and baseflow residence time</span>
+0123 <span class="comment">% (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).</span>
+0124 BFI = NaN(size(Q_mat,1),1);
+0125 BFI_error_str = strings(size(Q_mat,1),1);
+0126 <span class="comment">% Baseflow recession constant K, slower recessions show greater groundwater</span>
+0127 <span class="comment">% influence and longer subsurface flow paths (Safeeq et al., 2013).</span>
+0128 BaseflowRecessionK = NaN(size(Q_mat,1),1);
+0129 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
+0130 
+0131 <span class="comment">% loop over all catchments</span>
+0132 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0133     
+0134     <span class="comment">% Section: Groundwater</span>
+0135     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
+0136     [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i});
+0137     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
+0138     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = <span class="keyword">...</span>
+0139         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+0140     
+0141     <span class="comment">% Section: Storage (especially groundwater)</span>
+0142     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = <span class="keyword">...</span>
+0143         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,median(Q_mat{i},<span class="string">'omitnan'</span>)*0.001,<span class="string">'plot_results'</span>,plot_results);
+0144     [AverageStorage(i),~,AverageStorage_error_str(i)] = <span class="keyword">...</span>
+0145         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},<span class="string">'plot_results'</span>,plot_results);
+0146     [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = <span class="keyword">...</span>
+0147         sig_RecessionAnalysis(Q_mat{i},t_mat{i},<span class="string">'fit_individual'</span>,false,<span class="string">'plot_results'</span>,plot_results);
+0148     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = <span class="keyword">...</span>
+0149         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},<span class="string">'plot_results'</span>,plot_results,<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
+0150     First_Recession_Slope(i) = Segment_slopes(1);
+0151     <span class="keyword">if</span> length(Segment_slopes) &gt;= 2
+0152         Mid_Recession_Slope(i) = Segment_slopes(2);
+0153     <span class="keyword">end</span>
+0154     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
+0155     EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
+0156     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
+0157     
+0158     <span class="comment">% Section: Baseflow</span>
+0159     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},<span class="string">'method'</span>,<span class="string">'UKIH'</span>,<span class="string">'parameters'</span>,5);
+0160     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
+0161         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>)); 
+0162     
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% add results to struct array</span>
+0166 results.TotalRR = TotalRR;
+0167 results.TotalRR_error_str = TotalRR_error_str;
+0168 results.EventRR = EventRR;
+0169 results.EventRR_error_str = EventRR_error_str;
+0170 results.RR_Seasonality = RR_Seasonality;
+0171 results.RR_Seasonality_error_str = RR_Seasonality_error_str;
+0172 results.StorageFraction = StorageFraction;
+0173 results.StorageFraction_error_str = StorageFraction_error_str;
+0174 results.Recession_a_Seasonality = Recession_a_Seasonality;
+0175 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
+0176 results.AverageStorage = AverageStorage;
+0177 results.AverageStorage_error_str = AverageStorage_error_str;
+0178 results.RecessionParameters = RecessionParameters;
+0179 results.RecessionParameters_error_str = RecessionParameters_error_str;
+0180 results.MRC_num_segments = MRC_num_segments;
+0181 results.MRC_num_segments_error_str = MRC_num_segments_error_str;
+0182 results.BFI = BFI;
+0183 results.BFI_error_str = BFI_error_str;
+0184 results.BaseflowRecessionK = BaseflowRecessionK;
+0185 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
+0186 results.First_Recession_Slope = First_Recession_Slope;
+0187 results.Mid_Recession_Slope = Mid_Recession_Slope;
+0188 results.Spearmans_rho = Spearmans_rho;
+0189 results.Spearmans_rho_error_str = Spearmans_rho_error_str;
+0190 results.EventRR_TotalRR_ratio = EventRR_TotalRR_ratio;
+0191 results.VariabilityIndex = VariabilityIndex;
+0192 results.VariabilityIndex_error_str = VariabilityIndex_error_str;
+0193 
+0194 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

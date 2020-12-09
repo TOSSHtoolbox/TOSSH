@@ -1,0 +1,369 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadCAMELSstruct</title>
+  <meta name="keywords" content="loadCAMELSstruct">
+  <meta name="description" content="loadCAMELSstruct Creates struct file with CAMELS data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../../index.html">example</a> &gt; <a href="#">functions</a> &gt; <a href="index.html">data_loading</a> &gt; loadCAMELSstruct.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\functions\data_loading&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>loadCAMELSstruct
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>loadCAMELSstruct Creates struct file with CAMELS data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [CAMELS_data] = loadCAMELSstruct() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">loadCAMELSstruct Creates struct file with CAMELS data.
+   - Loads hydro-meteorological time series and catchment attributes
+   - Adjusts PET data to use standard Priestley-Taylor coefficient of 1.26
+   - Uses local paths (which contain large CAMELS files)
+   - Data can be found at: https://ral.ucar.edu/solutions/products/camels
+
+   INPUT
+
+   OUTPUT
+   CAMELS_data: struct file with CAMELS data
+
+   References
+   Newman, A.J., Clark, M.P., Sampson, K., Wood, A., Hay, L.E., Bock, A., 
+   Viger, R.J., Blodgett, D., Brekke, L., Arnold, J.R. and Hopson, T., 
+   2015. Development of a large-sample watershed-scale hydrometeorological 
+   data set for the contiguous USA: data set characteristics and 
+   assessment of regional variability in hydrologic model performance. 
+   Hydrology and Earth System Sciences, 19(1), p.209.
+   Addor, N., Newman, A.J., Mizukami, N. and Clark, M.P., 2017. The CAMELS
+   data set: catchment attributes and meteorology for large-sample
+   studies. Hydrology and Earth System Sciences (HESS), 21(10), 
+   pp.5293-5313.
+   N. Addor, A. Newman, M. Mizukami, and M. P. Clark, 2017. Catchment 
+   attributes for large-sample studies. Boulder, CO: UCAR/NCAR. 
+   https://doi.org/10.5065/D6G73C3Q
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="loadCatchmentCAMELS.html" class="code" title="function [P, PET, Q, T] = loadCatchmentCAMELS(ID,path_mod,path_obs,area)">loadCatchmentCAMELS</a>	loadCatchmentCAMELS Loads hydro-meteorological time series (P, PET, Q, T).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [CAMELS_data] = loadCAMELSstruct()</a>
+0002 <span class="comment">%loadCAMELSstruct Creates struct file with CAMELS data.</span>
+0003 <span class="comment">%   - Loads hydro-meteorological time series and catchment attributes</span>
+0004 <span class="comment">%   - Adjusts PET data to use standard Priestley-Taylor coefficient of 1.26</span>
+0005 <span class="comment">%   - Uses local paths (which contain large CAMELS files)</span>
+0006 <span class="comment">%   - Data can be found at: https://ral.ucar.edu/solutions/products/camels</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   OUTPUT</span>
+0011 <span class="comment">%   CAMELS_data: struct file with CAMELS data</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   References</span>
+0014 <span class="comment">%   Newman, A.J., Clark, M.P., Sampson, K., Wood, A., Hay, L.E., Bock, A.,</span>
+0015 <span class="comment">%   Viger, R.J., Blodgett, D., Brekke, L., Arnold, J.R. and Hopson, T.,</span>
+0016 <span class="comment">%   2015. Development of a large-sample watershed-scale hydrometeorological</span>
+0017 <span class="comment">%   data set for the contiguous USA: data set characteristics and</span>
+0018 <span class="comment">%   assessment of regional variability in hydrologic model performance.</span>
+0019 <span class="comment">%   Hydrology and Earth System Sciences, 19(1), p.209.</span>
+0020 <span class="comment">%   Addor, N., Newman, A.J., Mizukami, N. and Clark, M.P., 2017. The CAMELS</span>
+0021 <span class="comment">%   data set: catchment attributes and meteorology for large-sample</span>
+0022 <span class="comment">%   studies. Hydrology and Earth System Sciences (HESS), 21(10),</span>
+0023 <span class="comment">%   pp.5293-5313.</span>
+0024 <span class="comment">%   N. Addor, A. Newman, M. Mizukami, and M. P. Clark, 2017. Catchment</span>
+0025 <span class="comment">%   attributes for large-sample studies. Boulder, CO: UCAR/NCAR.</span>
+0026 <span class="comment">%   https://doi.org/10.5065/D6G73C3Q</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   Copyright (C) 2020</span>
+0029 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0030 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0031 
+0032 <span class="comment">%% Specify paths</span>
+0033 <span class="comment">% We have to be in the TOSSH directory and the CAMELS data should be stored</span>
+0034 <span class="comment">% in a folder named CAMELS_v2.0 in the example_data directory. The</span>
+0035 <span class="comment">% following folders are required:</span>
+0036 <span class="comment">% ./example/example_data/CAMELS_v2.0/camels_attributes_v2.0/camels_*.txt</span>
+0037 <span class="comment">% (7 files; contain catchment attributes)</span>
+0038 <span class="comment">% ./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_modelOutput_daymet/model_output_daymet/model_output/flow_timeseries/daymet/*/*_model_output.txt</span>
+0039 <span class="comment">% (18 folders with &gt;1000 files; contain forcing time series)</span>
+0040 <span class="comment">% ./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/*/*_streamflow_qc.txt</span>
+0041 <span class="comment">% (18 folders with 671 files; contain streamflow time series)</span>
+0042 
+0043 path_catchment_attributes = &quot;./example/example_data/CAMELS_v2.0/camels_attributes_v2.0/camels_attributes_v2.0/&quot;;
+0044 path_modelled_time_series = &quot;./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_modelOutput_daymet/model_output_daymet/model_output/flow_timeseries/daymet/&quot;; 
+0045 path_observed_time_series = &quot;./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2/usgs_streamflow/&quot;; 
+0046 
+0047 <span class="keyword">if</span> ~(exist(path_catchment_attributes) == 7)
+0048     error(<span class="string">'Cannot find local path. You can download CAMELS from https://ral.ucar.edu/solutions/products/camels.'</span>)
+0049 <span class="keyword">elseif</span> ~(exist(path_modelled_time_series) == 7)
+0050     error(<span class="string">'Cannot find local path. You can download CAMELS from https://ral.ucar.edu/solutions/products/camels.'</span>)
+0051 <span class="keyword">elseif</span> ~(exist(path_observed_time_series) == 7)
+0052     error(<span class="string">'Cannot find local path. You can download CAMELS from https://ral.ucar.edu/solutions/products/camels.'</span>)
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">%% Load catchment attributes</span>
+0056 <span class="comment">% We first load the catchment attribute data which are saved in several txt</span>
+0057 <span class="comment">% files.</span>
+0058 
+0059 <span class="comment">% topography</span>
+0060 <span class="comment">% gauge_id;gauge_lat;gauge_lon;elev_mean;slope_mean;area_gages2;area_geospa_fabric</span>
+0061 file_ID_topo = fopen(strcat(path_catchment_attributes,<span class="string">'camels_topo.txt'</span>),<span class="string">'r'</span>);
+0062 file_topo = fread(file_ID_topo,<span class="string">'*char'</span>);
+0063 file_topo = strrep(file_topo',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0064 camels_topo_data = textscan(file_topo,<span class="string">'%f %f %f %f %f %f %f'</span>,<span class="keyword">...</span>
+0065     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0066 fclose(file_ID_topo);
+0067 
+0068 <span class="comment">% climate</span>
+0069 <span class="comment">% gauge_id;p_mean;pet_mean;p_seasonality;frac_snow;aridity;high_prec_freq;high_prec_dur;high_prec_timing;low_prec_freq;low_prec_dur;low_prec_timing</span>
+0070 file_ID_clim = fopen(strcat(path_catchment_attributes,<span class="string">'camels_clim.txt'</span>),<span class="string">'r'</span>);
+0071 file_clim = fread(file_ID_clim,<span class="string">'*char'</span>);
+0072 file_clim = strrep(file_clim',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0073 camels_climate_data = textscan(file_clim,<span class="string">'%f %f %f %f %f %f %f %f %s %f %f %s'</span>,<span class="keyword">...</span>
+0074     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0075 fclose(file_ID_clim);
+0076 
+0077 <span class="comment">% hydrology</span>
+0078 <span class="comment">% gauge_id;q_mean;runoff_ratio;slope_fdc;baseflow_index;stream_elas;q5;q95;high_q_freq;high_q_dur;low_q_freq;low_q_dur;zero_q_freq;hfd_mean</span>
+0079 file_ID_hydro = fopen(strcat(path_catchment_attributes,<span class="string">'camels_hydro.txt'</span>),<span class="string">'r'</span>);
+0080 file_hydro = fread(file_ID_hydro,<span class="string">'*char'</span>);
+0081 file_hydro = strrep(file_hydro',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0082 camels_hydro_data = textscan(file_hydro,<span class="string">'%f %f %f %f %f %f %f %f %f %f %f %f %f %f'</span>,<span class="keyword">...</span>
+0083     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0084 fclose(file_ID_hydro);
+0085 
+0086 <span class="comment">% soils</span>
+0087 <span class="comment">% gauge_id;soil_depth_pelletier;soil_depth_statsgo;soil_porosity;soil_conductivity;max_water_content;sand_frac;silt_frac;clay_frac;water_frac;organic_frac;other_frac</span>
+0088 file_ID_soil = fopen(strcat(path_catchment_attributes,<span class="string">'camels_soil.txt'</span>),<span class="string">'r'</span>);
+0089 file_soil = fread(file_ID_soil,<span class="string">'*char'</span>);
+0090 file_soil = strrep(file_soil',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0091 camels_soil_data = textscan(file_soil,<span class="string">'%f %f %f %f %f %f %f %f %f %f %f %f'</span>,<span class="keyword">...</span>
+0092     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0093 fclose(file_ID_soil);
+0094 
+0095 <span class="comment">% geology</span>
+0096 <span class="comment">% gauge_id;geol_1st_class;glim_1st_class_frac;geol_2nd_class;glim_2nd_class_frac;carbonate_rocks_frac;geol_porostiy;geol_permeability</span>
+0097 file_ID_geol = fopen(strcat(path_catchment_attributes,<span class="string">'camels_geol.txt'</span>),<span class="string">'r'</span>);
+0098 file_geol = fread(file_ID_geol,<span class="string">'*char'</span>);
+0099 file_geol = strrep(file_geol',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0100 camels_geol_data = textscan(file_geol,<span class="string">'%f %s %f %s %f %f %f %f'</span>,<span class="keyword">...</span>
+0101     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0102 fclose(file_ID_geol);
+0103 
+0104 <span class="comment">% vegetation</span>
+0105 <span class="comment">% gauge_id;frac_forest;lai_max;lai_diff;gvf_max;gvf_diff;dom_land_cover_frac;dom_land_cover;root_depth_50;root_depth_99</span>
+0106 file_ID_vege = fopen(strcat(path_catchment_attributes,<span class="string">'camels_vege.txt'</span>),<span class="string">'r'</span>);
+0107 file_vege = fread(file_ID_vege,<span class="string">'*char'</span>);
+0108 file_vege = strrep(file_vege',<span class="string">'NA'</span>,<span class="string">'NaN'</span>); <span class="comment">% replace NA with NaN</span>
+0109 camels_vege_data = textscan(file_vege,<span class="string">'%f %f %f %f %f %f %f %s %f %f'</span>,<span class="keyword">...</span>
+0110     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,1);
+0111 fclose(file_ID_vege);
+0112 
+0113 <span class="comment">% We then create arrays containing the catchment attributes and metadata.</span>
+0114 gauge_id = camels_climate_data{:,1};
+0115 
+0116 <span class="comment">% topography</span>
+0117 gauge_lat = camels_topo_data{:,2};
+0118 gauge_lon = camels_topo_data{:,3};
+0119 elev_mean = camels_topo_data{:,4};
+0120 slope_mean = camels_topo_data{:,5};
+0121 area_gages2 = camels_topo_data{:,6};
+0122 area_geospa_fabric = camels_topo_data{:,7};
+0123 
+0124 <span class="comment">% climate</span>
+0125 p_mean = (camels_climate_data{:,2});
+0126 pet_mean = (camels_climate_data{:,3});
+0127 p_seasonality = (camels_climate_data{:,4});
+0128 frac_snow = (camels_climate_data{:,5});
+0129 aridity = (camels_climate_data{:,6});
+0130 high_prec_freq = (camels_climate_data{:,7});
+0131 high_prec_dur = (camels_climate_data{:,8});
+0132 high_prec_timing = (camels_climate_data{:,9});
+0133 low_prec_freq = (camels_climate_data{:,10});
+0134 low_prec_dur = (camels_climate_data{:,11});
+0135 low_prec_timing = (camels_climate_data{:,12});
+0136 
+0137 <span class="comment">% hydrology</span>
+0138 q_mean = (camels_hydro_data{:,2});
+0139 runoff_ratio = (camels_hydro_data{:,3});
+0140 slope_fdc = (camels_hydro_data{:,4});
+0141 baseflow_index = (camels_hydro_data{:,5});
+0142 stream_elas = (camels_hydro_data{:,6});
+0143 q5 = (camels_hydro_data{:,7});
+0144 q95 = (camels_hydro_data{:,8});
+0145 high_q_freq = (camels_hydro_data{:,9});
+0146 high_q_dur = (camels_hydro_data{:,10});
+0147 low_q_freq = (camels_hydro_data{:,11});
+0148 low_q_dur = (camels_hydro_data{:,12});
+0149 zero_q_freq = (camels_hydro_data{:,13});
+0150 hfd_mean = (camels_hydro_data{:,14});
+0151 
+0152 <span class="comment">% soil</span>
+0153 soil_depth_pelletier = (camels_soil_data{:,2});
+0154 soil_depth_statsgo = (camels_soil_data{:,3});
+0155 soil_porosity = (camels_soil_data{:,4});
+0156 soil_conductivity = (camels_soil_data{:,5});
+0157 max_water_content = (camels_soil_data{:,6});
+0158 sand_frac = (camels_soil_data{:,7});
+0159 silt_frac = (camels_soil_data{:,8});
+0160 clay_frac = (camels_soil_data{:,9});
+0161 water_frac = (camels_soil_data{:,10});
+0162 organic_frac = (camels_soil_data{:,11});
+0163 other_frac = (camels_soil_data{:,12});
+0164 
+0165 <span class="comment">% geology</span>
+0166 geol_1st_class = (camels_geol_data{:,2});
+0167 glim_1st_class_frac = (camels_geol_data{:,3});
+0168 geol_2nd_class = (camels_geol_data{:,4});
+0169 glim_2nd_class_frac = (camels_geol_data{:,5});
+0170 carbonate_rocks_frac = (camels_geol_data{:,6});
+0171 geol_porosity = (camels_geol_data{:,7});
+0172 geol_permeability = (camels_geol_data{:,8});
+0173 
+0174 <span class="comment">% vegetation</span>
+0175 frac_forest = (camels_vege_data{:,2});
+0176 lai_max = (camels_vege_data{:,3});
+0177 lai_diff = (camels_vege_data{:,4});
+0178 gvf_max = (camels_vege_data{:,5});
+0179 gvf_diff = (camels_vege_data{:,6});
+0180 dom_land_cover_frac = (camels_vege_data{:,7});
+0181 dom_land_cover = (camels_vege_data{:,8});
+0182 root_depth_50 = (camels_vege_data{:,9});
+0183 root_depth_99 = (camels_vege_data{:,10});
+0184 
+0185 <span class="comment">%% Load hydro-meteorological time series</span>
+0186 <span class="comment">% To extract the time series, we loop over all catchments. We also</span>
+0187 <span class="comment">% calculate the completeness of the flow records.</span>
+0188 flow_perc_complete = NaN(length(gauge_id),1); <span class="comment">% completeness of flow record</span>
+0189 P = cell(length(gauge_id),1); <span class="comment">% precipitation</span>
+0190 PET = cell(length(gauge_id),1); <span class="comment">% potential evapotranspiration</span>
+0191 Q = cell(length(gauge_id),1); <span class="comment">% streamflow</span>
+0192 T = cell(length(gauge_id),1); <span class="comment">% temperature</span>
+0193 
+0194 fprintf(<span class="string">'Loading catchment data...\n'</span>)
+0195 <span class="keyword">for</span> i = 1:length(gauge_id) <span class="comment">% loop over all catchments</span>
+0196     
+0197     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0198         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,length(gauge_id))
+0199     <span class="keyword">end</span>
+0200     
+0201     ID = gauge_id(i);
+0202     [P{i}, PET{i}, Q{i}, T{i}] = <a href="loadCatchmentCAMELS.html" class="code" title="function [P, PET, Q, T] = loadCatchmentCAMELS(ID,path_mod,path_obs,area)">loadCatchmentCAMELS</a>(<span class="keyword">...</span>
+0203         ID,path_modelled_time_series,path_observed_time_series,area_gages2(i));
+0204     flow_perc_complete(i) = 100*(1-sum(isnan(Q{i}(:,2)))./length(Q{i}(:,2)));
+0205     
+0206 <span class="keyword">end</span>
+0207 
+0208 <span class="comment">%% Create struct file with catchment attributes and time series</span>
+0209 <span class="comment">% We create a Matlab structure file containing all the data, i.e. the</span>
+0210 <span class="comment">% hydro-meteorological time series and the catchment attributes and</span>
+0211 <span class="comment">% metadata.</span>
+0212 
+0213 <span class="comment">% topography</span>
+0214 CAMELS_data.gauge_id = gauge_id;
+0215 CAMELS_data.gauge_lat = gauge_lat;
+0216 CAMELS_data.gauge_lon = gauge_lon;
+0217 CAMELS_data.elev_mean = elev_mean;
+0218 CAMELS_data.slope_mean = slope_mean;
+0219 CAMELS_data.area_gages2 = area_gages2;
+0220 CAMELS_data.area_geospa_fabric = area_geospa_fabric;
+0221 
+0222 <span class="comment">% climate</span>
+0223 CAMELS_data.p_mean = p_mean;
+0224 CAMELS_data.pet_mean = pet_mean;
+0225 CAMELS_data.p_seasonality = p_seasonality;
+0226 CAMELS_data.frac_snow = frac_snow;
+0227 CAMELS_data.aridity = aridity;
+0228 CAMELS_data.high_prec_freq = high_prec_freq;
+0229 CAMELS_data.high_prec_dur = high_prec_dur;
+0230 CAMELS_data.high_prec_timing = high_prec_timing;
+0231 CAMELS_data.low_prec_freq = low_prec_freq;
+0232 CAMELS_data.low_prec_dur = low_prec_dur;
+0233 CAMELS_data.low_prec_timing = low_prec_timing;
+0234 
+0235 <span class="comment">% hydrology</span>
+0236 CAMELS_data.q_mean = q_mean;
+0237 CAMELS_data.runoff_ratio = runoff_ratio;
+0238 CAMELS_data.slope_fdc = slope_fdc;
+0239 CAMELS_data.baseflow_index = baseflow_index;
+0240 CAMELS_data.stream_elas = stream_elas;
+0241 CAMELS_data.q5 = q5;
+0242 CAMELS_data.q95 = q95;
+0243 CAMELS_data.high_q_freq = high_q_freq;
+0244 CAMELS_data.high_q_dur = high_q_dur;
+0245 CAMELS_data.low_q_freq = low_q_freq;
+0246 CAMELS_data.low_q_dur = low_q_dur;
+0247 CAMELS_data.zero_q_freq = zero_q_freq;
+0248 CAMELS_data.hfd_mean = hfd_mean;
+0249 
+0250 <span class="comment">% soil</span>
+0251 CAMELS_data.soil_depth_pelletier = soil_depth_pelletier;
+0252 CAMELS_data.soil_depth_statsgo = soil_depth_statsgo;
+0253 CAMELS_data.soil_porosity = soil_porosity;
+0254 CAMELS_data.soil_conductivity = soil_conductivity;
+0255 CAMELS_data.max_water_content = max_water_content;
+0256 CAMELS_data.sand_frac = sand_frac;
+0257 CAMELS_data.silt_frac = silt_frac;
+0258 CAMELS_data.clay_frac = clay_frac;
+0259 CAMELS_data.water_frac = water_frac;
+0260 CAMELS_data.organic_frac = organic_frac;
+0261 CAMELS_data.other_frac = other_frac;
+0262 
+0263 <span class="comment">% geology</span>
+0264 CAMELS_data.geol_1st_class = geol_1st_class;
+0265 CAMELS_data.glim_1st_class_frac = glim_1st_class_frac;
+0266 CAMELS_data.geol_2nd_class = geol_2nd_class;
+0267 CAMELS_data.glim_2nd_class_frac = glim_2nd_class_frac;
+0268 CAMELS_data.carbonate_rocks_frac = carbonate_rocks_frac;
+0269 CAMELS_data.geol_porosity = geol_porosity;
+0270 CAMELS_data.geol_permeability = geol_permeability;
+0271 
+0272 <span class="comment">% vegetation</span>
+0273 CAMELS_data.frac_forest = frac_forest;
+0274 CAMELS_data.lai_max = lai_max;
+0275 CAMELS_data.lai_diff = lai_diff;
+0276 CAMELS_data.gvf_max = gvf_max;
+0277 CAMELS_data.gvf_diff = gvf_diff;
+0278 CAMELS_data.dom_land_cover_frac = dom_land_cover_frac;
+0279 CAMELS_data.dom_land_cover = dom_land_cover;
+0280 CAMELS_data.root_depth_50 = root_depth_50;
+0281 CAMELS_data.root_depth_99 = root_depth_99;
+0282 
+0283 <span class="comment">% hydro-meteorological time series</span>
+0284 CAMELS_data.flow_perc_complete = flow_perc_complete;
+0285 CAMELS_data.P = P;
+0286 CAMELS_data.PET = PET;
+0287 CAMELS_data.Q = Q;
+0288 CAMELS_data.T = T;
+0289 
+0290 <span class="comment">% To avoid loading CAMELS from the original files every time, we could also</span>
+0291 <span class="comment">% save the struct file and just load that.</span>
+0292 <span class="comment">% save('./example/example_data/CAMELS_data.mat','CAMELS_data')</span>
+0293 
+0294 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

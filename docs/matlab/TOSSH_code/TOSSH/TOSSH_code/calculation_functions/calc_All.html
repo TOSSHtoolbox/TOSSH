@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_All</title>
+  <meta name="keywords" content="calc_All">
+  <meta name="description" content="calc_All calculates all signatures in the toolbox.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_All.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_All
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_All calculates all signatures in the toolbox.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_All calculates all signatures in the toolbox.
+   If a signature function can calculate multiple signatures
+   (e.g. sig_x_percentile) only one signature is calculated (e.g. Q95).
+   Note: This function is primarily intended to test all signatures.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+   P_mat: precipitation [mm/timestep] matrix (cell array)
+   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
+   T_mat: temperature [degC] matrix (cell array)
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   % create consistent cell arrays
+   Q_mat = {data.Q};
+   t_mat = {data.t};
+   P_mat = {data.P};
+   PET_mat = {data.PET};
+   T_mat = {data.T};
+   results = calc_All(Q_mat,t_mat,P_mat,PET_mat,T_mat);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat)</a>
+0002 <span class="comment">%calc_All calculates all signatures in the toolbox.</span>
+0003 <span class="comment">%   If a signature function can calculate multiple signatures</span>
+0004 <span class="comment">%   (e.g. sig_x_percentile) only one signature is calculated (e.g. Q95).</span>
+0005 <span class="comment">%   Note: This function is primarily intended to test all signatures.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0009 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0010 <span class="comment">%   P_mat: precipitation [mm/timestep] matrix (cell array)</span>
+0011 <span class="comment">%   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)</span>
+0012 <span class="comment">%   T_mat: temperature [degC] matrix (cell array)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   OUTPUT</span>
+0015 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0016 <span class="comment">%       series and associated error strings)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   EXAMPLE</span>
+0019 <span class="comment">%   % load example data</span>
+0020 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0021 <span class="comment">%   % create consistent cell arrays</span>
+0022 <span class="comment">%   Q_mat = {data.Q};</span>
+0023 <span class="comment">%   t_mat = {data.t};</span>
+0024 <span class="comment">%   P_mat = {data.P};</span>
+0025 <span class="comment">%   PET_mat = {data.PET};</span>
+0026 <span class="comment">%   T_mat = {data.T};</span>
+0027 <span class="comment">%   results = calc_All(Q_mat,t_mat,P_mat,PET_mat,T_mat);</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   Copyright (C) 2020</span>
+0030 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0031 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0032 
+0033 <span class="comment">% check input parameters</span>
+0034 <span class="keyword">if</span> nargin &lt; 5
+0035     error(<span class="string">'Not enough input arguments.'</span>)
+0036 <span class="keyword">end</span>
+0037 
+0038 ip = inputParser;
+0039 ip.CaseSensitive = true; <span class="comment">% to be able to use t for time and T for temperature</span>
+0040 
+0041 <span class="comment">% required input arguments</span>
+0042 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0043 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0044 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0045 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0046 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0047 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0048 addRequired(ip, <span class="string">'P_mat'</span>, @(P_mat) iscell(P_mat))
+0049 addRequired(ip, <span class="string">'PET_mat'</span>, @(PET_mat) iscell(PET_mat))
+0050 addRequired(ip, <span class="string">'T_mat'</span>, @(T_mat) iscell(T_mat))
+0051 
+0052 parse(ip, Q_mat, t_mat, P_mat, PET_mat, T_mat)
+0053 
+0054 <span class="comment">% calculate signatures</span>
+0055 
+0056 <span class="comment">% initialise arrays</span>
+0057 AC1 = NaN(size(Q_mat,1),1);
+0058 AC1_error_str = strings(size(Q_mat,1),1);
+0059 BaseflowRecessionK = NaN(size(Q_mat,1),1);
+0060 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
+0061 BaseflowMagnitude = NaN(size(Q_mat,1),1);
+0062 BaseflowMagnitude_error_str = strings(size(Q_mat,1),1);
+0063 BFI = NaN(size(Q_mat,1),1);
+0064 BFI_error_str = strings(size(Q_mat,1),1);
+0065 EventGraphThresholds = NaN(size(Q_mat,1),10);
+0066 EventGraphThresholds_error_str = strings(size(Q_mat,1),1);
+0067 EventRR = NaN(size(Q_mat,1),1);
+0068 EventRR_error_str = strings(size(Q_mat,1),1);
+0069 FDC = cell(size(Q_mat,1),1);
+0070 FDC_error_str = strings(size(Q_mat,1),1);
+0071 FDC_slope = NaN(size(Q_mat,1),1);
+0072 FDC_slope_error_str = strings(size(Q_mat,1),1);
+0073 FlashinessIndex = NaN(size(Q_mat,1),1);
+0074 FlashinessIndex_error_str = strings(size(Q_mat,1),1);
+0075 HFD_mean = NaN(size(Q_mat,1),1);
+0076 HFD_mean_error_str = strings(size(Q_mat,1),1);
+0077 HFI_mean = NaN(size(Q_mat,1),1);
+0078 HFI_mean_error_str = strings(size(Q_mat,1),1);
+0079 MRC_SlopeChanges = cell(size(Q_mat,1),2);
+0080 MRC_SlopeChanges_error_str = strings(size(Q_mat,1),1);
+0081 PeakDistribution = NaN(size(Q_mat,1),1);
+0082 PeakDistribution_error_str = strings(size(Q_mat,1),1);
+0083 PQ_Curve = NaN(size(Q_mat,1),4);
+0084 PQ_Curve_error_str = strings(size(Q_mat,1),1);
+0085 Q_CoV = NaN(size(Q_mat,1),1);
+0086 Q_CoV_error_str = strings(size(Q_mat,1),1);
+0087 Q_mean = NaN(size(Q_mat,1),1);
+0088 Q_mean_error_str = strings(size(Q_mat,1),1);
+0089 Q_mean_monthly = NaN(size(Q_mat,1),1);
+0090 Q_mean_monthly_error_str = strings(size(Q_mat,1),1);
+0091 Q_7_day_max = NaN(size(Q_mat,1),1);
+0092 Q_7_day_max_error_str = strings(size(Q_mat,1),1);
+0093 Q_7_day_min = NaN(size(Q_mat,1),1);
+0094 Q_7_day_min_error_str = strings(size(Q_mat,1),1);
+0095 Q_skew = NaN(size(Q_mat,1),1);
+0096 Q_skew_error_str = strings(size(Q_mat,1),1);
+0097 Q_var = NaN(size(Q_mat,1),1);
+0098 Q_var_error_str = strings(size(Q_mat,1),1);
+0099 QP_elasticity = NaN(size(Q_mat,1),1);
+0100 QP_elasticity_error_str = strings(size(Q_mat,1),1);
+0101 RecessionParameters = NaN(size(Q_mat,1),2);
+0102 RecessionParameters_error_str = strings(size(Q_mat,1),1);
+0103 RecessionK_early = NaN(size(Q_mat,1),1);
+0104 RecessionK_early_error_str = strings(size(Q_mat,1),1);
+0105 Spearmans_rho = NaN(size(Q_mat,1),1);
+0106 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
+0107 ResponseTime = NaN(size(Q_mat,1),1);
+0108 ResponseTime_error_str = strings(size(Q_mat,1),1);
+0109 RLD = NaN(size(Q_mat,1),1);
+0110 RLD_error_str = strings(size(Q_mat,1),1);
+0111 RR_Seasonality = NaN(size(Q_mat,1),1);
+0112 RR_Seasonality_error_str = strings(size(Q_mat,1),1);
+0113 SeasonalTranslation = NaN(size(Q_mat,1),1);
+0114 SeasonalTranslation_error_str = strings(size(Q_mat,1),1);
+0115 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
+0116 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
+0117 SnowDayRatio = NaN(size(Q_mat,1),1);
+0118 SnowDayRatio_error_str = strings(size(Q_mat,1),1);
+0119 SnowStorage = NaN(size(Q_mat,1),1);
+0120 SnowStorage_error_str = strings(size(Q_mat,1),1);
+0121 StorageFraction = NaN(size(Q_mat,1),3);
+0122 StorageFraction_error_str = strings(size(Q_mat,1),1);
+0123 StorageFromBaseflow = NaN(size(Q_mat,1),1);
+0124 StorageFromBaseflow_error_str = strings(size(Q_mat,1),1);
+0125 TotalRR = NaN(size(Q_mat,1),1);
+0126 TotalRR_error_str = strings(size(Q_mat,1),1);
+0127 VariabilityIndex = NaN(size(Q_mat,1),1);
+0128 VariabilityIndex_error_str = strings(size(Q_mat,1),1);
+0129 Q95 = NaN(size(Q_mat,1),1);
+0130 Q95_error_str = strings(size(Q_mat,1),1);
+0131 high_Q_duration = NaN(size(Q_mat,1),1);
+0132 high_Q_duration_error_str = strings(size(Q_mat,1),1);
+0133 high_Q_frequency = NaN(size(Q_mat,1),1);
+0134 high_Q_frequency_error_str = strings(size(Q_mat,1),1);
+0135 
+0136 <span class="comment">% warning('off','all')</span>
+0137 
+0138 <span class="comment">% loop over all catchments</span>
+0139 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0140     
+0141     <span class="keyword">if</span> mod(i,1) == 0 <span class="comment">% check progress</span>
+0142         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,size(Q_mat,1))
+0143     <span class="keyword">end</span>
+0144     
+0145     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i});
+0146     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
+0147         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,median(Q_mat{i},<span class="string">'omitnan'</span>));
+0148     [BaseflowMagnitude(i),~,BaseflowMagnitude_error_str(i)] = sig_BaseflowMagnitude(Q_mat{i},t_mat{i});
+0149     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i});
+0150     [EventGraphThresholds(i,1),EventGraphThresholds(i,2),<span class="keyword">...</span>
+0151         EventGraphThresholds(i,3),EventGraphThresholds(i,4),<span class="keyword">...</span>
+0152         EventGraphThresholds(i,5),EventGraphThresholds(i,6),<span class="keyword">...</span>
+0153         EventGraphThresholds(i,7),EventGraphThresholds(i,8),<span class="keyword">...</span>
+0154         EventGraphThresholds(i,9),EventGraphThresholds(i,10),<span class="keyword">...</span>
+0155         ~,EventGraphThresholds_error_str(i)] = <span class="keyword">...</span>
+0156         sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i});
+0157     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
+0158     [FDC{i}(:,1), FDC{i}(:,2),~,FDC_error_str(i)] = sig_FDC(Q_mat{i},t_mat{i});
+0159     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});
+0160     [FlashinessIndex(i),~,FlashinessIndex_error_str(i)] = sig_FlashinessIndex(Q_mat{i},t_mat{i});
+0161     [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i});
+0162     [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i});
+0163     [MRC_SlopeChanges{i,1},MRC_SlopeChanges{i,2},~,MRC_SlopeChanges_error_str(i)] = <span class="keyword">...</span>
+0164         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i});
+0165     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
+0166     [PQ_Curve(i,1),PQ_Curve(i,2),PQ_Curve(i,3),PQ_Curve(i,4),~,PQ_Curve_error_str(i)] = <span class="keyword">...</span>
+0167         sig_PQ_Curve(Q_mat{i},t_mat{i},P_mat{i});
+0168     [Q_CoV(i),~,Q_CoV_error_str(i)] = sig_Q_CoV(Q_mat{i},t_mat{i});
+0169     [Q_mean(i),~,Q_mean_error_str(i)] = sig_Q_mean(Q_mat{i},t_mat{i});
+0170     [Q_mean_monthly(i),~,Q_mean_monthly_error_str(i)] = sig_Q_mean_monthly(Q_mat{i},t_mat{i},1);
+0171     [Q_7_day_max(i),~,Q_7_day_max_error_str(i)] = sig_Q_n_day_max(Q_mat{i},t_mat{i},7);
+0172     [Q_7_day_min(i),~,Q_7_day_min_error_str(i)] = sig_Q_n_day_min(Q_mat{i},t_mat{i},7);
+0173     [Q_skew(i),~,Q_skew_error_str(i)] = sig_Q_skew(Q_mat{i},t_mat{i});
+0174     [Q_var(i),~,Q_var_error_str(i)] = sig_Q_var(Q_mat{i},t_mat{i});
+0175     [QP_elasticity(i),~,QP_elasticity_error_str(i)] = sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i});
+0176     [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = <span class="keyword">...</span>
+0177         sig_RecessionAnalysis(Q_mat{i},t_mat{i},<span class="string">'fit_individual'</span>,false);
+0178     [RecessionK_early(i),~,RecessionK_early_error_str(i)] = sig_RecessionParts(Q_mat{i},t_mat{i},<span class="string">'early'</span>);
+0179     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
+0180     [ResponseTime(i),~,ResponseTime_error_str(i)] = sig_ResponseTime(Q_mat{i},t_mat{i},P_mat{i});
+0181     [RLD(i),~,RLD_error_str(i)] = sig_RisingLimbDensity(Q_mat{i},t_mat{i});
+0182     [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i},t_mat{i},P_mat{i});
+0183     [SeasonalTranslation(i,1),SeasonalTranslation(i,2),~,SeasonalTranslation_error_str(i)] = <span class="keyword">...</span>
+0184         sig_SeasonalTranslation(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+0185     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = sig_SeasonalVarRecessions(Q_mat{i},t_mat{i});
+0186     [SnowDayRatio(i),~,SnowDayRatio_error_str(i)] = sig_SnowDayRatio(Q_mat{i},t_mat{i},P_mat{i},T_mat{i});
+0187     [SnowStorage(i),~,SnowStorage_error_str(i)] = sig_SnowStorage(Q_mat{i},t_mat{i},P_mat{i});
+0188     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = <span class="keyword">...</span><span class="comment"> </span>
+0189         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+0190     [StorageFromBaseflow(i),~,StorageFromBaseflow_error_str(i)] = <span class="keyword">...</span>
+0191         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+0192     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
+0193     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
+0194     [Q95(i),~,Q95_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},95);
+0195     [high_Q_duration(i),~,high_Q_duration_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},<span class="string">'high'</span>);
+0196     [high_Q_frequency(i),~,high_Q_frequency_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},<span class="string">'high'</span>);
+0197     
+0198 <span class="keyword">end</span>
+0199 
+0200 <span class="comment">% warning('on','all')</span>
+0201 
+0202 <span class="comment">% add results to struct array</span>
+0203 results.AC1 = AC1;
+0204 results.AC1_error_str = AC1_error_str;
+0205 results.BaseflowRecessionK = BaseflowRecessionK;
+0206 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
+0207 results.BaseflowMagnitude = BaseflowMagnitude;
+0208 results.BaseflowMagnitude_error_str = BaseflowMagnitude_error_str;
+0209 results.BFI = BFI;
+0210 results.BFI_error_str = BFI_error_str;
+0211 results.EventGraphThresholds = EventGraphThresholds;
+0212 results.EventGraphThresholds_error_str = EventGraphThresholds_error_str;
+0213 results.EventRR = EventRR;
+0214 results.EventRR_error_str = EventRR_error_str;
+0215 results.FDC = FDC;
+0216 results.FDC_error_str = FDC_error_str;
+0217 results.FDC_slope = FDC_slope;
+0218 results.FDC_slope_error_str = FDC_slope_error_str;
+0219 results.FlashinessIndex = FlashinessIndex;
+0220 results.FlashinessIndex_error_str = FlashinessIndex_error_str;
+0221 results.HFD_mean = HFD_mean;
+0222 results.HFD_mean_error_str = HFD_mean_error_str;
+0223 results.HFI_mean = HFI_mean;
+0224 results.HFI_mean_error_str = HFI_mean_error_str;
+0225 results.MRC_SlopeChanges = MRC_SlopeChanges;
+0226 results.MRC_SlopeChanges_error_str = MRC_SlopeChanges_error_str;
+0227 results.PeakDistribution = PeakDistribution;
+0228 results.PeakDistribution_error_str = PeakDistribution_error_str;
+0229 results.PQ_Curve = PQ_Curve;
+0230 results.PQ_Curve_error_str = PQ_Curve_error_str;
+0231 results.Q_CoV = Q_CoV;
+0232 results.Q_CoV_error_str = Q_CoV_error_str;
+0233 results.Q_mean = Q_mean;
+0234 results.Q_mean_error_str = Q_mean_error_str;
+0235 results.Q_mean_monthly = Q_mean_monthly;
+0236 results.Q_mean_monthly_error_str = Q_mean_monthly_error_str;
+0237 results.Q_7_day_max = Q_7_day_max;
+0238 results.Q_7_day_max_error_str = Q_7_day_max_error_str;
+0239 results.Q_7_day_min = Q_7_day_min;
+0240 results.Q_7_day_min_error_str = Q_7_day_min_error_str;
+0241 results.Q_skew = Q_skew;
+0242 results.Q_skew_error_str = Q_skew_error_str;
+0243 results.Q_var = Q_var;
+0244 results.Q_var_error_str = Q_var_error_str;
+0245 results.QP_elasticity = QP_elasticity;
+0246 results.QP_elasticity_error_str = QP_elasticity_error_str;
+0247 results.RecessionParameters = RecessionParameters;
+0248 results.RecessionParameters_error_str = RecessionParameters_error_str;
+0249 results.RecessionK_early = RecessionK_early;
+0250 results.RecessionK_early_error_str = RecessionK_early_error_str;
+0251 results.Spearmans_rho = Spearmans_rho;
+0252 results.Spearmans_rho_error_str = Spearmans_rho_error_str;
+0253 results.ResponseTime = ResponseTime;
+0254 results.ResponseTime_error_str = ResponseTime_error_str;
+0255 results.RLD = RLD;
+0256 results.RLD_error_str = RLD_error_str;
+0257 results.RR_Seasonality = RR_Seasonality;
+0258 results.RR_Seasonality_error_str = RR_Seasonality_error_str;
+0259 results.SeasonalTranslation = SeasonalTranslation;
+0260 results.SeasonalTranslation_error_str = SeasonalTranslation_error_str;
+0261 results.Recession_a_Seasonality = Recession_a_Seasonality;
+0262 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
+0263 results.SnowDayRatio = SnowDayRatio;
+0264 results.SnowDayRatio_error_str = SnowDayRatio_error_str;
+0265 results.SnowStorage = SnowStorage;
+0266 results.SnowStorage_error_str = SnowStorage_error_str;
+0267 results.StorageFraction = StorageFraction;
+0268 results.StorageFraction_error_str = StorageFraction_error_str;
+0269 results.StorageFromBaseflow = StorageFromBaseflow;
+0270 results.StorageFromBaseflow_error_str = StorageFromBaseflow_error_str;
+0271 results.TotalRR = TotalRR;
+0272 results.TotalRR_error_str = TotalRR_error_str;
+0273 results.VariabilityIndex = VariabilityIndex;
+0274 results.VariabilityIndex_error_str = VariabilityIndex_error_str;
+0275 results.Q95 = Q95;
+0276 results.Q95_error_str = Q95_error_str;
+0277 results.high_Q_duration = high_Q_duration;
+0278 results.high_Q_duration_error_str = high_Q_duration_error_str;
+0279 results.high_Q_frequency = high_Q_frequency;
+0280 results.high_Q_frequency_error_str = high_Q_frequency_error_str;
+0281 
+0282 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_BasicSet</title>
+  <meta name="keywords" content="calc_BasicSet">
+  <meta name="description" content="calc_BasicSet calculates basic set of signatures.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_BasicSet.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_BasicSet
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_BasicSet calculates basic set of signatures.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_BasicSet(Q_mat, t_mat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_BasicSet calculates basic set of signatures.
+   The basic set of signatures are designed to cover the five components 
+   of a natural streamflow regime as defined by Poff et al. (1997) and 
+   Richter et al. (1996): magnitude, frequency, duration, timing and rate
+   of change. As Poff et al. state, these components &quot;can be used to 
+   characterize the entire range of flows and specific hydrologic 
+   phenomena, such as floods or low flows, that are critical to the 
+   integrity of river ecosystems&quot;.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   % create consistent cell arrays
+   Q_mat = {data.Q};
+   t_mat = {data.t};
+   results = calc_BasicSet(Q_mat,t_mat);
+
+   References
+   Poff, N.L., Allan, J.D., Bain, M.B., Karr, J.R., Prestegaard, K.L.,
+   Richter, B.D., Sparks, R.E. and Stromberg, J.C., 1997. The natural flow
+   regime. BioScience, 47(11), pp.769-784.
+   Richter, B.D., Baumgartner, J.V., Powell, J. and Braun, D.P., 1996. A
+   method for assessing hydrologic alteration within ecosystems.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_BasicSet(Q_mat, t_mat)</a>
+0002 <span class="comment">%calc_BasicSet calculates basic set of signatures.</span>
+0003 <span class="comment">%   The basic set of signatures are designed to cover the five components</span>
+0004 <span class="comment">%   of a natural streamflow regime as defined by Poff et al. (1997) and</span>
+0005 <span class="comment">%   Richter et al. (1996): magnitude, frequency, duration, timing and rate</span>
+0006 <span class="comment">%   of change. As Poff et al. state, these components &quot;can be used to</span>
+0007 <span class="comment">%   characterize the entire range of flows and specific hydrologic</span>
+0008 <span class="comment">%   phenomena, such as floods or low flows, that are critical to the</span>
+0009 <span class="comment">%   integrity of river ecosystems&quot;.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   INPUT</span>
+0012 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0013 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0017 <span class="comment">%       series and associated error strings)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   EXAMPLE</span>
+0020 <span class="comment">%   % load example data</span>
+0021 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0022 <span class="comment">%   % create consistent cell arrays</span>
+0023 <span class="comment">%   Q_mat = {data.Q};</span>
+0024 <span class="comment">%   t_mat = {data.t};</span>
+0025 <span class="comment">%   results = calc_BasicSet(Q_mat,t_mat);</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   References</span>
+0028 <span class="comment">%   Poff, N.L., Allan, J.D., Bain, M.B., Karr, J.R., Prestegaard, K.L.,</span>
+0029 <span class="comment">%   Richter, B.D., Sparks, R.E. and Stromberg, J.C., 1997. The natural flow</span>
+0030 <span class="comment">%   regime. BioScience, 47(11), pp.769-784.</span>
+0031 <span class="comment">%   Richter, B.D., Baumgartner, J.V., Powell, J. and Braun, D.P., 1996. A</span>
+0032 <span class="comment">%   method for assessing hydrologic alteration within ecosystems.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%   Copyright (C) 2020</span>
+0035 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0036 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0037 
+0038 <span class="comment">% check input parameters</span>
+0039 <span class="keyword">if</span> nargin &lt; 2
+0040     error(<span class="string">'Not enough input arguments.'</span>)
+0041 <span class="keyword">end</span>
+0042 
+0043 ip = inputParser;
+0044 ip.CaseSensitive = true;
+0045 
+0046 <span class="comment">% required input arguments</span>
+0047 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0048 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0049 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0050 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0051 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0052 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0053 
+0054 parse(ip, Q_mat, t_mat)
+0055 
+0056 <span class="comment">% calculate signatures</span>
+0057 
+0058 <span class="comment">% initialise arrays</span>
+0059 Q_mean = NaN(size(Q_mat,1),1);
+0060 Q_mean_error_str = strings(size(Q_mat,1),1);
+0061 Q5 = NaN(size(Q_mat,1),1);
+0062 Q5_error_str = strings(size(Q_mat,1),1);
+0063 Q95 = NaN(size(Q_mat,1),1);
+0064 Q95_error_str = strings(size(Q_mat,1),1);
+0065 Q_mean_monthly = NaN(size(Q_mat,1),12);
+0066 Q_mean_monthly_error_str = strings(size(Q_mat,1),1);
+0067 Q_7_day_min = NaN(size(Q_mat,1),1);
+0068 Q_7_day_min_error_str = strings(size(Q_mat,1),1);
+0069 BFI = NaN(size(Q_mat,1),1);
+0070 BFI_error_str = strings(size(Q_mat,1),1);
+0071 CoV = NaN(size(Q_mat,1),1);
+0072 CoV_error_str = strings(size(Q_mat,1),1);
+0073 x_Q_frequency = NaN(size(Q_mat,1),1);
+0074 x_Q_frequency_error_str = strings(size(Q_mat,1),1);
+0075 x_Q_duration = NaN(size(Q_mat,1),1);
+0076 x_Q_duration_error_str = strings(size(Q_mat,1),1);
+0077 HFD_mean = NaN(size(Q_mat,1),1);
+0078 HFD_mean_error_str = strings(size(Q_mat,1),1);
+0079 HFI_mean = NaN(size(Q_mat,1),1);
+0080 HFI_mean_error_str = strings(size(Q_mat,1),1);
+0081 AC1 = NaN(size(Q_mat,1),1);
+0082 AC1_error_str = strings(size(Q_mat,1),1);
+0083 FDC_slope = NaN(size(Q_mat,1),1);
+0084 FDC_slope_error_str = strings(size(Q_mat,1),1);
+0085 BaseflowRecessionK = NaN(size(Q_mat,1),1);
+0086 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
+0087 
+0088 <span class="comment">% loop over all catchments</span>
+0089 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0090     
+0091     [Q_mean(i),~,Q_mean_error_str(i)] = sig_Q_mean(Q_mat{i},t_mat{i});
+0092     [Q5(i),~,Q5_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},[5]);
+0093     [Q95(i),~,Q95_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},[95]);
+0094     [Q_mean_monthly(i,:),~,Q_mean_monthly_error_str(i)] = sig_Q_mean_monthly(Q_mat{i},t_mat{i},[1:12]);
+0095     [Q_7_day_min(i),~,Q_7_day_min_error_str(i)] = sig_Q_n_day_min(Q_mat{i},t_mat{i},7);
+0096     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i});
+0097     [CoV(i),~,CoV_error_str(i)] = sig_Q_CoV(Q_mat{i},t_mat{i});
+0098     [x_Q_frequency(i),~,x_Q_frequency_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},<span class="string">'low'</span>);
+0099     [x_Q_duration(i),~,x_Q_duration_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},<span class="string">'low'</span>);
+0100     [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i});
+0101     [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i});
+0102     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i},<span class="string">'lag'</span>,1);
+0103     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});
+0104     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
+0105     
+0106 <span class="keyword">end</span>
+0107 
+0108 <span class="comment">% add results to struct array</span>
+0109 results.Q_mean = Q_mean;
+0110 results.Q_mean_error_str = Q_mean_error_str;
+0111 results.Q5 = Q5;
+0112 results.Q5_error_str = Q5_error_str;
+0113 results.Q95 = Q95;
+0114 results.Q95_error_str = Q95_error_str;
+0115 results.Q_mean_monthly = Q_mean_monthly;
+0116 results.Q_mean_monthly_error_str = Q_mean_monthly_error_str;
+0117 results.Q_7_day_min = Q_7_day_min;
+0118 results.Q_7_day_min_error_str = Q_7_day_min_error_str;
+0119 results.BFI = BFI;
+0120 results.BFI_error_str = BFI_error_str;
+0121 results.CoV = CoV;
+0122 results.CoV_error_str = CoV_error_str;
+0123 results.x_Q_frequency = x_Q_frequency;
+0124 results.x_Q_frequency_error_str = x_Q_frequency_error_str;
+0125 results.x_Q_duration = x_Q_duration;
+0126 results.x_Q_duration_error_str = x_Q_duration_error_str;
+0127 results.HFD_mean = HFD_mean;
+0128 results.HFD_mean_error_str = HFD_mean_error_str;
+0129 results.HFI_mean = HFI_mean;
+0130 results.HFI_mean_error_str = HFI_mean_error_str;
+0131 results.AC1 = AC1;
+0132 results.AC1_error_str = AC1_error_str;
+0133 results.FDC_slope = FDC_slope;
+0134 results.FDC_slope_error_str = FDC_slope_error_str;
+0135 results.BaseflowRecessionK = BaseflowRecessionK;
+0136 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
+0137 
+0138 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

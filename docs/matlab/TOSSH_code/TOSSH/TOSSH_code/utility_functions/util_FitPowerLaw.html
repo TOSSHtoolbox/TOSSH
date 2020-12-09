@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_FitPowerLaw</title>
+  <meta name="keywords" content="util_FitPowerLaw">
+  <meta name="description" content="util_FitPowerLaw fits a power law (to recession segments).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_FitPowerLaw.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_FitPowerLaw
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_FitPowerLaw fits a power law (to recession segments).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [a, b, error_flag, error_str] = util_FitPowerLaw(Q_rec, dQdt_rec, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_FitPowerLaw fits a power law (to recession segments).
+   dQ/dt = - a Q ^ b
+   Different options are available (e.g. linear fitting in loglog-space,
+   non-linear, or fitting a fixed slope).
+
+   INPUT
+   Q_rec: streamflow (recession periods only)
+   dQdt_rec: corresponding flow rate gradients
+   OPTIONAL
+   fitting_type: specifies fitting procedure: linear, non-linear, linear
+       with slope 1, linear with slope 2
+   weights: weights to fit curve
+
+   OUTPUT
+   a: scaling parameter
+   b: parameter of non-linearity
+   error_flag: 0 (no error), 1 (warning), 2 (errorin data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t;
+   flow_section = util_RecessionSegments(Q,t,'plot_results',true); % get recession segments   
+   [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section); % get flow rate gradient
+   rec = ~isnan(Qm);
+   [a, b] = util_FitPowerLaw(Qm(rec), dQdt(rec));
+   [a, b] = util_FitPowerLaw(Qm(rec), dQdt(rec), 'fitting_type', 'linear', 'weights', R2(rec))
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [a, b, error_flag, error_str] = util_FitPowerLaw(Q_rec, dQdt_rec, varargin)</a>
+0002 <span class="comment">%util_FitPowerLaw fits a power law (to recession segments).</span>
+0003 <span class="comment">%   dQ/dt = - a Q ^ b</span>
+0004 <span class="comment">%   Different options are available (e.g. linear fitting in loglog-space,</span>
+0005 <span class="comment">%   non-linear, or fitting a fixed slope).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   Q_rec: streamflow (recession periods only)</span>
+0009 <span class="comment">%   dQdt_rec: corresponding flow rate gradients</span>
+0010 <span class="comment">%   OPTIONAL</span>
+0011 <span class="comment">%   fitting_type: specifies fitting procedure: linear, non-linear, linear</span>
+0012 <span class="comment">%       with slope 1, linear with slope 2</span>
+0013 <span class="comment">%   weights: weights to fit curve</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   a: scaling parameter</span>
+0017 <span class="comment">%   b: parameter of non-linearity</span>
+0018 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (errorin data check), 3</span>
+0019 <span class="comment">%       (error in signature calculation)</span>
+0020 <span class="comment">%   error_str: string contraining error description</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   EXAMPLE</span>
+0023 <span class="comment">%   % load example data</span>
+0024 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0025 <span class="comment">%   Q = data.Q;</span>
+0026 <span class="comment">%   t = data.t;</span>
+0027 <span class="comment">%   flow_section = util_RecessionSegments(Q,t,'plot_results',true); % get recession segments</span>
+0028 <span class="comment">%   [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section); % get flow rate gradient</span>
+0029 <span class="comment">%   rec = ~isnan(Qm);</span>
+0030 <span class="comment">%   [a, b] = util_FitPowerLaw(Qm(rec), dQdt(rec));</span>
+0031 <span class="comment">%   [a, b] = util_FitPowerLaw(Qm(rec), dQdt(rec), 'fitting_type', 'linear', 'weights', R2(rec))</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   Copyright (C) 2020</span>
+0034 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0035 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0036 
+0037 <span class="keyword">if</span> nargin &lt; 2    
+0038     error(<span class="string">'Not enough input arguments.'</span>)
+0039 <span class="keyword">end</span>
+0040 
+0041 ip = inputParser;
+0042 ip.CaseSensitive = true;
+0043 
+0044 <span class="comment">% required input arguments</span>
+0045 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0046 addRequired(ip, <span class="string">'Q_rec'</span>, @(Q_rec) isnumeric(Q_rec) &amp;&amp; (size(Q_rec,1)==1 || size(Q_rec,2)==1))
+0047 addRequired(ip, <span class="string">'dQdt_rec'</span>, @(dQdt_rec) isnumeric(dQdt_rec) &amp;&amp; (size(dQdt_rec,1)==1 || size(dQdt_rec,2)==1)) 
+0048 
+0049 <span class="comment">% optional input arguments</span>
+0050 addParameter(ip, <span class="string">'fitting_type'</span>, <span class="string">'linear'</span>, @ischar) <span class="comment">%</span>
+0051 addParameter(ip, <span class="string">'weights'</span>, ones(size(Q_rec)), @isnumeric) <span class="comment">%</span>
+0052 
+0053 parse(ip, Q_rec, dQdt_rec, varargin{:})
+0054 fitting_type = ip.Results.fitting_type;
+0055 weights = ip.Results.weights;
+0056 
+0057 <span class="comment">% default setting reads as good data</span>
+0058 error_flag = 0;
+0059 error_str = <span class="string">''</span>;
+0060 
+0061 <span class="comment">% data checks</span>
+0062 <span class="keyword">if</span> all(isnan(Q_rec)) || all(isnan(dQdt_rec))   
+0063     a = NaN;
+0064     b = NaN;
+0065     error_flag = 1;
+0066     error_str = [<span class="string">'Warning: Some recessions consist only of NaN values (possibly because eps &gt; 0). '</span>, error_str];
+0067     <span class="keyword">return</span>
+0068 <span class="keyword">end</span>
+0069 
+0070 <span class="keyword">if</span> strcmp(fitting_type, <span class="string">'linear'</span>) <span class="comment">% linear regression in log log space</span>
+0071     
+0072     linFcn = @(p,x) p(2).*x + p(1);
+0073     p0 = [0.1, 1.0];
+0074     fit_nonlin = fitnlm(log(Q_rec),log(-dQdt_rec),linFcn,p0,<span class="string">'Weight'</span>,weights);
+0075     a = exp(fit_nonlin.Coefficients.Estimate(1));
+0076     b = fit_nonlin.Coefficients.Estimate(2);
+0077     
+0078 <span class="keyword">elseif</span> strcmp(fitting_type, <span class="string">'nonlinear'</span>) <span class="comment">% nonlinear regression in lin space</span>
+0079     
+0080     powerFcn = @(p,x) p(1).*x.^p(2);
+0081     p0 = [0.1, 1.0];
+0082     fit_nonlin = fitnlm(Q_rec,-dQdt_rec,powerFcn,p0,<span class="string">'Weight'</span>,weights);
+0083     a = fit_nonlin.Coefficients.Estimate(1);
+0084     b = fit_nonlin.Coefficients.Estimate(2);   
+0085     
+0086 <span class="keyword">elseif</span> strcmp(fitting_type, <span class="string">'slope1'</span>) <span class="comment">% linear regression in log log space with fixed slope 1</span>
+0087     
+0088     linFcn = @(p,x) 1.*x + p(1);
+0089     p0 = [0.1];
+0090     fit_nonlin = fitnlm(log(Q_rec),log(-dQdt_rec),linFcn,p0,<span class="string">'Weight'</span>,weights);
+0091     a = exp(fit_nonlin.Coefficients.Estimate(1));
+0092     b = 1;
+0093 
+0094 <span class="keyword">elseif</span> strcmp(fitting_type, <span class="string">'slope2'</span>) <span class="comment">% linear regression in log log space with fixed slope 2</span>
+0095 
+0096     linFcn = @(p,x) 2.*x + p(1);
+0097     p0 = [0.1];
+0098     fit_nonlin = fitnlm(log(Q_rec),log(-dQdt_rec),linFcn,p0,<span class="string">'Weight'</span>,weights);
+0099     a = exp(fit_nonlin.Coefficients.Estimate(1));
+0100     b = 2;
+0101     
+0102 <span class="keyword">else</span>
+0103     error(<span class="string">'Invalid fitting type.'</span>)
+0104 <span class="keyword">end</span>
+0105 
+0106 <span class="keyword">end</span>
+0107 
+0108</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calculate_signatures</title>
+  <meta name="keywords" content="calculate_signatures">
+  <meta name="description" content="calculate_signatures Interactive signature calculation. We use cell arrays">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../index.html">example</a> &gt; <a href="index.html">old</a> &gt; calculate_signatures.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\old&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calculate_signatures
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calculate_signatures Interactive signature calculation. We use cell arrays</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calculate_signatures(Q_mat, t_mat, P_mat, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calculate_signatures Interactive signature calculation. We use cell arrays
+ to allow for time series of different lengths.
+
+    INPUT
+   Q_mat: streamflow Q [mm/timestep] time series as a cell matrix of the
+   following format: {Q_1; Q_2; ...; Q_n}
+   t_mat: date t [Matlab datenum] time series as a cell matrix of the
+   following format: {t_1; t_2; ...; t_n}
+   P_mat: precipitation P [mm/timestep] time series as a cell matrix of the
+   following format: {P_1; P_2; ...; P_n}
+    OPTIONAL
+   signature_selection: which set of signatures to calculate. (For more
+   information on the selections please have a look at the documentation.)
+
+   OUTPUT
+
+   References
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="TOSSH_test_script.html" class="code" title="">TOSSH_test_script</a>	% TOSSH test script</li><li><a href="run_signatures.html" class="code" title="">run_signatures</a>	% script that shows how to calculate the signatures</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calculate_signatures(Q_mat, t_mat, P_mat, varargin)</a>
+0002 <span class="comment">%calculate_signatures Interactive signature calculation. We use cell arrays</span>
+0003 <span class="comment">% to allow for time series of different lengths.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%    INPUT</span>
+0006 <span class="comment">%   Q_mat: streamflow Q [mm/timestep] time series as a cell matrix of the</span>
+0007 <span class="comment">%   following format: {Q_1; Q_2; ...; Q_n}</span>
+0008 <span class="comment">%   t_mat: date t [Matlab datenum] time series as a cell matrix of the</span>
+0009 <span class="comment">%   following format: {t_1; t_2; ...; t_n}</span>
+0010 <span class="comment">%   P_mat: precipitation P [mm/timestep] time series as a cell matrix of the</span>
+0011 <span class="comment">%   following format: {P_1; P_2; ...; P_n}</span>
+0012 <span class="comment">%    OPTIONAL</span>
+0013 <span class="comment">%   signature_selection: which set of signatures to calculate. (For more</span>
+0014 <span class="comment">%   information on the selections please have a look at the documentation.)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   References</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   Copyright (C) 2020</span>
+0021 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0022 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0023 
+0024 <span class="comment">% check input parameters</span>
+0025 <span class="keyword">if</span> nargin &lt; 3
+0026     error(<span class="string">'Not enough input arguments.'</span>)
+0027 <span class="keyword">end</span>
+0028 
+0029 ip = inputParser;
+0030 
+0031 <span class="comment">% required input arguments</span>
+0032 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0033 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0034 addRequired(ip, <span class="string">'P_mat'</span>, @(P_mat) iscell(P_mat))
+0035 
+0036 <span class="comment">% optional input arguments</span>
+0037 addParameter(ip, <span class="string">'signature_selection'</span>, [], @ischar)
+0038 
+0039 parse(ip, Q_mat, t_mat, P_mat, varargin{:})
+0040 signature_selection = ip.Results.signature_selection;
+0041 
+0042 <span class="comment">% data checks</span>
+0043 <span class="keyword">if</span> ~iscell(Q_mat) || size(Q_mat,2) ~= 1
+0044     error(<span class="string">'Streamflow input data are not in the correct format.'</span>)
+0045 <span class="keyword">elseif</span> ~iscell(t_mat) || size(t_mat,2) ~= 1
+0046     error(<span class="string">'Time input data are not in the correct format.'</span>)
+0047 <span class="keyword">elseif</span> ~iscell(P_mat) || size(P_mat,2) ~= 1
+0048     error(<span class="string">'Precipitation input data are not in the correct format.'</span>)
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="keyword">if</span> size(Q_mat,1) ~= size(t_mat,1) || size(Q_mat,1) ~= size(P_mat,1)
+0052     error(<span class="string">'Input data (Q, t, P) have inconsistent lenghts.'</span>)
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% user interaction</span>
+0056 <span class="comment">% clc</span>
+0057 <span class="keyword">if</span> isempty(signature_selection) <span class="comment">% if signature selection has been chosen, there's no need to ask for it</span>
+0058     prompt = sprintf([<span class="string">'\n&lt;&gt; Welcome to TOSH: a TOolbox for Signatures in Hydrology! &lt;&gt;\n\n'</span>,<span class="keyword">...</span>
+0059         <span class="string">'Which selection of signatures do you want to calculate?\n'</span>,<span class="keyword">...</span>
+0060         <span class="string">'(For more information on the selections please have a look at the documentation.)\n\n'</span>,<span class="keyword">...</span>
+0061         <span class="string">'1: Yadav et al. (2007)\n'</span>,<span class="keyword">...</span>
+0062         <span class="string">'2: Sawicz et al. (2011)\n'</span>,<span class="keyword">...</span>
+0063         <span class="string">'3: Euser et al. (2013)\n'</span>,<span class="keyword">...</span>
+0064         <span class="string">'4: Addor et al. (2018)\n'</span>,<span class="keyword">...</span>
+0065         <span class="string">'5: Timing \n'</span>,<span class="keyword">...</span>
+0066         <span class="string">'6: Water balance \n'</span>,<span class="keyword">...</span>
+0067         <span class="string">'7: Frequency \n'</span>,<span class="keyword">...</span>
+0068         <span class="string">'x: x \n'</span>,<span class="keyword">...</span>
+0069         <span class="string">'0: All signatures (might take a while...)\n'</span>,<span class="keyword">...</span>
+0070         <span class="string">'\nPut in a number to continue...\n'</span>]);
+0071     signature_selection = input(prompt,<span class="string">'s'</span>);
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="comment">% calculate signatures</span>
+0075 <span class="keyword">switch</span> signature_selection
+0076     <span class="keyword">case</span> <span class="string">'1'</span> <span class="comment">% Yadav2007</span>
+0077         results = calc_Yadav(Q_mat,t_mat,P_mat);
+0078     <span class="keyword">case</span> <span class="string">'2'</span> <span class="comment">% Sawicz2011</span>
+0079         results = calc_Sawicz(Q_mat,t_mat,P_mat);
+0080     <span class="keyword">case</span> <span class="string">'3'</span> <span class="comment">% Euser2013</span>
+0081         results = calc_Euser(Q_mat,t_mat,P_mat);
+0082     <span class="keyword">case</span> <span class="string">'4'</span> <span class="comment">% Addor2018</span>
+0083         results = calc_Addor(Q_mat,t_mat,P_mat);
+0084     <span class="comment">% below are suggestions only - need to discuss that</span>
+0085     <span class="keyword">case</span> <span class="string">'5'</span> <span class="comment">% Timing</span>
+0086         error(<span class="string">'Not yet implemented'</span>);
+0087     <span class="keyword">case</span> <span class="string">'6'</span> <span class="comment">% Water balance</span>
+0088         error(<span class="string">'Not yet implemented'</span>);
+0089     <span class="keyword">case</span> <span class="string">'7'</span> <span class="comment">% Frequency</span>
+0090         error(<span class="string">'Not yet implemented'</span>);
+0091     <span class="keyword">case</span> <span class="string">'x'</span>
+0092         error(<span class="string">'Not yet implemented'</span>);
+0093     <span class="keyword">case</span> <span class="string">'0'</span> <span class="comment">% all</span>
+0094         results = calc_all(Q_mat,t_mat,P_mat);
+0095     <span class="keyword">otherwise</span>
+0096         error(<span class="string">'Please choose a valid subset of signatures. The options are shown above.'</span>);
+0097 <span class="keyword">end</span>
+0098 
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">%{</span>
+0102 prompt = sprintf([<span class="string">'\nPlease input streamflow Q [mm/timestep] time series as a cell matrix of the following format: \n'</span>,<span class="keyword">...</span>
+0103     <span class="string">'{Q_1; Q_2; ...; Q_n}, \n'</span>,<span class="keyword">...</span>
+0104      <span class="string">'where each entry (1, 2, ..., n) corresponds to one time series, e.g. from one catchment. \n'</span>,<span class="keyword">...</span>
+0105      <span class="string">'For one catchment only, please input {Q}.\n'</span>,<span class="keyword">...</span>
+0106      <span class="string">'\nPut in data to continue...\n'</span>]);
+0107 Q_mat = input(prompt);
+0108 
+0109 prompt = sprintf([<span class="string">'\nPlease input the corresponding time [Matlab datenum] time series as a cell matrix of the following format: \n'</span>,<span class="keyword">...</span>
+0110     <span class="string">'{t_1; t_2; ...; t_n}, \n'</span>,<span class="keyword">...</span>
+0111      <span class="string">'where each entry (1, 2, ..., n) corresponds to one time series, e.g. from one catchment. \n'</span>,<span class="keyword">...</span>
+0112      <span class="string">'For one catchment only, please input {t}.\n'</span>,<span class="keyword">...</span>
+0113      <span class="string">'\nPut in data to continue...\n'</span>]);
+0114 t_mat = input(prompt);
+0115 
+0116 prompt = sprintf([<span class="string">'\nPlease input the corresponding precipitation P [mm/timestep] time series as a cell matrix of the following format: \n'</span>,<span class="keyword">...</span>
+0117     <span class="string">'{P_1; P_2; ...; P_n}, \n'</span>,<span class="keyword">...</span>
+0118      <span class="string">'where each entry (1, 2, ..., n) corresponds to one time series, e.g. from one catchment. \n'</span>,<span class="keyword">...</span>
+0119      <span class="string">'For one catchment only, please input {t}.\n'</span>,<span class="keyword">...</span>
+0120      <span class="string">'\nPut in data to continue...\n'</span>]);
+0121 P_mat = input(prompt);
+0122 
+0123 <span class="comment">% check input</span>
+0124 <span class="keyword">if</span> ~iscell(Q_mat) || size(Q_mat,2) ~= 1
+0125     error(<span class="string">'Streamflow input data are not in the correct format.'</span>)
+0126 <span class="keyword">elseif</span> ~iscell(t_mat) || size(t_mat,2) ~= 1
+0127     error(<span class="string">'Time input data are not in the correct format.'</span>)
+0128 <span class="keyword">elseif</span> ~iscell(P_mat) || size(P_mat,2) ~= 1
+0129     error(<span class="string">'Precipitation input data are not in the correct format.'</span>)
+0130 <span class="keyword">end</span>
+0131 
+0132 <span class="keyword">if</span> size(Q_mat,1) ~= size(t_mat,1) || size(Q_mat,1) ~= size(P_mat,1)
+0133     error(<span class="string">'Input data (Q, t, P) have inconsistent lenghts.'</span>)
+0134 <span class="keyword">end</span>
+0135 
+0136 <span class="comment">%}</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

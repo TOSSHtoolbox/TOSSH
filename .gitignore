@@ -1,0 +1,17 @@
+#
+site/
+docs/_site/
+docs/.jekyll-cache/
+docs/Gemfile
+docs/Gemfile.lock
+*.asv
+docs/markdown_misc
+signature_test_script_old
+# example/results/*.mat
+.jekyll-cache/
+example/example_data/CAMELS_v2.0
+example/example_data/CAMELS_GB
+example/example_data/old
+example/old
+example/results/CAMELS_GB_TOSSH_signatures.mat
+example/results/CAMELS_TOSSH_signatures.mat

@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of workflow_4_CAMELS_US</title>
+  <meta name="keywords" content="workflow_4_CAMELS_US">
+  <meta name="description" content="% TOSSH workflow 4 - calculation of signatures for CAMELS US catchments">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="index.html">example</a> &gt; workflow_4_CAMELS_US.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>workflow_4_CAMELS_US
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH workflow 4 - calculation of signatures for CAMELS US catchments</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH workflow 4 - calculation of signatures for CAMELS US catchments
+
+   This script shows how to use TOSSH to calculate the Addor et al. (2018)
+   signatures using the CAMELS dataset. Note that this workflow can be
+   slow and requires sufficient RAM.
+   
+   The CAMELS dataset can be
+   downloaded from https://ral.ucar.edu/solutions/products/camels 
+   and needs to be placed in the right directory.  
+
+   References
+   Newman, A.J., Clark, M.P., Sampson, K., Wood, A., Hay, L.E., Bock, A., 
+   Viger, R.J., Blodgett, D., Brekke, L., Arnold, J.R. and Hopson, T., 
+   2015. Development of a large-sample watershed-scale hydrometeorological 
+   data set for the contiguous USA: data set characteristics and 
+   assessment of regional variability in hydrologic model performance. 
+   Hydrology and Earth System Sciences, 19(1), p.209.
+   Addor, N., Newman, A.J., Mizukami, N. and Clark, M.P., 2017. The CAMELS
+   data set: catchment attributes and meteorology for large-sample
+   studies. Hydrology and Earth System Sciences (HESS), 21(10), 
+   pp.5293-5313.
+   Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and 
+   Clark, M.P., 2018. A ranking of hydrological signatures based on their 
+   predictability in space. Water Resources Research, 54(11), 
+   pp.8792-8812.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH workflow 4 - calculation of signatures for CAMELS US catchments</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   This script shows how to use TOSSH to calculate the Addor et al. (2018)</span>
+0004 <span class="comment">%   signatures using the CAMELS dataset. Note that this workflow can be</span>
+0005 <span class="comment">%   slow and requires sufficient RAM.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   The CAMELS dataset can be</span>
+0008 <span class="comment">%   downloaded from https://ral.ucar.edu/solutions/products/camels</span>
+0009 <span class="comment">%   and needs to be placed in the right directory.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   References</span>
+0012 <span class="comment">%   Newman, A.J., Clark, M.P., Sampson, K., Wood, A., Hay, L.E., Bock, A.,</span>
+0013 <span class="comment">%   Viger, R.J., Blodgett, D., Brekke, L., Arnold, J.R. and Hopson, T.,</span>
+0014 <span class="comment">%   2015. Development of a large-sample watershed-scale hydrometeorological</span>
+0015 <span class="comment">%   data set for the contiguous USA: data set characteristics and</span>
+0016 <span class="comment">%   assessment of regional variability in hydrologic model performance.</span>
+0017 <span class="comment">%   Hydrology and Earth System Sciences, 19(1), p.209.</span>
+0018 <span class="comment">%   Addor, N., Newman, A.J., Mizukami, N. and Clark, M.P., 2017. The CAMELS</span>
+0019 <span class="comment">%   data set: catchment attributes and meteorology for large-sample</span>
+0020 <span class="comment">%   studies. Hydrology and Earth System Sciences (HESS), 21(10),</span>
+0021 <span class="comment">%   pp.5293-5313.</span>
+0022 <span class="comment">%   Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and</span>
+0023 <span class="comment">%   Clark, M.P., 2018. A ranking of hydrological signatures based on their</span>
+0024 <span class="comment">%   predictability in space. Water Resources Research, 54(11),</span>
+0025 <span class="comment">%   pp.8792-8812.</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   Copyright (C) 2020</span>
+0028 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0029 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0030 
+0031 close all
+0032 <span class="comment">% clear all</span>
+0033 clc
+0034 
+0035 <span class="comment">%% Download and extract CAMELS data</span>
+0036 <span class="comment">% First, we need to download and extract the CAMELS data from:</span>
+0037 <span class="comment">% https://ral.ucar.edu/solutions/products/camels</span>
+0038 <span class="comment">% From the link above you can download six different folders. We need three</span>
+0039 <span class="comment">% of them to run this workflow:</span>
+0040 <span class="comment">% basin_timeseries_v1p2_modelOutput_daymet (CAMELS time series meteorology, observed flow, meta data (.zip))</span>
+0041 <span class="comment">% basin_timeseries_v1p2_metForcing_obsFlow (CAMELS time series Daymet forced model output (.zip))</span>
+0042 <span class="comment">% camels_attributes_v2.0 (CAMELS Attributes (.zip))</span>
+0043 <span class="comment">% The data should be stored in a folder named CAMELS_v2.0 located in the</span>
+0044 <span class="comment">% example_data directory of TOSSH (./example/example_data/CAMELS_v2.0).</span>
+0045 
+0046 <span class="comment">%% Add directories to path</span>
+0047 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path. This is</span>
+0048 <span class="comment">% important to ensure that we can work with relative paths. If we already</span>
+0049 <span class="comment">% are in this directory, we can use the pwd command:</span>
+0050 mydir = pwd;
+0051 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0052 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0053 cd(mydir)
+0054 addpath(genpath(mydir));
+0055 
+0056 <span class="comment">% We also specify the path where to save our results and figures:</span>
+0057 results_path = <span class="string">'./example/results/'</span>;
+0058 fig_path = <span class="string">'./example/results/images'</span>;
+0059 
+0060 <span class="comment">%% Load CAMELS data</span>
+0061 <span class="comment">% We now load the CAMELS data into a struct file for easy handling with</span>
+0062 <span class="comment">% Matlab. We have to be in the TOSSH directory and the CAMELS data should</span>
+0063 <span class="comment">% be stored in a folder named CAMELS_v2.0 in the example_data directory.</span>
+0064 
+0065 <span class="comment">% The following folders are required:</span>
+0066 <span class="comment">% ./example/example_data/CAMELS_v2.0/camels_attributes_v2.0/camels_*.txt</span>
+0067 <span class="comment">% (7 files; contain catchment attributes)</span>
+0068 <span class="comment">% ./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_modelOutput_daymet/model_output_daymet/model_output/flow_timeseries/daymet/*/*_model_output.txt</span>
+0069 <span class="comment">% (18 folders with &gt;1000 files; contain forcing time series)</span>
+0070 <span class="comment">% ./example/example_data/CAMELS_v2.0/basin_timeseries_v1p2_metForcing_obsFlow/basin_dataset_public_v1p2\/usgs_streamflow/*/*_streamflow_qc.txt</span>
+0071 <span class="comment">% (18 folders with 671 files; contain streamflow time series)</span>
+0072 
+0073 <span class="comment">% Loading the data might take a few minutes.</span>
+0074 CAMELS_data = loadCAMELSstruct(); 
+0075 <span class="comment">% Note that you can also save the struct file to avoid loading the data</span>
+0076 <span class="comment">% anew every time you want to work with them.</span>
+0077 
+0078 <span class="comment">%% Calculate signatures for CAMELS catchments using TOSSH</span>
+0079 <span class="comment">% To use the calculation function calc_Addor.m, we need to create cell</span>
+0080 <span class="comment">% arrays containing the time series. We use cell arrays since some time</span>
+0081 <span class="comment">% series might have different lengths. While the length of each row in the</span>
+0082 <span class="comment">% cell array can vary, the cell arrays containing the t, Q, P, and PET data</span>
+0083 <span class="comment">% need to have exactly the same dimensions. We first initialise the cell</span>
+0084 <span class="comment">% arrays.</span>
+0085 n_CAMELS = length(CAMELS_data.gauge_id);
+0086 t_mat = cell(n_CAMELS,1);
+0087 Q_mat = cell(n_CAMELS,1);
+0088 P_mat = cell(n_CAMELS,1);
+0089 PET_mat = cell(n_CAMELS,1);
+0090 
+0091 <span class="comment">% We then loop over all catchments and extract the time series for each</span>
+0092 <span class="comment">% catchment. We crop each time series to be from October 1989 to September</span>
+0093 <span class="comment">% 2009 (see Addor et al., 2017).</span>
+0094 fprintf(<span class="string">'Creating data matrix...\n'</span>)
+0095 <span class="keyword">for</span> i = 1:n_CAMELS 
+0096     
+0097     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0098         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
+0099     <span class="keyword">end</span>
+0100     
+0101     t = datetime(CAMELS_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0102     Q = CAMELS_data.Q{i}(:,2);    
+0103     P = CAMELS_data.P{i}(:,2);
+0104     PET = CAMELS_data.PET{i}(:,2);
+0105     
+0106     <span class="comment">% get subperiod, here from 1 Oct 1989 to 30 Sep 2009</span>
+0107     indices = 1:length(t); 
+0108     start_ind = indices(t==datetime(1989,10,1));
+0109     <span class="comment">% in case time series starts after 1 Oct 1989</span>
+0110     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span> 
+0111     end_ind = indices(t==datetime(2009,9,30));    
+0112     t = t(start_ind:end_ind);
+0113     Q = Q(start_ind:end_ind);
+0114     P = P(start_ind:end_ind);
+0115     PET = PET(start_ind:end_ind);
+0116     <span class="comment">% calculate completeness during sub-period</span>
+0117     flow_perc_complete = 100*(1-sum(isnan(Q))./length(Q));
+0118     CAMELS_data.flow_perc_complete(i) = flow_perc_complete;
+0119     
+0120     t_mat{i} = t;
+0121     Q_mat{i} = Q;
+0122     P_mat{i} = P;
+0123     PET_mat{i} = PET;
+0124     
+0125 <span class="keyword">end</span>
+0126 
+0127 <span class="comment">% We can now use the calculation function calc_Addor.m to calculate all the</span>
+0128 <span class="comment">% Addor et al. (2018) signatures.</span>
+0129 fprintf(<span class="string">'Calculating signatures...\n'</span>)
+0130 CAMELS_signatures = calc_Addor(Q_mat, t_mat, P_mat);
+0131 <span class="comment">% Besides the signature values, the function also returns a list with</span>
+0132 <span class="comment">% warnings and error messages. Some warnings are specific to a certain</span>
+0133 <span class="comment">% signature. For example: &quot;Warning: FDC slope could not be calculated,</span>
+0134 <span class="comment">% probably because flow is intermittent.&quot; tells us why sometimes NaN is</span>
+0135 <span class="comment">% returned when we calculate FDC_slope.</span>
+0136 fprintf(CAMELS_signatures.FDC_slope_error_str(294)+&quot;\n&quot;)
+0137 <span class="comment">% Most warnings come from our data check and indicate that there are some</span>
+0138 <span class="comment">% NaN values in the time series.</span>
+0139 fprintf(CAMELS_signatures.FDC_slope_error_str(339)+&quot;\n&quot;)
+0140 
+0141 <span class="comment">% We can save the results as mat file which can be easily loaded into</span>
+0142 <span class="comment">% Matlab. Alternatively, we can save the results as txt file.</span>
+0143 save(strcat(results_path,<span class="string">'CAMELS_signatures.mat'</span>),<span class="keyword">...</span>
+0144     <span class="string">'-struct'</span>,<span class="string">'CAMELS_signatures'</span>)
+0145 writetable(struct2table(CAMELS_signatures),<span class="keyword">...</span>
+0146     strcat(results_path,<span class="string">'CAMELS_signatures.txt'</span>))
+0147 
+0148 <span class="comment">%% Compare TOSSH signatures to CAMELS signatures</span>
+0149 <span class="comment">% We can compare the signatures contained in CAMELS with the signatures</span>
+0150 <span class="comment">% calculated here to see if we get the same results.</span>
+0151 makeScatterPlot(CAMELS_signatures,CAMELS_data,99) 
+0152 saveFig(gcf,strcat(<span class="string">'TOSSH_scatter_plot_US'</span>),fig_path,<span class="string">'-dpdf'</span>) 
+0153 <span class="comment">% The results are very similar. The differences can be explained by</span>
+0154 <span class="comment">% (personal communication with Nans Addor):</span>
+0155 <span class="comment">%   - different treatment of NaN values</span>
+0156 <span class="comment">%   - error in the CAMELS data (FDC slope is wrong).</span>
+0157 
+0158 <span class="comment">%% Further analysis of resulting signatures</span>
+0159 <span class="comment">% We can also use the results to see how some signatures relate to</span>
+0160 <span class="comment">% catchment attributes. For example, we can check how correlated the runoff</span>
+0161 <span class="comment">% ratio is with the aridity index and the snow fraction.</span>
+0162 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0163 scatter(CAMELS_data.aridity,CAMELS_signatures.TotalRR,25,CAMELS_data.frac_snow,<span class="string">'filled'</span>)
+0164 caxis([0 0.8]); 
+0165 xlim([0 4])
+0166 c = colorbar;
+0167 title(c,<span class="string">'Snow fraction [-]'</span>)
+0168 xlabel(<span class="string">'Aridity [-]'</span>)
+0169 ylabel(<span class="string">'Runoff ratio [-]'</span>)
+0170 
+0171 <span class="comment">%% Further information</span>
+0172 <span class="comment">% Further information can be found in the online documentation:</span>
+0173 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

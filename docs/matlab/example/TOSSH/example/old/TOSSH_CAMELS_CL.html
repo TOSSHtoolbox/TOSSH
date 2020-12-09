@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of TOSSH_CAMELS_CL</title>
+  <meta name="keywords" content="TOSSH_CAMELS_CL">
+  <meta name="description" content="% TOSSH signatures applied to CAMELS CL catchments">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../index.html">example</a> &gt; <a href="index.html">old</a> &gt; TOSSH_CAMELS_CL.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\old&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>TOSSH_CAMELS_CL
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH signatures applied to CAMELS CL catchments</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH signatures applied to CAMELS CL catchments
+
+   - Internal crash test that calculates all TOSSH signatures for CAMELS CL
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH signatures applied to CAMELS CL catchments</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   - Internal crash test that calculates all TOSSH signatures for CAMELS CL</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   Copyright (C) 2020</span>
+0006 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0007 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0008 
+0009 <span class="comment">% close all</span>
+0010 <span class="comment">% clear all</span>
+0011 <span class="comment">% clc</span>
+0012 
+0013 <span class="comment">%% add directories for functions to path</span>
+0014 
+0015 <span class="keyword">if</span> exist(<span class="string">'./BrewerMap'</span>) == 7
+0016     addpath(genpath(<span class="string">'./BrewerMap'</span>));
+0017 <span class="keyword">else</span>
+0018     error(<span class="string">'BrewerMap toolbox needed. Can be downloaded from https://github.com/DrosteEffect/BrewerMap and should be in a folder named BrewerMap in the same directory.'</span>)
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="keyword">if</span> exist(<span class="string">'./CAMELS_Matlab'</span>) == 7
+0022     addpath(genpath(<span class="string">'./CAMELS_Matlab'</span>)); <span class="comment">% CAMELS data</span>
+0023 <span class="keyword">else</span>
+0024     error(<span class="string">'CAMELS data processing repository needed. Can be downloaded from https://github.com/SebastianGnann/CAMELS_Matlab and should be in a folder named CAMELS_Matlab in the same directory.'</span>)
+0025 <span class="keyword">end</span>
+0026 
+0027 <span class="comment">% figure path</span>
+0028 fig_path = <span class="string">'.\TOSSH_development\example\results\images'</span>;
+0029 
+0030 <span class="comment">%% load CAMELS data</span>
+0031 <span class="keyword">if</span> exist(<span class="string">'data_CAMELS_CL_struc'</span>) <span class="comment">% check if data is already loaded</span>
+0032 <span class="keyword">else</span>
+0033     data_CAMELS_CL_struc = load(<span class="string">'./CAMELS_Matlab/Data/CAMELS_CL_data.mat'</span>);
+0034 <span class="keyword">end</span>
+0035 CAMELS_CL_data = data_CAMELS_CL_struc.CAMELS_CL_data;
+0036 clear data_CAMELS_CL_struc
+0037 
+0038 <span class="comment">%% calculate all TOSSH signatures for CAMELS catchments</span>
+0039 
+0040 n_CAMELS_CL = length(CAMELS_CL_data.gauge_id);
+0041 t_mat = cell(n_CAMELS_CL,1);
+0042 Q_mat = cell(n_CAMELS_CL,1);
+0043 P_mat = cell(n_CAMELS_CL,1);
+0044 PET_mat = cell(n_CAMELS_CL,1);
+0045 T_mat = cell(n_CAMELS_CL,1);
+0046 
+0047 <span class="keyword">for</span> i = 1:n_CAMELS_CL 
+0048     
+0049     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0050         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS_CL)
+0051     <span class="keyword">end</span>
+0052     
+0053     t = datetime(CAMELS_CL_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0054     Q = CAMELS_CL_data.Q{i}(:,2);    
+0055     P = CAMELS_CL_data.P{i}(:,2);
+0056     PET = CAMELS_CL_data.PET{i}(:,2);
+0057     T = CAMELS_CL_data.T{i}(:,2);
+0058     
+0059     <span class="comment">% get subperiod, here from 1 Apr 1990 to 31 Mar 2010</span>
+0060     indices = 1:length(t); 
+0061     start_ind = indices(t==datetime(1990,4,1));
+0062     <span class="comment">% in case time series starts after 1 Apr 1990</span>
+0063     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span> 
+0064     end_ind = indices(t==datetime(2010,3,31));    
+0065     t = t(start_ind:end_ind);
+0066     Q = Q(start_ind:end_ind);
+0067     P = P(start_ind:end_ind);
+0068     PET = PET(start_ind:end_ind);
+0069     T = T(start_ind:end_ind);
+0070     
+0071     t_mat{i} = t;
+0072     Q_mat{i} = Q;
+0073     P_mat{i} = P;
+0074     PET_mat{i} = PET;
+0075     T_mat{i} = T;
+0076     
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="comment">% need to adjust start of water year to April!</span>
+0080 <span class="comment">% CAMELS_CL_TOSSH_signatures = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0081 
+0082 tic
+0083 CAMELS_CL_TOSSH_signatures = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0084 toc
+0085 
+0086 <span class="comment">% x = 54;</span>
+0087 <span class="comment">% [a,b,c,d,e,f,g,h,i,j,k,l] = sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',false)</span>
+0088 
+0089 <span class="comment">% test plotting</span>
+0090 <span class="comment">% sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',true);</span>
+0091 
+0092 <span class="comment">%{</span>
+0093 n_CAMELS = size(CAMELS_data.gauge_id,1);
+0094 Q_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0095 P_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0096 Total_RR = NaN(size(CAMELS_data.gauge_id,1),1);
+0097 QP_elasticity = NaN(size(CAMELS_data.gauge_id,1),1);
+0098 FDC_slope = NaN(size(CAMELS_data.gauge_id,1),1);
+0099 BFI = NaN(size(CAMELS_data.gauge_id,1),1);
+0100 HFD_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0101 Q5 = NaN(size(CAMELS_data.gauge_id,1),1);
+0102 Q95 = NaN(size(CAMELS_data.gauge_id,1),1);
+0103 high_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0104 high_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
+0105 low_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0106 low_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
+0107 zero_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0108 BaseflowRecessionK = NaN(size(CAMELS_data.gauge_id,1),1);
+0109 HFI_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0110 Q_mean_monthly = NaN(size(CAMELS_data.gauge_id,1),12);
+0111 Q_7_day_min = NaN(size(CAMELS_data.gauge_id,1),1);
+0112 recession_parameters = NaN(size(CAMELS_data.gauge_id,1),2);
+0113 peak_distribution = NaN(size(CAMELS_data.gauge_id,1),1);
+0114 FDC = cell(size(CAMELS_data.gauge_id,1),1);
+0115 AC1 = NaN(size(CAMELS_data.gauge_id,1),1);
+0116 Q_var = NaN(size(CAMELS_data.gauge_id,1),1);
+0117 Q_cov = NaN(size(CAMELS_data.gauge_id,1),1);
+0118 Q_skew = NaN(size(CAMELS_data.gauge_id,1),1);
+0119 RLD = NaN(size(CAMELS_data.gauge_id,1),1);
+0120 amplitude_ratio = NaN(size(CAMELS_data.gauge_id,1),1);
+0121 phase_shift = NaN(size(CAMELS_data.gauge_id,1),1);
+0122 <span class="comment">% TODO: add remaining signatures</span>
+0123 
+0124 warning(<span class="string">'off'</span>,<span class="string">'all'</span>)
+0125 
+0126 <span class="keyword">for</span> i = 1:n_CAMELS <span class="comment">% loop over all catchments</span>
+0127     
+0128     <span class="keyword">if</span> mod(i,10) == 0 <span class="comment">% check progress</span>
+0129         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
+0130     <span class="keyword">end</span>
+0131     
+0132     <span class="comment">% extract data</span>
+0133     t = datetime(CAMELS_data.P{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0134     P = CAMELS_data.P{i}(:,2);
+0135     PET = CAMELS_data.PET{i}(:,2);
+0136     Q = CAMELS_data.Q{i}(:,2);
+0137     <span class="comment">% ID = CAMELS_data.gauge_id(i);</span>
+0138     
+0139     <span class="comment">% get subperiod</span>
+0140     indices = 1:length(t); 
+0141     start_ind = indices(t==datetime(1989,10,1));
+0142     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
+0143     end_ind = indices(t==datetime(2009,9,30));    
+0144     t = t(start_ind:end_ind);
+0145     P = P(start_ind:end_ind);
+0146     PET = PET(start_ind:end_ind);
+0147     Q = Q(start_ind:end_ind);
+0148     
+0149     <span class="comment">% calculate signatures</span>
+0150     Q_mean(i) = sig_Q_mean(Q,t);
+0151     P_mean(i) = sig_Q_mean(P,t);
+0152     Total_RR(i) = sig_TotalRR(Q,t,P);
+0153     QP_elasticity(i) = sig_QP_elasticity(Q,t,P);
+0154     FDC_slope(i) = sig_FDC_slope(Q,t);
+0155     BFI(i) = sig_BFI(Q,t);
+0156     HFD_mean(i) = sig_HFD_mean(Q,t);
+0157     Q5(i) = sig_x_percentile(Q,t,5);
+0158     Q95(i) = sig_x_percentile(Q,t,95);
+0159     high_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'high'</span>);
+0160     high_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'high'</span>);
+0161     low_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'low'</span>);
+0162     low_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'low'</span>);
+0163     zero_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'no'</span>);
+0164     <span class="keyword">try</span>
+0165         BaseflowRecessionK(i) = sig_BaseflowRecessionK(Q,t);
+0166 <span class="comment">%         sig_BaseflowRecessionK(Q,t,'plot_results',true,'eps',0.001*nanmedian(Q));</span>
+0167     <span class="keyword">catch</span>
+0168         disp(strcat(<span class="string">'Problem with catchment nr: '</span>,num2str(i)))
+0169     <span class="keyword">end</span>
+0170     HFI_mean(i) = sig_HFI_mean(Q,t);
+0171     Q_mean_monthly(i,:) = sig_Q_mean_monthly(Q,t,[1:12]);
+0172     Q_7_day_min(i) = sig_Q_n_day_min(Q,t,7);
+0173     para_mat = sig_RecessionAnalysis(Q,t);
+0174     [~, ind] = min(abs(para_mat(:,2) - median(para_mat(:,2))));
+0175     recession_parameters(i,:) = para_mat(ind,:);
+0176     peak_distribution(i) = sig_PeakDistribution(Q,t);
+0177     FDC{i} = sig_FDC(Q,t);
+0178     AC1(i) = sig_Autocorrelation(Q,t);
+0179     Q_var(i) = sig_Q_var(Q,t);
+0180     Q_cov(i) = sig_Q_CoV(Q,t);
+0181     Q_skew(i) = sig_Q_skew(Q,t);
+0182     RLD(i) = sig_RisingLimbDensity(Q,t);
+0183     [amplitude_ratio(i),phase_shift(i)] = sig_SeasonalTranslation(Q,t,P,PET);
+0184 
+0185 <span class="keyword">end</span>
+0186 
+0187 warning(<span class="string">'on'</span>,<span class="string">'all'</span>)
+0188 
+0189 results.Q_mean = Q_mean;
+0190 results.P_mean = P_mean;
+0191 results.Total_RR = Total_RR;
+0192 results.QP_elasticity = QP_elasticity;
+0193 results.FDC_slope = FDC_slope;
+0194 results.BFI = BFI;
+0195 results.HFD_mean = HFD_mean;
+0196 results.Q5 = Q5;
+0197 results.Q95 = Q95;
+0198 results.high_Q_freq = high_Q_freq;
+0199 results.high_Q_dur = high_Q_dur;
+0200 results.low_Q_freq = low_Q_freq;
+0201 results.low_Q_dur = low_Q_dur;
+0202 results.zero_Q_freq = zero_Q_freq;
+0203 results.BaseflowRecessionK = BaseflowRecessionK;
+0204 results.HFI_mean = HFI_mean;
+0205 results.Q_mean_monthly = Q_mean_monthly;
+0206 results.Q_7_day_min = Q_7_day_min;
+0207 results.recession_parameters = recession_parameters;
+0208 results.peak_distribution = peak_distribution;
+0209 results.FDC = FDC;
+0210 results.AC1 = AC1;
+0211 results.Q_var = Q_var;
+0212 results.Q_cov = Q_cov;
+0213 results.Q_skew = Q_skew;
+0214 results.RLD = RLD;
+0215 results.phase_shift = phase_shift;
+0216 <span class="comment">%}</span>
+0217 
+0218 <span class="comment">% save('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat','-struct','CAMELS_CL_TOSSH_signatures')</span>
+0219 
+0220 <span class="comment">%% compare the signatures contained in CAMELS with the signatures calculated here</span>
+0221 
+0222 <span class="comment">% results = load('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat');</span>
+0223 <span class="comment">% makeScatterPlotCL(CAMELS_CL_TOSSH_signatures,CAMELS_CL_data,70)</span>
+0224 <span class="comment">% saveFig(gcf,strcat('TOSSH_scatter_plot_CL'),fig_path,'-dpng')</span>
+0225 
+0226 <span class="comment">% maps</span>
+0227 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.AC1,...</span>
+0228 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_data.gauge_id,...</span>
+0229 <span class="comment">%     'colour_scheme','Spectral','flip_colour_scheme',true,...</span>
+0230 <span class="comment">%      'c_limits',[.2 1],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0231 <span class="comment">%     'figure_title','','figure_name','xxx','save_figure',false,'figure_path',fig_path)</span>
+0232 <span class="comment">% set(gca,'ColorScale','log');</span>
+0233</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

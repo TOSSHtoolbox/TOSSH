@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_RisingLimbs</title>
+  <meta name="keywords" content="util_RisingLimbs">
+  <meta name="description" content="util_RisingLimbs identifies all rising limbs.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_RisingLimbs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_RisingLimbs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_RisingLimbs identifies all rising limbs.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [flow_section, error_flag, error_str, fig_handles] =util_RisingLimbs(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_RisingLimbs identifies all rising limbs.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   rising_limb_length: length of rising limbs [days], default = 1
+   eps: allowed decrease in flow during rising limb, default = 0
+   minimum_peak: minimum peak to be counted as rising limb (peak size is
+       defined as difference between end and start of rising limb)
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   flow_section: n-by-2 array where n is the number of rising limbs
+       columns are the indices into the flow array of the start and end of
+       the rising limbs
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   flow_section = util_RisingLimbs(Q, t);
+   flow_section = util_RisingLimbs(Q, t, 'rising_limb_length', 2, 'plot_results', true);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [flow_section, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     util_RisingLimbs(Q, t, varargin)
+0003 <span class="comment">%util_RisingLimbs identifies all rising limbs.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   INPUT</span>
+0006 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0007 <span class="comment">%   t: time [Matlab datetime]</span>
+0008 <span class="comment">%   OPTIONAL</span>
+0009 <span class="comment">%   rising_limb_length: length of rising limbs [days], default = 1</span>
+0010 <span class="comment">%   eps: allowed decrease in flow during rising limb, default = 0</span>
+0011 <span class="comment">%   minimum_peak: minimum peak to be counted as rising limb (peak size is</span>
+0012 <span class="comment">%       defined as difference between end and start of rising limb)</span>
+0013 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   flow_section: n-by-2 array where n is the number of rising limbs</span>
+0017 <span class="comment">%       columns are the indices into the flow array of the start and end of</span>
+0018 <span class="comment">%       the rising limbs</span>
+0019 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0020 <span class="comment">%       (error in signature calculation)</span>
+0021 <span class="comment">%   error_str: string contraining error description</span>
+0022 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0023 <span class="comment">%       not requested)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   EXAMPLE</span>
+0026 <span class="comment">%   % load example data</span>
+0027 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0028 <span class="comment">%   Q = data.Q;</span>
+0029 <span class="comment">%   t = data.t;</span>
+0030 <span class="comment">%   flow_section = util_RisingLimbs(Q, t);</span>
+0031 <span class="comment">%   flow_section = util_RisingLimbs(Q, t, 'rising_limb_length', 2, 'plot_results', true);</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   Copyright (C) 2020</span>
+0034 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0035 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0036 
+0037 <span class="comment">% check input parameters</span>
+0038 <span class="keyword">if</span> nargin &lt; 2
+0039     error(<span class="string">'Not enough input arguments.'</span>)
+0040 <span class="keyword">end</span>
+0041 
+0042 ip = inputParser;
+0043 ip.CaseSensitive = true;
+0044 
+0045 <span class="comment">% required input arguments</span>
+0046 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0047 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0048 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0049 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0050 
+0051 <span class="comment">% optional input arguments</span>
+0052 addParameter(ip, <span class="string">'rising_limb_length'</span>, 1, @isnumeric) <span class="comment">% length of increasing flow in days to be declared a rising limb</span>
+0053 addParameter(ip, <span class="string">'eps'</span>, 0, @isnumeric) <span class="comment">% allowed increase in flow during rising limb</span>
+0054 addParameter(ip, <span class="string">'minimum_peak'</span>, 0, @isnumeric) <span class="comment">% minimum peak to be counted as rising limb</span>
+0055 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0056 
+0057 parse(ip, Q, t, varargin{:})
+0058 rising_limb_length = ip.Results.rising_limb_length;
+0059 eps = ip.Results.eps;
+0060 minimum_peak = ip.Results.minimum_peak;
+0061 plot_results = ip.Results.plot_results;
+0062 
+0063 <span class="comment">% create empty figure handle</span>
+0064 fig_handles = [];
+0065 
+0066 <span class="comment">% default setting reads as good data</span>
+0067 error_flag = 0;
+0068 error_str = <span class="string">''</span>;
+0069 
+0070 <span class="comment">% identify all individual rising limbs with length &gt; rising_limb_length days</span>
+0071 <span class="comment">% how many increasing timesteps depends on length of timestep</span>
+0072 len_increase = rising_limb_length/days(t(2)-t(1));
+0073 <span class="comment">% hind timesteps with increasing flow</span>
+0074 increasing_flow = Q(2:end)&gt;(Q(1:end-1)-eps);
+0075 <span class="comment">% start on a non-increasing point</span>
+0076 start_point = find(increasing_flow==0,1);
+0077 increasing_flow = increasing_flow(start_point:end);
+0078 <span class="comment">% find start and end of increasing sections</span>
+0079 flow_change = find(increasing_flow(1:end-1) ~= increasing_flow(2:end));
+0080 <span class="comment">% reshape into x by 2 array (columns = start, end of decrease)</span>
+0081 flow_change = flow_change(1:(2*floor(size(flow_change,1)./2)));
+0082 flow_change = reshape(flow_change,2,[]).';
+0083 <span class="comment">% find sections</span>
+0084 flow_section = flow_change((flow_change(:,2)-flow_change(:,1))&gt;=len_increase,:);
+0085 flow_section = flow_section+start_point;
+0086 flow_section(:,1) = flow_section(:,1); <span class="comment">% move start point n days</span>
+0087 <span class="comment">% remove rising limbs which have a peak lower than minimum_peak</span>
+0088 <span class="comment">% flow_section((Q(flow_section(:,2)) &lt; minimum_peak),:) = [];</span>
+0089 <span class="comment">% remove rising limbs which have a peak lower than minimum_peak</span>
+0090 flow_section((Q(flow_section(:,2)) - Q(flow_section(:,1))) &lt; minimum_peak,:) = [];
+0091 
+0092 <span class="keyword">if</span> numel(flow_section)==0
+0093     error_flag = 3;
+0094     error_str = [<span class="string">'Error: No long enough rising limbs, consider setting eps parameter &gt; 0. '</span>, error_str];
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="comment">% optional plotting</span>
+0098 <span class="keyword">if</span> plot_results
+0099     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on;
+0100     h1=plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1.5);
+0101     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0102         h2=plot(t(flow_section(i,1):flow_section(i,2)),<span class="keyword">...</span>
+0103             Q(flow_section(i,1):flow_section(i,2)),<span class="string">'r-'</span>,<span class="string">'linewidth'</span>,1.5);
+0104     <span class="keyword">end</span>
+0105     h3=plot(t,minimum_peak.*ones(size(t)),<span class="string">'k--'</span>);
+0106     title(<span class="string">'Selected rising limbs'</span>)
+0107     legend([h1 h2 h3],{<span class="string">'Full flow series'</span>, <span class="string">'Selected rising limbs'</span>, <span class="string">'Minimum peak threshold'</span>})
+0108     <span class="comment">% datetick('x')</span>
+0109     xlabel(<span class="string">'Date'</span>)
+0110     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0111     fig_handles.RisingLimbs = fig;
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

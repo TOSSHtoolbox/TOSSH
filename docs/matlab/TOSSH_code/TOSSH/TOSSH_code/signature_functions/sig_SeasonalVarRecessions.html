@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_SeasonalVarRecessions</title>
+  <meta name="keywords" content="sig_SeasonalVarRecessions">
+  <meta name="description" content="sig_SeasonalVarRecessions calculates seasonal variation in recession parameters.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_SeasonalVarRecessions.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_SeasonalVarRecessions
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_SeasonalVarRecessions calculates seasonal variation in recession parameters.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Recession_a_Seasonality, error_flag, error_str, fig_handles]= sig_SeasonalVarRecessions(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_SeasonalVarRecessions calculates seasonal variation in recession parameters.
+   Seasonal variations in recession rate provides information about the
+   impact of evapotranspiration on watershed storage.
+   
+   Notes:
+   Signature only recommended in watersheds with primarily deciduous
+   vegetation in which ET strongly varies seasonally.
+   Original paper uses daily data and this gives more robust results than
+   hourly in testing.
+   Assumes that all individual recession have a slope of 2, and then
+   plots the y-intercept for all individual recession events.
+   Influence of ET in summer is related to the change in intercept with
+   time of year (no exact relationship given).
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   recession_length: min. length of recession segments [days], default = 5
+   n_start: days to be removed after start of recession
+   eps: allowed increase in flow during recession period, default = 0
+   start_of_recession: define start of recession when baseflow filter
+       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)
+   filter_par: smoothing parameter of Lyne-Hollick filter to determine
+      start of recession (higher = later recession start), default = 0.925
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   Recession_a_Seasonality: seasonal change in recession alpha [1/mm]
+       (y-intercept in recession plot assuming a slope of 2)
+   recession_month: approx. month of recession
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   Recession_a_Seasonality = sig_SeasonalVarRecessions(Q, t);
+   Recession_a_Seasonality = sig_SeasonalVarRecessions(Q, t, 'plot_results', true);
+
+   References
+   Shaw, S. B., &amp; Riha, S. J. (2012). Examining individual recession
+   events instead of a data cloud: Using a modified interpretation
+   of dQ/dt–Q streamflow recession in glaciated watersheds to better
+   inform models of low flow. Journal of Hydrology, 434, 46–54.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="sig_RecessionAnalysis.html" class="code" title="function [Recession_Parameters, recession_month, error_flag, error_str, fig_handles] =sig_RecessionAnalysis(Q, t, varargin)">sig_RecessionAnalysis</a>	sig_RecessionAnalysis calculates recession parameters.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Recession_a_Seasonality, error_flag, error_str, fig_handles] </a><span class="keyword">...</span>
+0002     = sig_SeasonalVarRecessions(Q, t, varargin)
+0003 <span class="comment">%sig_SeasonalVarRecessions calculates seasonal variation in recession parameters.</span>
+0004 <span class="comment">%   Seasonal variations in recession rate provides information about the</span>
+0005 <span class="comment">%   impact of evapotranspiration on watershed storage.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Notes:</span>
+0008 <span class="comment">%   Signature only recommended in watersheds with primarily deciduous</span>
+0009 <span class="comment">%   vegetation in which ET strongly varies seasonally.</span>
+0010 <span class="comment">%   Original paper uses daily data and this gives more robust results than</span>
+0011 <span class="comment">%   hourly in testing.</span>
+0012 <span class="comment">%   Assumes that all individual recession have a slope of 2, and then</span>
+0013 <span class="comment">%   plots the y-intercept for all individual recession events.</span>
+0014 <span class="comment">%   Influence of ET in summer is related to the change in intercept with</span>
+0015 <span class="comment">%   time of year (no exact relationship given).</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   INPUT</span>
+0018 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0019 <span class="comment">%   t: time [Matlab datetime]</span>
+0020 <span class="comment">%   OPTIONAL</span>
+0021 <span class="comment">%   recession_length: min. length of recession segments [days], default = 5</span>
+0022 <span class="comment">%   n_start: days to be removed after start of recession</span>
+0023 <span class="comment">%   eps: allowed increase in flow during recession period, default = 0</span>
+0024 <span class="comment">%   start_of_recession: define start of recession when baseflow filter</span>
+0025 <span class="comment">%       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)</span>
+0026 <span class="comment">%   filter_par: smoothing parameter of Lyne-Hollick filter to determine</span>
+0027 <span class="comment">%      start of recession (higher = later recession start), default = 0.925</span>
+0028 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   OUTPUT</span>
+0031 <span class="comment">%   Recession_a_Seasonality: seasonal change in recession alpha [1/mm]</span>
+0032 <span class="comment">%       (y-intercept in recession plot assuming a slope of 2)</span>
+0033 <span class="comment">%   recession_month: approx. month of recession</span>
+0034 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0035 <span class="comment">%       (error in signature calculation)</span>
+0036 <span class="comment">%   error_str: string contraining error description</span>
+0037 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0038 <span class="comment">%       not requested)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%   EXAMPLE</span>
+0041 <span class="comment">%   % load example data</span>
+0042 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0043 <span class="comment">%   Q = data.Q;</span>
+0044 <span class="comment">%   t = data.t;</span>
+0045 <span class="comment">%   Recession_a_Seasonality = sig_SeasonalVarRecessions(Q, t);</span>
+0046 <span class="comment">%   Recession_a_Seasonality = sig_SeasonalVarRecessions(Q, t, 'plot_results', true);</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%   References</span>
+0049 <span class="comment">%   Shaw, S. B., &amp; Riha, S. J. (2012). Examining individual recession</span>
+0050 <span class="comment">%   events instead of a data cloud: Using a modified interpretation</span>
+0051 <span class="comment">%   of dQ/dt–Q streamflow recession in glaciated watersheds to better</span>
+0052 <span class="comment">%   inform models of low flow. Journal of Hydrology, 434, 46–54.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%   Copyright (C) 2020</span>
+0055 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0056 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0057 
+0058 <span class="comment">% check input parameters</span>
+0059 <span class="keyword">if</span> nargin &lt; 2
+0060     error(<span class="string">'Not enough input arguments.'</span>)
+0061 <span class="keyword">end</span>
+0062 
+0063 ip = inputParser;
+0064 ip.CaseSensitive = true;
+0065 
+0066 <span class="comment">% required input arguments</span>
+0067 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0068 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0069 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0070 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0071 
+0072 <span class="comment">% optional input arguments</span>
+0073 addParameter(ip, <span class="string">'recession_length'</span>, 5, @isnumeric) <span class="comment">% length of decreasing</span>
+0074 <span class="comment">% flow section (amount of timesteps) to be declared a recession</span>
+0075 addParameter(ip, <span class="string">'n_start'</span>, 1, @isnumeric) <span class="comment">% days to be removed at beginning of recession</span>
+0076 addParameter(ip, <span class="string">'eps'</span>, 0, @isnumeric) <span class="comment">% allowed increase in flow during recession period</span>
+0077 addParameter(ip, <span class="string">'start_of_recession'</span>, <span class="string">'peak'</span>, @ischar) <span class="comment">% defines start of a recession</span>
+0078 addParameter(ip, <span class="string">'filter_par'</span>, 0.925, @isnumeric) <span class="comment">% smoothing parameter of</span>
+0079 <span class="comment">% Lyne-Hollick Filter to determine start of recession (higher = later recession start)</span>
+0080 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0081 <span class="comment">% addParameter(ip, 'fitting_type', 'linear', @ischar) % nonlinear or linear fit</span>
+0082 
+0083 parse(ip, Q, t, varargin{:})
+0084 recession_length = ip.Results.recession_length;
+0085 n_start = ip.Results.n_start;
+0086 eps = ip.Results.eps;
+0087 start_of_recession = ip.Results.start_of_recession;
+0088 filter_par = ip.Results.filter_par;
+0089 plot_results = ip.Results.plot_results;
+0090 <span class="comment">% fitting_type = ip.Results.fitting_type;</span>
+0091 
+0092 <span class="comment">% create empty figure handle</span>
+0093 fig_handles = [];
+0094 
+0095 <span class="comment">% data checks</span>
+0096 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0097 <span class="keyword">if</span> error_flag == 2
+0098     Recession_a_Seasonality = NaN;
+0099     <span class="keyword">return</span>
+0100 <span class="keyword">end</span>
+0101 
+0102 <span class="comment">% calculate signature</span>
+0103 
+0104 <span class="comment">% run recession analysis for individual recessions</span>
+0105 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0106 error_str_tmp = error_str;
+0107 [para_mat, recession_month, error_flag, error_str, fig_handles] = <span class="keyword">...</span>
+0108     <a href="sig_RecessionAnalysis.html" class="code" title="function [Recession_Parameters, recession_month, error_flag, error_str, fig_handles] =sig_RecessionAnalysis(Q, t, varargin)">sig_RecessionAnalysis</a>(Q, t, <span class="keyword">...</span>
+0109     <span class="string">'recession_length'</span>, recession_length, <span class="keyword">...</span>
+0110     <span class="string">'n_start'</span>, n_start, <span class="string">'eps'</span>, eps, <span class="string">'start_of_recession'</span>, start_of_recession, <span class="keyword">...</span>
+0111     <span class="string">'filter_par'</span>, filter_par, <span class="string">'fit_individual'</span>, true, <span class="string">'fitting_type'</span>, <span class="string">'slope2'</span>);
+0112 <span class="keyword">if</span> error_flag == 3
+0113     Recession_a_Seasonality = NaN;
+0114     <span class="keyword">return</span>
+0115 <span class="keyword">else</span>
+0116     error_flag = max([error_flag_tmp, error_flag]);
+0117     error_str = [error_str_tmp, error_str];
+0118 <span class="keyword">end</span>
+0119 
+0120 month_median = grpstats(log(para_mat(:,1)),recession_month,{<span class="string">'median'</span>});
+0121 
+0122 Recession_a_Seasonality = max(month_median) - min(month_median);
+0123 
+0124 <span class="comment">% optional plotting</span>
+0125 <span class="keyword">if</span> plot_results
+0126     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
+0127     boxplot(log(para_mat(:,1)),recession_month)
+0128     xlabel(<span class="string">'Recession Month'</span>)
+0129     ylabel(<span class="string">'Fitted intercept in log(dQ/dt) vs log(Q) plot'</span>)
+0130     title(<span class="string">'Change in recession intercept with season'</span>)
+0131     fig_handles.SeasonalVarRecessions = fig;
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="keyword">end</span>
+0135</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

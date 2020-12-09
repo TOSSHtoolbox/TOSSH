@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadCatchmentCAMELS</title>
+  <meta name="keywords" content="loadCatchmentCAMELS">
+  <meta name="description" content="loadCatchmentCAMELS Loads hydro-meteorological time series (P, PET, Q, T).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../../index.html">example</a> &gt; <a href="#">functions</a> &gt; <a href="index.html">data_loading</a> &gt; loadCatchmentCAMELS.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\functions\data_loading&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>loadCatchmentCAMELS
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>loadCatchmentCAMELS Loads hydro-meteorological time series (P, PET, Q, T).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [P, PET, Q, T] = loadCatchmentCAMELS(ID,path_mod,path_obs,area) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">loadCatchmentCAMELS Loads hydro-meteorological time series (P, PET, Q, T).
+   We use the modelled time series (typically from October 1980 to
+   December 2014) to load P, PET, and T data (P and T are copied into
+   these files, but are observed values). We use the observed flow series
+   to load Q, which need to be converted to mm/day and adjusted as they
+   differ in length compared to the other time series.
+
+   INPUT
+   ID: catchment ID
+   path_mod: file path used to load P, PET, and T time series
+   path_obs: file path used to load flow series
+   area: catchment area (Gages)
+
+   OUTPUT
+   P: precipitation [mm/d]
+   PET: potential evapotranspiration (adjusted using standard coefficient
+   of 1.26) [mm/d]
+   Q: streamflow [mm/d]
+   T: T [°C]
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="loadCAMELSstruct.html" class="code" title="function [CAMELS_data] = loadCAMELSstruct()">loadCAMELSstruct</a>	loadCAMELSstruct Creates struct file with CAMELS data.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [P, PET, Q, T] = loadCatchmentCAMELS(ID,path_mod,path_obs,area)</a>
+0002 <span class="comment">%loadCatchmentCAMELS Loads hydro-meteorological time series (P, PET, Q, T).</span>
+0003 <span class="comment">%   We use the modelled time series (typically from October 1980 to</span>
+0004 <span class="comment">%   December 2014) to load P, PET, and T data (P and T are copied into</span>
+0005 <span class="comment">%   these files, but are observed values). We use the observed flow series</span>
+0006 <span class="comment">%   to load Q, which need to be converted to mm/day and adjusted as they</span>
+0007 <span class="comment">%   differ in length compared to the other time series.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT</span>
+0010 <span class="comment">%   ID: catchment ID</span>
+0011 <span class="comment">%   path_mod: file path used to load P, PET, and T time series</span>
+0012 <span class="comment">%   path_obs: file path used to load flow series</span>
+0013 <span class="comment">%   area: catchment area (Gages)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   P: precipitation [mm/d]</span>
+0017 <span class="comment">%   PET: potential evapotranspiration (adjusted using standard coefficient</span>
+0018 <span class="comment">%   of 1.26) [mm/d]</span>
+0019 <span class="comment">%   Q: streamflow [mm/d]</span>
+0020 <span class="comment">%   T: T [°C]</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   Copyright (C) 2020</span>
+0023 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0024 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0025 
+0026 <span class="comment">% check input parameters</span>
+0027 <span class="keyword">if</span> nargin &lt; 4
+0028     error(<span class="string">'Not enough input arguments.'</span>)
+0029 <span class="keyword">end</span>
+0030 
+0031 foundID = false; <span class="comment">% search through all folders until catchment is found</span>
+0032 i_str_list = [&quot;01&quot;,&quot;02&quot;,&quot;03&quot;,&quot;04&quot;,&quot;05&quot;,&quot;06&quot;,&quot;07&quot;,&quot;08&quot;,&quot;09&quot;,&quot;10&quot;,&quot;11&quot;,<span class="keyword">...</span>
+0033     &quot;12&quot;,&quot;13&quot;,&quot;14&quot;,&quot;15&quot;,&quot;16&quot;,&quot;17&quot;,&quot;18&quot;];
+0034 i = 0;
+0035 <span class="keyword">while</span> foundID == false
+0036     i = i+1;
+0037     i_str = i_str_list(i);
+0038     <span class="keyword">try</span>
+0039         <span class="comment">% modelled time series</span>
+0040         file_ID_model = strcat(path_mod,i_str,<span class="string">'\'</span>,num2str(ID,<span class="string">'%08d'</span>),<span class="string">'_05_model_output.txt'</span>);
+0041         txt_data=fileread(file_ID_model);
+0042         <span class="comment">% model parameters</span>
+0043         file_ID_parameters = strcat(path_mod,i_str,<span class="string">'\'</span>,num2str(ID,<span class="string">'%08d'</span>),<span class="string">'_05_model_parameters.txt'</span>);
+0044         txt_para=fileread(file_ID_parameters);
+0045         <span class="comment">% observed time series</span>
+0046         file_ID_flow = strcat(path_obs,i_str,<span class="string">'\'</span>,num2str(ID,<span class="string">'%08d'</span>),<span class="string">'_streamflow_qc.txt'</span>);
+0047         txt_flow=fileread(file_ID_flow);
+0048         foundID = true;
+0049     <span class="keyword">catch</span>
+0050         disp(<span class="string">''</span>)
+0051         foundID = false;
+0052     <span class="keyword">end</span>
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% NOTE: NOW version 05 of Newman dataset</span>
+0056 <span class="comment">% YR MNTH DY HR SWE PRCP RAIM TAIR PET ET MOD_RUN OBS_RUN</span>
+0057 data_model_cell = textscan(txt_data,<span class="keyword">...</span>
+0058     <span class="string">'%f %f %f %f %f %f %f %f %f %f %f %f'</span>, <span class="keyword">...</span>
+0059     <span class="string">'Delimiter'</span>, <span class="string">'\t'</span>, <span class="string">'HeaderLines'</span>, 1);
+0060 
+0061 data_parameter_cell = textscan(txt_para,<span class="keyword">...</span>
+0062     <span class="string">'%s %f'</span>, <span class="keyword">...</span>
+0063     <span class="string">'Delimiter'</span>, <span class="string">'\t'</span>, <span class="string">'HeaderLines'</span>, 0);
+0064 PET_coefficient = data_parameter_cell{2}(41);
+0065 
+0066 <span class="comment">% GAGEID Year Month Day Streamflow(cubic feet per second) QC_flag</span>
+0067 data_flow_cell = textscan(txt_flow,<span class="keyword">...</span>
+0068     <span class="string">'%f %f %f %f %f %s'</span>, <span class="keyword">...</span>
+0069     <span class="string">'Delimiter'</span>, <span class="string">'\t'</span>, <span class="string">'HeaderLines'</span>, 0);
+0070 
+0071 Y = data_model_cell{1};
+0072 M = data_model_cell{2};
+0073 D = data_model_cell{3};
+0074 date = datenum(Y,M,D);
+0075 
+0076 <span class="comment">% Q_temp = data_model_cell{12};</span>
+0077 Q_temp = data_flow_cell{5};
+0078 <span class="comment">% cubicft/s to mm/day: Q = (q/35.3146667)*(86.4/area)</span>
+0079 Q_temp(Q_temp==-999) = NaN;
+0080 Q_temp = (Q_temp./35.3146667).*(86.4/area);
+0081 <span class="comment">% remove values before start of P, PET, and T time series</span>
+0082 Y_Q = data_flow_cell{2};
+0083 M_Q = data_flow_cell{3};
+0084 D_Q = data_flow_cell{4};
+0085 date_Q = datenum(Y_Q,M_Q,D_Q);
+0086 Q_temp(date_Q&lt;date(1)) = []; 
+0087 <span class="comment">% add NaNs at the end if Q time series is too short</span>
+0088 Q_temp2 = Q_temp;
+0089 Q_temp = NaN(size(date));
+0090 Q_temp(1:length(Q_temp2)) = Q_temp2;
+0091 
+0092 P_temp = data_model_cell{6};
+0093 PET_temp = data_model_cell{9}; 
+0094 T_temp = data_model_cell{8};
+0095 
+0096 Q = [date Q_temp];
+0097 P = [date P_temp];
+0098 <span class="comment">% PET = [date PET_temp]; % calibrated PET</span>
+0099 PET = [date (1.26/PET_coefficient).*PET_temp]; <span class="comment">% adjusted PET</span>
+0100 T = [date T_temp];
+0101 
+0102 <span class="keyword">end</span>
+0103</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

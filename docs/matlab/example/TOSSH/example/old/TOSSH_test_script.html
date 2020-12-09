@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of TOSSH_test_script</title>
+  <meta name="keywords" content="TOSSH_test_script">
+  <meta name="description" content="% TOSSH test script">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../index.html">example</a> &gt; <a href="index.html">old</a> &gt; TOSSH_test_script.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\old&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>TOSSH_test_script
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH test script</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH test script
+
+   - internal testing
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="calculate_signatures.html" class="code" title="function [results] = calculate_signatures(Q_mat, t_mat, P_mat, varargin)">calculate_signatures</a>	calculate_signatures Interactive signature calculation. We use cell arrays</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH test script</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   - internal testing</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   Copyright (C) 2020</span>
+0006 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0007 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0008 
+0009 <span class="comment">%% load data</span>
+0010 path = <span class="string">'./TOSSH_development/example/example_data/old/'</span>;
+0011 <span class="comment">% load daily data</span>
+0012 data = load(strcat(path,<span class="string">'Q_test.mat'</span>)); <span class="comment">% [matlab_date flow]</span>
+0013 Q_test = data.Q_test;
+0014 data = load(strcat(path,<span class="string">'P_test.mat'</span>)); <span class="comment">% [matlab_date precipitation]</span>
+0015 P_test = data.P_test;
+0016 data = load(strcat(path,<span class="string">'PET_test.mat'</span>)); <span class="comment">% [matlab_date pot. evaporation]</span>
+0017 PET_test = data.PET_test;
+0018 
+0019 t = Q_test(:,1);
+0020 t = datetime(t,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>); <span class="comment">% convert datenum to datetime</span>
+0021 Q = Q_test(:,2);
+0022 P = P_test(:,2);
+0023 PET = PET_test(:,2);
+0024 
+0025 <span class="comment">% load hourly data</span>
+0026 data = load(strcat(path,<span class="string">'Q_test_hourly.mat'</span>)); <span class="comment">% [matlab_date flow]</span>
+0027 Q_test_hourly = data.Q_test_hourly;
+0028 data = load(strcat(path,<span class="string">'P_test_hourly.mat'</span>)); <span class="comment">% [matlab_date precipitation]</span>
+0029 P_test_hourly = data.P_test_hourly;
+0030 data = load(strcat(path,<span class="string">'PET_test_hourly.mat'</span>)); <span class="comment">% [matlab_date pot. evaporation]</span>
+0031 PET_test_hourly = data.PET_test_hourly;
+0032 
+0033 t_hourly = Q_test_hourly(:,1);
+0034 t_hourly = datetime(t_hourly,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>); <span class="comment">% convert datenum to datetime</span>
+0035 Q_hourly = Q_test_hourly(:,2);
+0036 P_hourly = P_test_hourly(:,2);
+0037 PET_hourly = PET_test_hourly(:,2);
+0038 PET_hourly = PET_test_hourly(:,2);
+0039 
+0040 <span class="comment">%%</span>
+0041 path = <span class="string">'./example/example_data/old/'</span>;
+0042 <span class="comment">% load daily data</span>
+0043 data = load(strcat(path,<span class="string">'Q_96002_hourly.mat'</span>)); <span class="comment">% [matlab_date flow]</span>
+0044 Q_test = data.Q;
+0045 data = load(strcat(path,<span class="string">'P_96002_hourly.mat'</span>)); <span class="comment">% [matlab_date precipitation]</span>
+0046 P_test = data.P;
+0047 <span class="comment">% data = load(strcat(path,'PET_33029_hourly.mat')); % [matlab_date pot. evaporation]</span>
+0048 <span class="comment">% PET_test = data.PET;</span>
+0049 Q = Q_test(:,2);
+0050 t = Q_test(:,1);
+0051 P = P_test(:,2);
+0052 <span class="comment">% PET = PET_test(:,2);</span>
+0053 sig_CatchmentResponseTime(Q,t,P)
+0054 figure; hold on; plot(t,P); plot(t,Q,<span class="string">'-'</span>,<span class="string">'linewidth'</span>,2); datetick
+0055 
+0056 <span class="comment">%% example: convert dates to datenum</span>
+0057 
+0058 <span class="comment">%% new data</span>
+0059 path = <span class="string">'.\example\example_data\'</span>; <span class="comment">% specify path</span>
+0060 
+0061 <span class="comment">% Daily data from 3 different catchments.</span>
+0062 <span class="comment">% Catchment 1</span>
+0063 data = load(strcat(path,<span class="string">'33029_daily.mat'</span>)); <span class="comment">% load data</span>
+0064 t_1 = data.t;
+0065 Q_1 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0066 <span class="comment">% Note: P, PET, and T example data are provided but not used here.</span>
+0067 P_1 = data.P; <span class="comment">% precipitation [mm/day]</span>
+0068 PET_1 = data.PET; <span class="comment">% potential evapotranspiration [mm/day]</span>
+0069 T_1 = data.T; <span class="comment">% temperature [°C]</span>
+0070 <span class="comment">% Catchment 2</span>
+0071 data = load(strcat(path,<span class="string">'39020_daily.mat'</span>)); <span class="comment">% load data</span>
+0072 t_2 = data.t;
+0073 Q_2 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0074 <span class="comment">% Catchment 3</span>
+0075 data = load(strcat(path,<span class="string">'73014_daily.mat'</span>)); <span class="comment">% load data</span>
+0076 t_3 = data.t;
+0077 Q_3 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0078 
+0079 <span class="comment">%% plot data</span>
+0080 figure(<span class="string">'Name'</span>,<span class="string">'Test plot'</span>,<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'pos'</span>,[10 10 400 250]); 
+0081 hold on
+0082 <span class="comment">% plot(t,P)</span>
+0083 <span class="comment">% plot(t,PET)</span>
+0084 plot(t_hourly,Q_hourly)
+0085 xlabel(<span class="string">'Year'</span>)
+0086 ylabel(<span class="string">'[mm d^{-1}]'</span>)
+0087 <span class="comment">% datetick</span>
+0088 legend(<span class="string">'P'</span>,<span class="string">'PET'</span>,<span class="string">'Q'</span>)
+0089 
+0090 <span class="comment">%% to do</span>
+0091 
+0092 <span class="comment">% extremely short time series leads to error</span>
+0093 
+0094 <span class="comment">% Warning: Rank deficient, rank = 1, tol =  4.473883e+01.</span>
+0095 <span class="comment">% &gt; In sig_BaseflowRecessionK (line 108)</span>
+0096 <span class="comment">%   In signature_test_script_CAMELS (line 109)</span>
+0097 
+0098 <span class="comment">%% some testing</span>
+0099 
+0100 [A,phi] = sig_SeasonalTranslation(Q,t,P,PET,<span class="string">'plot_results'</span>,true,<span class="string">'period'</span>,365)
+0101 
+0102 <span class="comment">% testing</span>
+0103 <span class="comment">% [S_active, S_total] = sig_storage_fraction(Q,t,P,PET,'plot_results',true);</span>
+0104 <span class="comment">% Q_AC = sig_autocorrelation(Q,t,'lag',1:30);</span>
+0105 FDC_slope = sig_FDC_slope(Q,t);
+0106 QP_elasticity = sig_QP_elasticity(Q, t, P);
+0107 
+0108 [para_mat, recession_month] = sig_RecessionAnalysis(<span class="keyword">...</span>
+0109     Q, t, <span class="string">'plot_results'</span>, true,<span class="string">'dQdt_method'</span>,<span class="string">'ETS'</span>,<span class="string">'fit_individual'</span>,true);
+0110 
+0111 [para_mat, recession_month] = sig_RecessionAnalysis(<span class="keyword">...</span>
+0112     Q_hourly, t_hourly, <span class="string">'plot_results'</span>, true,<span class="string">'dQdt_method'</span>,<span class="string">'ETS'</span>,<span class="keyword">...</span>
+0113     <span class="string">'eps'</span>,0.001,<span class="string">'fit_individual'</span>,true);
+0114 
+0115 <span class="comment">%%</span>
+0116 clc
+0117 [para_mat, recession_month] = sig_RecessionAnalysis(Q, t,<span class="keyword">...</span>
+0118     <span class="string">'eps'</span>,0,<span class="string">'fit_individual'</span>,true,<span class="string">'fitting_type'</span>,<span class="string">'linear'</span>,<span class="string">'plot_results'</span>,true);
+0119 
+0120 K = sig_BaseflowRecessionK(Q,t,<span class="string">'plot_results'</span>,true,<span class="string">'eps'</span>,0.01*median(Q));
+0121 
+0122 [S_active, S_total] = sig_StorageFraction(Q_1, t_1, P_1, PET_1, <span class="string">'plot_results'</span>,true,<span class="string">'bin_size'</span>,1);
+0123 
+0124 
+0125 <span class="comment">%% CAMELS test</span>
+0126 
+0127 test = NaN(size(CAMELS_data.gauge_id,1),1);
+0128 S_active = NaN(size(CAMELS_data.gauge_id,1),1);
+0129 S_total = NaN(size(CAMELS_data.gauge_id,1),1);
+0130 
+0131 <span class="keyword">for</span> i = 1:n_CAMELS <span class="comment">% loop over all catchments</span>
+0132     
+0133     <span class="keyword">if</span> mod(i,10) == 0 <span class="comment">% check progress</span>
+0134         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
+0135     <span class="keyword">end</span>
+0136     
+0137     <span class="comment">% extract data</span>
+0138     t = datetime(CAMELS_data.P{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0139     P = CAMELS_data.P{i}(:,2);
+0140     PET = CAMELS_data.PET{i}(:,2);
+0141     Q = CAMELS_data.Q{i}(:,2);
+0142     <span class="comment">% ID = CAMELS_data.gauge_id(i);</span>
+0143     
+0144     test(i) = sig_QP_elasticity(Q, t, P, <span class="string">'start_water_year'</span>, 10);
+0145     
+0146 <span class="comment">%     try</span>
+0147 <span class="comment">%         [S_active(i), S_total(i)] = sig_storage_fraction(Q,t,P,PET,'plot_results',false);</span>
+0148 <span class="comment">%     catch</span>
+0149 <span class="comment">%         disp(i)</span>
+0150 <span class="comment">%     end</span>
+0151     
+0152 <span class="keyword">end</span>
+0153 
+0154 
+0155 figure;
+0156 scatter(test,CAMELS_data.stream_elas,25,CAMELS_data.flow_perc_complete,<span class="string">'filled'</span>);
+0157 colorbar; caxis([95 100]); axis equal
+0158 corr(test,CAMELS_data.stream_elas,<span class="string">'Type'</span>,<span class="string">'Spearman'</span>,<span class="string">'Rows'</span>,<span class="string">'Complete'</span>)
+0159 
+0160 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,S_active,...</span>
+0161 <span class="comment">%     'attribute_name','S active','ID',CAMELS_data.gauge_id,...</span>
+0162 <span class="comment">%     'colour_scheme','Spectral','flip_colour_scheme',true,...</span>
+0163 <span class="comment">%     'c_limits',[0 1000],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0164 <span class="comment">%     'figure_title','','figure_name','S active','save_figure',false,'figure_path',fig_path)</span>
+0165 <span class="comment">% % set(gca,'ColorScale','log');</span>
+0166 <span class="comment">%</span>
+0167 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,S_total,...</span>
+0168 <span class="comment">%     'attribute_name','S total','ID',CAMELS_data.gauge_id,...</span>
+0169 <span class="comment">%     'colour_scheme','Spectral','flip_colour_scheme',true,...</span>
+0170 <span class="comment">%     'c_limits',[0 1000],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0171 <span class="comment">%     'figure_title','','figure_name','S total','save_figure',false,'figure_path',fig_path)</span>
+0172 <span class="comment">% % set(gca,'ColorScale','log');</span>
+0173 <span class="comment">%</span>
+0174 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,S_active./S_total,...</span>
+0175 <span class="comment">%     'attribute_name','S ratio','ID',CAMELS_data.gauge_id,...</span>
+0176 <span class="comment">%     'colour_scheme','Blues','flip_colour_scheme',true,...</span>
+0177 <span class="comment">%     'c_limits',[0.55 1.05],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0178 <span class="comment">%     'figure_title','','figure_name','S ratio','save_figure',false,'figure_path',fig_path)</span>
+0179 <span class="comment">% % set(gca,'ColorScale','log');</span>
+0180 
+0181 <span class="comment">%% ####################</span>
+0182 <span class="comment">%% calculate signatures</span>
+0183 
+0184 <span class="comment">% calculate mean</span>
+0185 Q_mean = sig_Q_mean(Q,t) <span class="comment">% works for (n,1) vector</span>
+0186 
+0187 <span class="comment">% calculate total runoff ratio</span>
+0188 RR = sig_TotalRR(Q,t,P) 
+0189 
+0190 <span class="comment">% calculate different percentiles</span>
+0191 Q_x = sig_x_percentile(Q,t,[5 50 95]) 
+0192 Q_x = sig_x_percentile(Q,t,[0 50.5 100]) 
+0193 
+0194 <span class="comment">% calculate BFI</span>
+0195 BFI = sig_BFI(Q,t)
+0196 BFI = sig_BFI(Q,t,<span class="string">'method'</span>,<span class="string">'Lyne_Hollick'</span>,<span class="string">'parameters'</span>,[0.925 3],<span class="string">'threshold_type'</span>,<span class="string">'timestep'</span>)
+0197 BFI = sig_BFI(Q,t,<span class="string">'method'</span>,<span class="string">'UKIH'</span>)
+0198 
+0199 <span class="comment">% calculate E_OP</span>
+0200 E_QP = sig_QP_elasticity(Q,t,P,<span class="string">'start_water_year'</span>,10)
+0201 E_QP = sig_QP_elasticity(Q_hourly,t_hourly,P_hourly,<span class="string">'start_water_year'</span>,10)
+0202 
+0203 <span class="comment">% calculate x Q frequency</span>
+0204 x_Q_freq = sig_x_Q_freq(Q,t,<span class="string">'no'</span>)
+0205 x_Q_freq = sig_x_Q_freq(Q,t,<span class="string">'high'</span>)
+0206 x_Q_freq = sig_x_Q_freq(Q,t,<span class="string">'low'</span>)
+0207 x_Q_freq = 1-sig_x_Q_freq(Q,t,<span class="string">'custom_high'</span>,<span class="string">'threshold'</span>,0) 
+0208 x_Q_freq = sig_x_Q_freq(Q,t,<span class="string">'custom_high'</span>,<span class="string">'threshold'</span>,9*median(Q,<span class="string">'omitnan'</span>))
+0209 x_Q_freq = sig_x_Q_freq(Q,t,<span class="string">'custom_low'</span>,<span class="string">'threshold'</span>,0.2*mean(Q,<span class="string">'omitnan'</span>))
+0210 
+0211 <span class="comment">% calculate x Q duration</span>
+0212 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'no'</span>)
+0213 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'high'</span>)
+0214 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'low'</span>)
+0215 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'custom_high'</span>,<span class="string">'threshold'</span>,0) 
+0216 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'custom_high'</span>,<span class="string">'threshold'</span>,9*median(Q,<span class="string">'omitnan'</span>))
+0217 x_Q_dur = sig_x_Q_dur(Q,t,<span class="string">'custom_low'</span>,<span class="string">'threshold'</span>,0.2*mean(Q,<span class="string">'omitnan'</span>))
+0218 
+0219 <span class="comment">% calculate mean monthly flow</span>
+0220 [Q_mean_monthly] = sig_Q_mean_monthly(Q, t, 8)
+0221 [Q_mean_monthly] = sig_Q_mean_monthly(Q, t, [10:12 1:9])
+0222 <span class="comment">% [Q_mean_monthly] = sig_Q_mean_monthly(Q, t, [1 13])</span>
+0223 <span class="comment">% [Q_mean_monthly] = sig_Q_mean_monthly(Q, t, [1.5 12])</span>
+0224 figure; bar(sig_Q_mean_monthly(Q, t, [1:12]))
+0225 
+0226 <span class="comment">% calculate n day minimum flow</span>
+0227 [Q_n_day_min] = sig_Q_n_day_min(Q, t, 7)
+0228 [Q_n_day_min] = sig_Q_n_day_min(Q, t, [1:7])
+0229 min(Q)
+0230 <span class="comment">% [Q_n_day_min] = sig_Q_n_day_min(Q, t, 1.5)</span>
+0231 figure; plot(sig_Q_n_day_min(Q, t, [1:365*10])./[1:365*10]')
+0232 
+0233 <span class="comment">% HDF and HFI</span>
+0234 HFD_mean = sig_HFD_mean(Q,t)
+0235 HFD_mean = sig_HFD_mean(Q,t,<span class="string">'start_month'</span>,1)
+0236 HFI_mean = sig_HFI_mean(Q,t)
+0237 HFI_mean = sig_HFI_mean(Q,t,<span class="string">'start_month'</span>,1)
+0238 figure; hold on
+0239 <span class="keyword">for</span> i = 1:12
+0240     plot(i,round(sig_HFD_mean(Q,t,<span class="string">'start_month'</span>,i)/30),<span class="string">'r o'</span>);
+0241     plot(i,round(sig_HFI_mean(Q,t,<span class="string">'start_month'</span>,i)/30),<span class="string">'b x'</span>);
+0242 <span class="keyword">end</span>
+0243 
+0244 <span class="comment">% peak distribution</span>
+0245 sig_peak_distribution(Q,t,<span class="string">'plot_results'</span>,true)
+0246 sig_peak_distribution(Q,t,<span class="string">'plot_results'</span>,true,<span class="string">'fitLogSpace'</span>,false)
+0247 
+0248 <span class="comment">% calculate FDC midslope</span>
+0249 FDC_slope = sig_FDC_slope(Q,t,<span class="string">'slope_range'</span>,[0.33 0.66],<span class="string">'plot_results'</span>,true)
+0250 FDC_slope = sig_FDC_slope(Q,t,<span class="string">'slope_range'</span>,[0.33 0.66],<span class="string">'plot_results'</span>,true,<span class="string">'fitLogSpace'</span>,false)
+0251 FDC_slope = sig_FDC_slope(Q,t,<span class="string">'slope_range'</span>,[0.01 0.33])
+0252 FDC_slope = sig_FDC_slope(Q_hourly,t_hourly,<span class="string">'plot_results'</span>,true)
+0253 
+0254 <span class="comment">% calculate FDC</span>
+0255 FDC = sig_FDC(Q,t,<span class="string">'plot_results'</span>,true)
+0256 
+0257 <span class="comment">% calculate autocorrelation</span>
+0258 Q_ac = sig_autocorrelation(Q,t) 
+0259 Q_ac = sig_autocorrelation(Q,t,<span class="string">'lag'</span>,1) 
+0260 Q_ac = sig_autocorrelation(Q,t,<span class="string">'lag'</span>,[0, length(Q)-2]) 
+0261 
+0262 <span class="comment">%% calculate RLD</span>
+0263 [RLD] = sig_RLD(Q,t,<span class="string">'plot_results'</span>,true)
+0264 RLD = sig_RLD(Q_hourly,t_hourly)
+0265 [flow_section] = util_RisingLimbs(Q_hourly, t_hourly, <span class="string">'rising_limb_length'</span>, 1/24, <span class="string">'plot_results'</span>, true)
+0266 
+0267 <span class="comment">%% recession extraction</span>
+0268 [flow_section] = util_RecessionSegments(Q,t,<span class="string">'recession_length'</span>,5,<span class="keyword">...</span>
+0269     <span class="string">'plot_results'</span>,true,<span class="string">'start_of_recession'</span>,<span class="string">'peak'</span>,<span class="string">'n_start'</span>,1);
+0270 
+0271 <span class="comment">%% recession analysis</span>
+0272 figure
+0273 [para_mat,recession_month] = sig_RecessionAnalysis(Q,t,<span class="string">'plot_results'</span>,true,<span class="keyword">...</span>
+0274     <span class="string">'fit_individual'</span>,true,<span class="string">'fitting_type'</span>,<span class="string">'linear'</span>);
+0275 
+0276 alpha = para_mat(:,1);
+0277 beta = para_mat(:,2);
+0278 med_alpha = NaN(12,1);
+0279 med_beta = NaN(12,1);
+0280 months = [1:12]; <span class="comment">%10:12 1:9</span>
+0281 <span class="keyword">for</span> i = months
+0282     tmp_alpha = alpha(recession_month == i);
+0283     med_alpha(i) = median(tmp_alpha);
+0284     tmp_beta = beta(recession_month == i);
+0285     med_beta(i) = median(tmp_beta);      
+0286 <span class="keyword">end</span>
+0287 figure
+0288 subplot(2,1,1)
+0289 scatter(1:12,med_alpha(months),<span class="string">'filled'</span>,<span class="string">'k'</span>);
+0290 ylabel(<span class="string">'alpha'</span>)
+0291 subplot(2,1,2)
+0292 scatter(1:12,med_beta(months),<span class="string">'filled'</span>,<span class="string">'k'</span>);
+0293 ylabel(<span class="string">'beta'</span>)
+0294 xlabel(<span class="string">'Month'</span>) <span class="comment">% of water year</span>
+0295 
+0296 <span class="comment">%% master recession curve</span>
+0297 sig_BaseflowRecessionK(Q,t,<span class="string">'plot_results'</span>,true)
+0298 
+0299 <span class="comment">%% test interactive code</span>
+0300 clc
+0301 <span class="comment">% use cells to allow for time series of different lengths</span>
+0302 Q_mat = {Q; Q(1:end/2); Q(end/2+1:end)};
+0303 t_mat = {t; t(1:end/2); t(end/2+1:end)};
+0304 P_mat = {P; P(1:end/2); P(end/2+1:end)};
+0305 signatures = <a href="calculate_signatures.html" class="code" title="function [results] = calculate_signatures(Q_mat, t_mat, P_mat, varargin)">calculate_signatures</a>(Q_mat,t_mat,P_mat);
+0306 
+0307 <span class="comment">%%</span>
+0308 <span class="comment">%{</span>
+0309  
+0310 file_ID = fopen(<span class="string">'benchmark_catch_hourly_data_57004.txt'</span>,<span class="string">'r'</span>);
+0311 file = fread(file_ID,<span class="string">'*char'</span>);
+0312 hourly_data = textscan(file,<span class="string">'%f %f %f %f %f %f %f %f %f %f'</span>,<span class="keyword">...</span>
+0313     <span class="string">'Delimiter'</span>,<span class="string">';'</span>,<span class="string">'headerlines'</span>,0);
+0314 fclose(file_ID);
+0315 
+0316 Y = hourly_data{1};
+0317 M = hourly_data{2};
+0318 D = hourly_data{3};
+0319 H = hourly_data{4};
+0320 P = hourly_data{5};
+0321 PET = hourly_data{6};
+0322 A = 106;
+0323 Q = hourly_data{9};
+0324 Q = Q*86.4/A/24;
+0325 t = datenum(Y,M,D,H,zeros(size(H)),zeros(size(H)));
+0326 
+0327 P_test_hourly = [t,P];
+0328 PET_test_hourly = [t,PET];
+0329 Q_test_hourly = [t,Q];
+0330 
+0331 figure; 
+0332 plot(date,P); hold on
+0333 plot(date,PET)
+0334 plot(date,Q)
+0335 <span class="comment">% datetick</span>
+0336 
+0337 save(<span class="string">'P_test_hourly'</span>)
+0338 save(<span class="string">'PET_test_hourly'</span>)
+0339 save(<span class="string">'Q_test_hourly'</span>)
+0340 
+0341 <span class="comment">%}</span>
+0342 
+0343 <span class="comment">% BFI tests</span>
+0344 <span class="comment">%{</span>
+0345 Qb = util_LyneHollickFilter(Q,<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,3);
+0346 Qb1 = util_LyneHollickFilter(Q,<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,1,<span class="string">'threshold_type'</span>,<span class="string">'none'</span>);
+0347 Qb2 = flip(util_LyneHollickFilter(flip(Qb1),<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,1,<span class="string">'threshold_type'</span>,<span class="string">'none'</span>));
+0348 Qb3 = util_LyneHollickFilter(Qb2,<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,1,<span class="string">'threshold_type'</span>,<span class="string">'none'</span>);
+0349 Qb_timestep = util_LyneHollickFilter(Q,<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,3,<span class="string">'threshold_type'</span>,<span class="string">'timestep'</span>);
+0350 Qb_pass = util_LyneHollickFilter(Q,<span class="string">'filter_parameter'</span>,0.925,<span class="string">'nr_passes'</span>,3,<span class="string">'threshold_type'</span>,<span class="string">'pass'</span>);
+0351 Qb_UK = util_UKIH_Method(Q,<span class="string">'n_days'</span>,5);
+0352 figure
+0353 hold on
+0354 p1=plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,2);
+0355 plot(t,Qb1,<span class="string">'r :'</span>)
+0356 plot(t,Qb2,<span class="string">'r -.'</span>)
+0357 plot(t,Qb3,<span class="string">'r --'</span>)
+0358 p2=plot(t,Qb,<span class="string">'r'</span>,<span class="string">'linewidth'</span>,1.5);
+0359 p3=plot(t,Qb_timestep,<span class="string">'b'</span>,<span class="string">'linewidth'</span>,1.5);
+0360 p4=plot(t,Qb_pass,<span class="string">'g'</span>,<span class="string">'linewidth'</span>,1.5);
+0361 p5=plot(t,Qb_UK,<span class="string">'m'</span>,<span class="string">'linewidth'</span>,1.5);
+0362 xlabel(<span class="string">'time'</span>)
+0363 <span class="comment">% datetick</span>
+0364 ylabel(<span class="string">'flow [mm]'</span>)
+0365 legend([p1 p2 p3 p4 p5],<span class="string">'streamflow'</span>,<span class="string">'at the end (with components)'</span>,<span class="string">'every timestep'</span>,<span class="string">'every pass'</span>,<span class="string">'UKIH'</span>)
+0366 <span class="comment">%}</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

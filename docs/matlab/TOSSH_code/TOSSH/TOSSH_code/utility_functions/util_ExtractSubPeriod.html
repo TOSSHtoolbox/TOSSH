@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_ExtractSubPeriod</title>
+  <meta name="keywords" content="util_ExtractSubPeriod">
+  <meta name="description" content="util_ExtractSubPeriod extracts subperiod (months) from time series.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_ExtractSubPeriod.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_ExtractSubPeriod
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_ExtractSubPeriod extracts subperiod (months) from time series.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [X_sub, t_sub] = util_ExtractSubPeriod(X, t, subperiod, option) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_ExtractSubPeriod extracts subperiod (months) from time series.
+   Extracts certain months from time series, e.g. the low flow season and 
+   the high flow season. See also Euser et al. (2013) who use May to
+   September as low flow season and November to April as high flow season.
+
+   INPUT
+   X: time series - should be continuous (e.g. Q, typically [mm/timestep])
+   t: time [Matlab datetime]
+   subperiod: subperiod to be extracted, e.g. [11:12, 1:4] for November
+       to April or [5:9] for May to September
+   OPTIONAL
+   option: option to delete values outside subperiod ('delete') or assign
+       NaN to values outside subperiod ('nan')
+
+   OUTPUT
+   X_sub: subperiod time series
+   t_sub: subperiod time
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   subperiod = [11:12, 1:4];
+   [Q_sub, t_sub] = ...
+       util_ExtractSubPeriod(Q, t, subperiod);
+
+   References
+   Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S.
+   and Savenije, H.H.G., 2013. A framework to assess the realism of model
+   structures using hydrological signatures. Hydrology and Earth System
+   Sciences, 17 (5), 2013.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [X_sub, t_sub] = util_ExtractSubPeriod(X, t, subperiod, option)</a>
+0002 <span class="comment">%util_ExtractSubPeriod extracts subperiod (months) from time series.</span>
+0003 <span class="comment">%   Extracts certain months from time series, e.g. the low flow season and</span>
+0004 <span class="comment">%   the high flow season. See also Euser et al. (2013) who use May to</span>
+0005 <span class="comment">%   September as low flow season and November to April as high flow season.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   X: time series - should be continuous (e.g. Q, typically [mm/timestep])</span>
+0009 <span class="comment">%   t: time [Matlab datetime]</span>
+0010 <span class="comment">%   subperiod: subperiod to be extracted, e.g. [11:12, 1:4] for November</span>
+0011 <span class="comment">%       to April or [5:9] for May to September</span>
+0012 <span class="comment">%   OPTIONAL</span>
+0013 <span class="comment">%   option: option to delete values outside subperiod ('delete') or assign</span>
+0014 <span class="comment">%       NaN to values outside subperiod ('nan')</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%   X_sub: subperiod time series</span>
+0018 <span class="comment">%   t_sub: subperiod time</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   EXAMPLE</span>
+0021 <span class="comment">%   % load example data</span>
+0022 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0023 <span class="comment">%   Q = data.Q;</span>
+0024 <span class="comment">%   t = data.t;</span>
+0025 <span class="comment">%   subperiod = [11:12, 1:4];</span>
+0026 <span class="comment">%   [Q_sub, t_sub] = ...</span>
+0027 <span class="comment">%       util_ExtractSubPeriod(Q, t, subperiod);</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   References</span>
+0030 <span class="comment">%   Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S.</span>
+0031 <span class="comment">%   and Savenije, H.H.G., 2013. A framework to assess the realism of model</span>
+0032 <span class="comment">%   structures using hydrological signatures. Hydrology and Earth System</span>
+0033 <span class="comment">%   Sciences, 17 (5), 2013.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   Copyright (C) 2020</span>
+0036 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0037 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0038 
+0039 <span class="keyword">if</span> nargin &lt; 4
+0040     option = <span class="string">'delete'</span>;
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% get months</span>
+0044 [~, month_vec, ~] = ymd(t);
+0045 
+0046 <span class="keyword">if</span> strcmp(option,<span class="string">'delete'</span>)
+0047     <span class="comment">% option 1 - delete values outside subperiod</span>
+0048     t_sub = t(ismember(month_vec,subperiod));
+0049     X_sub = X(ismember(month_vec,subperiod));
+0050 <span class="keyword">elseif</span> strcmp(option,<span class="string">'nan'</span>)
+0051     <span class="comment">% option 2 - assign NaN to values outside subperiod</span>
+0052     t_sub = t;
+0053     X_sub = X;
+0054     X_sub(ismember(month_vec,subperiod)) = NaN;
+0055 <span class="keyword">else</span>
+0056     error(<span class="string">'Subperiod option specified incorrectly, the options are delete or nan.'</span>)
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">%{</span>
+0060 figure; hold on;
+0061 plot(t,X);
+0062 plot(t_sub,X_sub,<span class="string">'--'</span>)
+0063 xlabel(<span class="string">'Date'</span>)
+0064 ylabel(<span class="string">'Flow'</span>)
+0065 <span class="comment">%}</span>
+0066 
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

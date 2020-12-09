@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of workflow_3_time_resolution</title>
+  <meta name="keywords" content="workflow_3_time_resolution">
+  <meta name="description" content="% TOSSH workflow 3 - comparison of time series with different resolution">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="index.html">example</a> &gt; workflow_3_time_resolution.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>workflow_3_time_resolution
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH workflow 3 - comparison of time series with different resolution</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH workflow 3 - comparison of time series with different resolution
+
+   This script shows how to use TOSSH with example data from the same 
+   catchment but with different time resolution. 
+
+   The example datasets used in this workflow were provided by the 
+   Environment Agency, see README_example_data.txt for more information on 
+   data sources.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH workflow 3 - comparison of time series with different resolution</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   This script shows how to use TOSSH with example data from the same</span>
+0004 <span class="comment">%   catchment but with different time resolution.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   The example datasets used in this workflow were provided by the</span>
+0007 <span class="comment">%   Environment Agency, see README_example_data.txt for more information on</span>
+0008 <span class="comment">%   data sources.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   Copyright (C) 2020</span>
+0011 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0012 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0013 
+0014 close all
+0015 <span class="comment">% clear all</span>
+0016 clc
+0017 
+0018 <span class="comment">%% Add directories to path</span>
+0019 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path.</span>
+0020 <span class="comment">% If we already are in this directory, we can use the pwd command:</span>
+0021 mydir = pwd;
+0022 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0023 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0024 cd(mydir)
+0025 addpath(genpath(mydir));
+0026 
+0027 <span class="comment">%% Load data</span>
+0028 path = <span class="string">'./example/example_data/'</span>; <span class="comment">% specify path</span>
+0029 
+0030 <span class="comment">% Daily, hourly, and 15min data from the same catchment.</span>
+0031 data = load(strcat(path,<span class="string">'33029_multiple.mat'</span>)); <span class="comment">% load data</span>
+0032 t_daily = data.t_daily;
+0033 Q_daily = data.Q_daily; <span class="comment">% streamflow [mm/day]</span>
+0034 t_hourly = data.t_hourly;
+0035 Q_hourly = data.Q_hourly; <span class="comment">% streamflow [mm/hour]</span>
+0036 t_15min = data.t_15min;
+0037 Q_15min = data.Q_15min; <span class="comment">% streamflow [mm/d15minay]</span>
+0038 
+0039 clear data
+0040 
+0041 <span class="comment">%% Plot data</span>
+0042 <span class="comment">% When we compare different time resolutions, we can see that some of the</span>
+0043 <span class="comment">% small peaks are smoothed out in the daily series.</span>
+0044 figure(<span class="string">'pos'</span>,[100 100 350 200])
+0045 hold on
+0046 plot(t_daily,Q_daily,<span class="string">'b'</span>)
+0047 plot(t_hourly,Q_hourly*24,<span class="string">'r-'</span>)
+0048 plot(t_15min,Q_15min*4*24,<span class="string">'g-.'</span>)
+0049 xlabel(<span class="string">'Date'</span>)
+0050 ylabel(<span class="string">'Streamflow [mm/day]'</span>)
+0051 xlim([datetime(2015,10,01) datetime(2016,09,30)])
+0052 legend(<span class="string">'Daily'</span>,<span class="string">'Hourly'</span>,<span class="string">'15min'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0053 
+0054 <span class="comment">%% Compare time resolution</span>
+0055 <span class="comment">% Different time resolutions have an impact on the calculation of</span>
+0056 <span class="comment">% hydrological signatures. We again calculate the BFI and the slope of the</span>
+0057 <span class="comment">% FDC, but now for the same catchment with different time resolutions.</span>
+0058 BFI_daily = sig_BFI(Q_daily,t_daily);
+0059 BFI_hourly = sig_BFI(Q_hourly,t_hourly);
+0060 BFI_15min = sig_BFI(Q_15min,t_15min);
+0061 FDC_slope_daily = sig_FDC_slope(Q_daily,t_daily);
+0062 FDC_slope_hourly = sig_FDC_slope(Q_hourly,t_hourly);
+0063 FDC_slope_15min = sig_FDC_slope(Q_15min,t_15min);
+0064 RLD_daily = sig_RisingLimbDensity(Q_daily,t_daily,<span class="string">'eps'</span>,0.001*median(Q_daily,<span class="string">'omitnan'</span>));
+0065 RLD_hourly = sig_RisingLimbDensity(Q_hourly,t_hourly,<span class="string">'eps'</span>,0.001*median(Q_hourly,<span class="string">'omitnan'</span>));
+0066 RLD_15min = sig_RisingLimbDensity(Q_15min,t_15min,<span class="string">'eps'</span>,0.001*median(Q_15min,<span class="string">'omitnan'</span>));
+0067 <span class="comment">% We can store the results in a table to print them in the command window.</span>
+0068 VarNames = {<span class="string">'BFI'</span>,<span class="string">'FDC_slope'</span>,<span class="string">'RLD'</span>};
+0069 RowNames = {<span class="string">'1d'</span>,<span class="string">'1h'</span>,<span class="string">'15min'</span>};
+0070 T = table([BFI_daily; BFI_hourly; BFI_15min],<span class="keyword">...</span>
+0071     [FDC_slope_daily; FDC_slope_hourly; FDC_slope_15min],<span class="keyword">...</span>
+0072     [RLD_daily; RLD_hourly*24; RLD_15min*(24*4)],<span class="keyword">...</span>
+0073     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0074 disp(T)
+0075 <span class="comment">% From the results displayed in the command window and from the plots we</span>
+0076 <span class="comment">% can see that the BFI is sensitive to the timestep. This is because we</span>
+0077 <span class="comment">% always used the default method, which is the Lyne-Hollick filter with a</span>
+0078 <span class="comment">% parameter value of 0.925. The slope of the FDC is insensitive to the</span>
+0079 <span class="comment">% timestep. No parameters need to be specified.</span>
+0080 
+0081 <span class="comment">% We also need to be careful with the units. For example, if we want to</span>
+0082 <span class="comment">% compare mean flows we need to adjust the time series so that they have</span>
+0083 <span class="comment">% the same units (e.g. mm/day).</span>
+0084 Q_mean_daily = sig_Q_mean(Q_daily,t_daily);
+0085 Q_mean_hourly = sig_Q_mean(Q_hourly,t_hourly);
+0086 Q_mean_15min = sig_Q_mean(Q_15min,t_15min);
+0087 VarNames = {<span class="string">'Q_mean'</span>,<span class="string">'Q_mean_adj'</span>};
+0088 T = table([Q_mean_daily; Q_mean_hourly; Q_mean_15min],<span class="keyword">...</span>
+0089     [Q_mean_daily; Q_mean_hourly*24; Q_mean_15min*4*24],<span class="keyword">...</span>
+0090     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0091 disp(T)
+0092 
+0093 <span class="comment">%% Further information</span>
+0094 <span class="comment">% Further information can be found in the online documentation:</span>
+0095 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

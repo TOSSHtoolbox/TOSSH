@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_RecessionSegments</title>
+  <meta name="keywords" content="util_RecessionSegments">
+  <meta name="description" content="util_RecessionSegments identifies all individual recession segments.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_RecessionSegments.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_RecessionSegments
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_RecessionSegments identifies all individual recession segments.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [flow_section, error_flag, error_str, fig_handles] =util_RecessionSegments(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_RecessionSegments identifies all individual recession segments.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   recession_length: min. length of recessions (days), default = 5
+   n_start: days to be removed after start of recession
+   eps: allowed increase in flow during recession period, default=0
+   start_of_recession: define start of recession when baseflow filter
+       rejoins the curve &quot;baseflow&quot; or after peak &quot;peak&quot;
+   filter_par: smoothing parameter of Lyne-Hollick filter to determine
+      start of recession (higher = later recession start), default = 0.925
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   flow_section: n-by-2 array where n is the number of recession segments;
+       columns are the indices into the flow array of the start and end of
+       the recession segments
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   flow_section = util_RecessionSegments(Q,t);
+   flow_section = util_RecessionSegments(Q,t,'recession_length',5,...
+       'plot_results',true,'start_of_recession','peak','n_start',1);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="util_LyneHollickFilter.html" class="code" title="function [Q_b] = util_LyneHollickFilter(Q, varargin)">util_LyneHollickFilter</a>	util_LyneHollickFilter estimates baseflow using the Lyne-Hollick filter.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [flow_section, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     util_RecessionSegments(Q, t, varargin)
+0003 <span class="comment">%util_RecessionSegments identifies all individual recession segments.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   INPUT</span>
+0006 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0007 <span class="comment">%   t: time [Matlab datetime]</span>
+0008 <span class="comment">%   OPTIONAL</span>
+0009 <span class="comment">%   recession_length: min. length of recessions (days), default = 5</span>
+0010 <span class="comment">%   n_start: days to be removed after start of recession</span>
+0011 <span class="comment">%   eps: allowed increase in flow during recession period, default=0</span>
+0012 <span class="comment">%   start_of_recession: define start of recession when baseflow filter</span>
+0013 <span class="comment">%       rejoins the curve &quot;baseflow&quot; or after peak &quot;peak&quot;</span>
+0014 <span class="comment">%   filter_par: smoothing parameter of Lyne-Hollick filter to determine</span>
+0015 <span class="comment">%      start of recession (higher = later recession start), default = 0.925</span>
+0016 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OUTPUT</span>
+0019 <span class="comment">%   flow_section: n-by-2 array where n is the number of recession segments;</span>
+0020 <span class="comment">%       columns are the indices into the flow array of the start and end of</span>
+0021 <span class="comment">%       the recession segments</span>
+0022 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0023 <span class="comment">%       (error in signature calculation)</span>
+0024 <span class="comment">%   error_str: string contraining error description</span>
+0025 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0026 <span class="comment">%       not requested)</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   EXAMPLE</span>
+0029 <span class="comment">%   % load example data</span>
+0030 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0031 <span class="comment">%   Q = data.Q;</span>
+0032 <span class="comment">%   t = data.t;</span>
+0033 <span class="comment">%   flow_section = util_RecessionSegments(Q,t);</span>
+0034 <span class="comment">%   flow_section = util_RecessionSegments(Q,t,'recession_length',5,...</span>
+0035 <span class="comment">%       'plot_results',true,'start_of_recession','peak','n_start',1);</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   Copyright (C) 2020</span>
+0038 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0039 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0040 
+0041 <span class="comment">% check input parameters</span>
+0042 <span class="keyword">if</span> nargin &lt; 2
+0043     error(<span class="string">'Not enough input arguments.'</span>)
+0044 <span class="keyword">end</span>
+0045 
+0046 ip = inputParser;
+0047 ip.CaseSensitive = true;
+0048 
+0049 <span class="comment">% required input arguments</span>
+0050 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0051 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0052 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0053 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0054 
+0055 <span class="comment">% optional input arguments</span>
+0056 addParameter(ip, <span class="string">'recession_length'</span>, 5, @isnumeric) <span class="comment">% length of decreasing</span>
+0057 <span class="comment">% flow in days to be declared a recession</span>
+0058 addParameter(ip, <span class="string">'n_start'</span>, 1, @isnumeric) <span class="comment">% days to be removed at beginning of recession</span>
+0059 addParameter(ip, <span class="string">'eps'</span>, 0, @isnumeric) <span class="comment">% allowed increase in flow during recession period</span>
+0060 addParameter(ip, <span class="string">'start_of_recession'</span>, <span class="string">'peak'</span>, @ischar) <span class="comment">% defines start of a recession</span>
+0061 addParameter(ip, <span class="string">'filter_par'</span>, 0.925, @isnumeric) <span class="comment">% smoothing parameter of</span>
+0062 <span class="comment">% Lyne-Hollick Filter to determine start of recession (higher = later recession start)</span>
+0063 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0064 
+0065 parse(ip, Q, t, varargin{:})
+0066 recession_length = ip.Results.recession_length;
+0067 plot_results = ip.Results.plot_results;
+0068 filter_par = ip.Results.filter_par;
+0069 eps = ip.Results.eps;
+0070 start_of_recession = ip.Results.start_of_recession;
+0071 n_start = ip.Results.n_start;
+0072 
+0073 <span class="comment">% create empty figure handle</span>
+0074 fig_handles = [];
+0075 
+0076 <span class="comment">% data checks</span>
+0077 
+0078 <span class="comment">% default setting reads as good data</span>
+0079 error_flag = 0;
+0080 error_str = <span class="string">''</span>;
+0081 
+0082 <span class="keyword">if</span> eps &gt; median(Q,<span class="string">'omitnan'</span>)/100
+0083     error_flag = 1;
+0084     error_str = [<span class="string">'Warning: eps set to a value larger than 1 percent of median(Q). High eps values can lead to problematic recession selection. '</span>, error_str];
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">% identify all individual recession segments with length &gt; recession_length days</span>
+0088 <span class="comment">% how many decreasing timesteps depends on length of timestep</span>
+0089 len_decrease = recession_length/days(t(2)-t(1));
+0090 <span class="comment">% find timesteps with decreasing flow</span>
+0091 decreasing_flow = Q(2:end)&lt;(Q(1:end-1)+eps);
+0092 <span class="comment">% start on a non-decreasing point</span>
+0093 start_point = find(decreasing_flow==0,1);
+0094 decreasing_flow = decreasing_flow(start_point:end);
+0095 <span class="comment">% find start and end of decreasing sections</span>
+0096 flow_change = find(decreasing_flow(1:end-1) ~= decreasing_flow(2:end));
+0097 <span class="comment">% reshape into x by 2 array (columns = start, end of decrease)</span>
+0098 flow_change = flow_change(1:(2*floor(size(flow_change,1)./2)));
+0099 flow_change = reshape(flow_change,2,[]).';
+0100 <span class="comment">% find sections</span>
+0101 flow_section = flow_change((flow_change(:,2)-flow_change(:,1))&gt;=len_decrease+n_start,:);
+0102 flow_section = flow_section+start_point;
+0103 flow_section(:,1) = flow_section(:,1)+n_start; <span class="comment">% move start point n days</span>
+0104 <span class="keyword">if</span> size(flow_section,1)==0
+0105     error_flag = 3;
+0106     error_str = [<span class="string">'Error: No long enough recession periods, consider setting eps parameter &gt; 0. '</span>, error_str];
+0107     <span class="keyword">return</span>
+0108 <span class="keyword">elseif</span> size(flow_section,1) &lt; 10
+0109     error_flag = 1;
+0110     error_str = [<span class="string">'Warning: Fewer than 10 recession segments extracted, results might not be robust. '</span>, error_str];
+0111 <span class="keyword">end</span>
+0112 
+0113 <span class="comment">% optional plotting</span>
+0114 <span class="keyword">if</span> plot_results
+0115     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on;
+0116     title(<span class="string">'Selected recession segments'</span>)
+0117     h0 = plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1.5);
+0118     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0119         h1 = plot(t(flow_section(i,1):flow_section(i,2)),<span class="keyword">...</span>
+0120             Q(flow_section(i,1):flow_section(i,2)),<span class="string">'r-'</span>,<span class="string">'linewidth'</span>,1.5);
+0121         <span class="comment">% plot(t(flow_section(i,1):flow_section(i,2)),Qm(flow_section(i,1):flow_section(i,2)),'r');</span>
+0122         <span class="comment">% plot(t(flow_section(i,1):flow_section(i,2)),dQdt(flow_section(i,1):flow_section(i,2)),'b');</span>
+0123     <span class="keyword">end</span>
+0124     legend(<span class="string">'Streamflow'</span>,<span class="string">'Recessions'</span>)
+0125     xlabel(<span class="string">'Date'</span>)
+0126     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0127     fig_handles.RecessionSegments = fig;
+0128 <span class="keyword">end</span>
+0129 
+0130 <span class="keyword">switch</span> start_of_recession
+0131     
+0132     <span class="keyword">case</span> <span class="string">'peak'</span>
+0133         
+0134     <span class="keyword">case</span> <span class="string">'baseflow'</span>
+0135         <span class="comment">% beginning of recession = point where baseflow filter rejoins the curve</span>
+0136         <span class="comment">% (alternative needs basin area)</span>
+0137         <span class="comment">% use Lyne-Hollick Filter with default a, nr_passes = 1</span>
+0138         <span class="comment">% (doesn't work with nr_passes &gt; 1 as then baseflow is never equal to flow)</span>
+0139         Q_b = <a href="util_LyneHollickFilter.html" class="code" title="function [Q_b] = util_LyneHollickFilter(Q, varargin)">util_LyneHollickFilter</a>(Q,<span class="string">'filter_parameter'</span>,filter_par,<span class="string">'nr_passes'</span>,1);
+0140         
+0141         <span class="comment">% find sections identified as baseflow in complete series</span>
+0142         isbaseflow = Q_b == Q;
+0143         <span class="keyword">for</span> i = 1:size(flow_section,1)
+0144             <span class="comment">% find which points in the decreasing section count as baseflow only</span>
+0145             isb_section = isbaseflow(flow_section(i,1):flow_section(i,2));
+0146             <span class="keyword">if</span> all(isb_section==0)
+0147                 flow_section(i,:) = NaN;
+0148             <span class="keyword">else</span>
+0149                 <span class="comment">% find the first such point</span>
+0150                 isb_start = find(isb_section==1,1,<span class="string">'first'</span>);
+0151                 <span class="comment">% limit section to only those points</span>
+0152                 flow_section(i,1)=flow_section(i,1)+isb_start-1;
+0153             <span class="keyword">end</span>
+0154         <span class="keyword">end</span>
+0155         <span class="comment">% if flow_section less than 4 points, remove</span>
+0156         flow_section = flow_section(~isnan(flow_section(:,1)),:);
+0157         flow_section = flow_section(flow_section(:,2)&gt;=flow_section(:,1)+3,:);
+0158         <span class="keyword">if</span> numel(flow_section)==0
+0159             error_flag = 3;
+0160             error_str = [<span class="string">'Error: No long enough baseflow recession periods, consider increasing filter_par parameter. '</span>, error_str];
+0161         <span class="keyword">end</span>
+0162         
+0163         <span class="comment">% add the baseflow recession sections to the plot</span>
+0164         <span class="keyword">if</span> plot_results
+0165             <span class="comment">% add baseflow to plot</span>
+0166             h3 = plot(t,Q_b, <span class="string">'b-'</span>,<span class="string">'linewidth'</span>,1.5);
+0167             <span class="keyword">for</span> i = 1:size(flow_section,1)
+0168                 h2=plot(t(flow_section(i,1):flow_section(i,2)),<span class="keyword">...</span>
+0169                     Q(flow_section(i,1):flow_section(i,2)),<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,1.5);
+0170             <span class="keyword">end</span>
+0171             legend([h0 h3 h1 h2],<span class="keyword">...</span>
+0172                 {<span class="string">'Streamflow'</span>,<span class="string">'Baseflow'</span>,<span class="string">'Complete recessions'</span>, <span class="string">'Baseflow recessions'</span>})
+0173             fig_handles.RecessionSegments = fig;
+0174         <span class="keyword">end</span>
+0175         
+0176     <span class="keyword">otherwise</span>
+0177         error(<span class="string">'Incorrect option for start of recession.'</span>)
+0178 <span class="keyword">end</span>
+0179 
+0180 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

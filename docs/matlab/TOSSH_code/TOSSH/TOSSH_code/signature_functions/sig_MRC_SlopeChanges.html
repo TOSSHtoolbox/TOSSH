@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_MRC_SlopeChanges</title>
+  <meta name="keywords" content="sig_MRC_SlopeChanges">
+  <meta name="description" content="sig_MRC_SlopeChanges calculates MRC and whether it contains significant changes in slope.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_MRC_SlopeChanges.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_MRC_SlopeChanges
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_MRC_SlopeChanges calculates MRC and whether it contains significant changes in slope.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [MRC_num_segments, Segment_slopes, error_flag, error_str, fig_handles] =sig_MRC_SlopeChanges(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_MRC_SlopeChanges calculates MRC and whether it contains significant changes in slope.
+   According to Estrany et al. (2010), Clark et al. (2009), and others,
+   the changes in slope represent different reservoirs contributing to the
+   runoff response.
+
+    INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+    OPTIONAL
+   recession_length:  min. length of recessions [days], default = 15
+   n_start: days to be removed after start of recession
+   eps: allowed increase in flow during recession period, default = 0
+   start_of_recession: define start of recession when baseflow filter
+       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)
+   filter_par: smoothing parameter of Lyne-Hollick filter to determine
+      start of recession (higher = later recession start), default = 0.925
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   MRC_num_segments: number of different segments in MRC
+   Segment_slopes: slopes of recession segments [mm/timestep^2]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   MRC_num_segments = sig_MRC_SlopeChanges(Q, t);
+
+   References
+   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response
+   of a small mediterranean agricultural catchment. Journal of Hydrology,
+   380(1-2), pp.180-190.
+   Clark, M.P., Rupp, D.E., Woods, R.A., Trompâ€?van Meerveld, H.J., Peters,
+   N.E. and Freer, J.E., 2009. Consistency between hydrological models and
+   field observations: linking processes at the hillslope scale to
+   hydrological responses at the watershed scale. Hydrological Processes,
+   23(2), pp.311-319.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [err,fittedlines,slopes] = brokenstick(breakpoints,x,y)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [MRC_num_segments, Segment_slopes, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     sig_MRC_SlopeChanges(Q, t, varargin)
+0003 <span class="comment">%sig_MRC_SlopeChanges calculates MRC and whether it contains significant changes in slope.</span>
+0004 <span class="comment">%   According to Estrany et al. (2010), Clark et al. (2009), and others,</span>
+0005 <span class="comment">%   the changes in slope represent different reservoirs contributing to the</span>
+0006 <span class="comment">%   runoff response.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%    INPUT</span>
+0009 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0010 <span class="comment">%   t: time [Matlab datetime]</span>
+0011 <span class="comment">%    OPTIONAL</span>
+0012 <span class="comment">%   recession_length:  min. length of recessions [days], default = 15</span>
+0013 <span class="comment">%   n_start: days to be removed after start of recession</span>
+0014 <span class="comment">%   eps: allowed increase in flow during recession period, default = 0</span>
+0015 <span class="comment">%   start_of_recession: define start of recession when baseflow filter</span>
+0016 <span class="comment">%       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)</span>
+0017 <span class="comment">%   filter_par: smoothing parameter of Lyne-Hollick filter to determine</span>
+0018 <span class="comment">%      start of recession (higher = later recession start), default = 0.925</span>
+0019 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   OUTPUT</span>
+0022 <span class="comment">%   MRC_num_segments: number of different segments in MRC</span>
+0023 <span class="comment">%   Segment_slopes: slopes of recession segments [mm/timestep^2]</span>
+0024 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0025 <span class="comment">%       (error in signature calculation)</span>
+0026 <span class="comment">%   error_str: string contraining error description</span>
+0027 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0028 <span class="comment">%       not requested)</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   EXAMPLE</span>
+0031 <span class="comment">%   % load example data</span>
+0032 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0033 <span class="comment">%   Q = data.Q;</span>
+0034 <span class="comment">%   t = data.t;</span>
+0035 <span class="comment">%   MRC_num_segments = sig_MRC_SlopeChanges(Q, t);</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   References</span>
+0038 <span class="comment">%   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response</span>
+0039 <span class="comment">%   of a small mediterranean agricultural catchment. Journal of Hydrology,</span>
+0040 <span class="comment">%   380(1-2), pp.180-190.</span>
+0041 <span class="comment">%   Clark, M.P., Rupp, D.E., Woods, R.A., Trompâ€?van Meerveld, H.J., Peters,</span>
+0042 <span class="comment">%   N.E. and Freer, J.E., 2009. Consistency between hydrological models and</span>
+0043 <span class="comment">%   field observations: linking processes at the hillslope scale to</span>
+0044 <span class="comment">%   hydrological responses at the watershed scale. Hydrological Processes,</span>
+0045 <span class="comment">%   23(2), pp.311-319.</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%   Copyright (C) 2020</span>
+0048 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0049 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0050 
+0051 <span class="comment">% check input parameters</span>
+0052 <span class="keyword">if</span> nargin &lt; 2
+0053     error(<span class="string">'Not enough input arguments.'</span>)
+0054 <span class="keyword">end</span>
+0055 
+0056 ip = inputParser;
+0057 ip.CaseSensitive = true;
+0058 
+0059 <span class="comment">% required input arguments</span>
+0060 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0061 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0062 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0063 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0064 
+0065 <span class="comment">% optional input arguments</span>
+0066 addParameter(ip, <span class="string">'ignoreNaN'</span>, <span class="string">'y'</span>, @ischar) <span class="comment">% ignore NaN values y/n?</span>
+0067 addParameter(ip, <span class="string">'recession_length'</span>, 15, @isnumeric) <span class="comment">% length of decreasing</span>
+0068 <span class="comment">% flow in days to be declared a recession</span>
+0069 addParameter(ip, <span class="string">'n_start'</span>, 0, @isnumeric) <span class="comment">% days to be removed at beginning of recession</span>
+0070 addParameter(ip, <span class="string">'eps'</span>, 0, @isnumeric) <span class="comment">% allowed increase in flow during recession period</span>
+0071 addParameter(ip, <span class="string">'start_of_recession'</span>, <span class="string">'peak'</span>, @ischar) <span class="comment">% defines start of a recession</span>
+0072 addParameter(ip, <span class="string">'filter_par'</span>, 0.925, @isnumeric) <span class="comment">% smoothing parameter of</span>
+0073 <span class="comment">% Lyne-Hollick Filter to determine start of recession (higher = later recession start)</span>
+0074 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0075 addParameter(ip, <span class="string">'seg_test'</span>, 0.75, @isnumeric) <span class="comment">% what reduction in RMSE</span>
+0076 <span class="comment">% needed to recommend extra segment in MRC</span>
+0077 
+0078 parse(ip, Q, t, varargin{:})
+0079 recession_length = ip.Results.recession_length;
+0080 n_start = ip.Results.n_start;
+0081 eps = ip.Results.eps;
+0082 start_of_recession = ip.Results.start_of_recession;
+0083 filter_par = ip.Results.filter_par;
+0084 plot_results = ip.Results.plot_results;
+0085 seg_test = ip.Results.seg_test;
+0086 
+0087 <span class="comment">% create empty figure handle</span>
+0088 fig_handles = [];
+0089 
+0090 <span class="comment">% data checks</span>
+0091 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0092 <span class="keyword">if</span> error_flag == 2
+0093     MRC_num_segments = NaN;
+0094     Segment_slopes = NaN;
+0095     <span class="keyword">return</span>
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">% calculate signature</span>
+0099 
+0100 <span class="comment">% identify all individual recession segments</span>
+0101 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0102 error_str_tmp = error_str;
+0103 [flow_section, error_flag, error_str, fig_handles] = util_RecessionSegments(Q, t, <span class="keyword">...</span>
+0104     <span class="string">'recession_length'</span>, recession_length, <span class="string">'eps'</span>, eps, <span class="keyword">...</span>
+0105     <span class="string">'filter_par'</span>, filter_par, <span class="string">'plot_results'</span>, plot_results, <span class="keyword">...</span>
+0106     <span class="string">'start_of_recession'</span>, start_of_recession, <span class="string">'n_start'</span>, n_start);
+0107 <span class="keyword">if</span> error_flag == 3
+0108     MRC_num_segments = NaN;
+0109     Segment_slopes = NaN;
+0110     <span class="keyword">return</span>
+0111 <span class="keyword">else</span>
+0112     error_flag = max([error_flag_tmp, error_flag]);
+0113     error_str = [error_str_tmp, error_str];
+0114 <span class="keyword">end</span>
+0115 
+0116 <span class="comment">% MRC constucted using the adapted matching strip method (Posavec et al., 2006)</span>
+0117 [mrc] = util_MasterRecessionCurve(Q, flow_section, <span class="keyword">...</span>
+0118     <span class="string">'fit_method'</span>, <span class="string">'nonparametric_analytic'</span>, <span class="string">'plot_results'</span>, false);
+0119 
+0120 <span class="comment">% k = slope of the linear regression between log-transformed discharge and recession length</span>
+0121 mdl = [(mrc(:,1).^0) (mrc(:,1))]\log(mrc(:,2));
+0122 slope_b0 = mdl(2);
+0123 err_b0 = sqrt(sum((log(mrc(:,2))-(mdl(1) + mdl(2).*(sort(mrc(:,1))))).^2));
+0124 
+0125 <span class="comment">% optimise two-segment fit</span>
+0126 xdata=mrc(:,1);
+0127 ydata=log(mrc(:,2));
+0128 
+0129 dx = max(xdata) - min(xdata);
+0130 [breaks] = fminbnd(@(b2) util_FitBrokenStick(b2,xdata,ydata),min(xdata) + dx/100,max(xdata) - dx/100);
+0131 [err_b1,fittedlines,slopes_b1] = util_FitBrokenStick(breaks,xdata,ydata);
+0132 
+0133 options = optimoptions(<span class="string">'fmincon'</span>); options.Display = <span class="string">'off'</span>; <span class="comment">% to stop fmincon from displaying info</span>
+0134 [breaks2] = fmincon(@(b2) util_FitBrokenStick(b2,xdata,ydata),[min(xdata) + <span class="keyword">...</span>
+0135     dx/3,min(xdata) + dx*2/3],[],[],[],[],(min(xdata) + <span class="keyword">...</span>
+0136     dx/100)*ones(2,1),(max(xdata) - dx/100)*ones(2,1),[],options);
+0137 [err_b2,fittedlines2,slopes_b2] = util_FitBrokenStick(breaks2,xdata,ydata);
+0138 
+0139 RMS_errors = [err_b0,err_b1,err_b2];
+0140 
+0141 MRC_num_segments = 1;
+0142 Segment_slopes = slope_b0;
+0143 <span class="keyword">if</span> RMS_errors(2)&lt;seg_test*RMS_errors(1)
+0144     MRC_num_segments=2;
+0145     Segment_slopes = slopes_b1;
+0146     <span class="keyword">if</span> RMS_errors(3)&lt;seg_test*RMS_errors(2)
+0147         MRC_num_segments=3;
+0148         Segment_slopes = slopes_b2;
+0149     <span class="keyword">end</span>
+0150 <span class="keyword">end</span>
+0151 
+0152 <span class="comment">% optional plotting</span>
+0153 <span class="keyword">if</span> plot_results
+0154     <span class="comment">% plot results to demonstrate fit</span>
+0155     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]);    
+0156     semilogy(mrc(:,1),(mrc(:,2)),<span class="string">'k-'</span>,<span class="string">'linewidth'</span>,2)
+0157     hold on
+0158     semilogy(sort(mrc(:,1)),exp(mdl(1) + mdl(2).*(sort(mrc(:,1)))),<span class="string">'b-'</span>)
+0159     <span class="comment">% plot broken stick fits</span>
+0160     semilogy(fittedlines(:,1),exp(fittedlines(:,2)),<span class="string">'g-'</span>)
+0161     semilogy(fittedlines2(:,1),exp(fittedlines2(:,2)),<span class="string">'r-'</span>)    
+0162     xlabel(<span class="string">'Relative time [timestep]'</span>)
+0163     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0164     title(<span class="string">'Fitted recession curve - log scale'</span>)
+0165     legend(<span class="string">'Master Recession Curve'</span>,[<span class="string">'1-segment fit, RMSE = '</span>,num2str(err_b0)],<span class="keyword">...</span>
+0166         [<span class="string">'2-segment fit, RMSE = '</span>,num2str(err_b1)],<span class="keyword">...</span>
+0167         [<span class="string">'3-segment fit, RMSE = '</span>,num2str(err_b2)],<span class="string">'location'</span>,<span class="string">'best'</span>)
+0168     fig_handles.MRC_slopeChanges = fig;
+0169 <span class="keyword">end</span>
+0170 
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="comment">% use util function instead</span>
+0174 <span class="comment">%{</span>
+0175 <a name="_sub1" href="#_subfunctions" class="code">function [err,fittedlines,slopes] = brokenstick(breakpoints,x,y)</a>
+0176 <span class="comment">% Fits two or three part broken stick fit.</span>
+0177 <span class="comment">% Adapted from online example by John D'Errico.</span>
+0178 
+0179 breakpoints=breakpoints(:).'; <span class="comment">% make breakpoints into row vector</span>
+0180 breaks = [min(x),breakpoints,max(x)];
+0181 nx=length(x);
+0182 <span class="comment">% which points lie in which interval?</span>
+0183 xbins = discretize(x,breaks);
+0184 
+0185 <span class="comment">% write the problem in matrix form</span>
+0186 <span class="keyword">if</span> numel (breakpoints)==1
+0187     A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(xbins == 2)];
+0188 <span class="keyword">elseif</span>   numel (breakpoints)==2
+0189     A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
+0190 <span class="keyword">else</span>
+0191     error(<span class="string">'Function brokenstick only works for 1 or 2 breakpoints'</span>)
+0192 <span class="keyword">end</span>
+0193 
+0194 <span class="comment">% solve matrix</span>
+0195 coef = A\y;
+0196 err = norm(y - A*coef);
+0197 
+0198 <span class="comment">% unpack the coefficients</span>
+0199 c1 = coef(1);
+0200 s = [coef(2:end)];
+0201 css = cumsum(s);
+0202 s = [s;s(end)];
+0203 css = [css;css(end)];
+0204 bi = [breaks(1:end-1).';breaks(end-1)];
+0205 fittedlines = zeros(length(breaks),2);
+0206 slopes = zeros(length(breaks),1);
+0207 fittedlines(:,1) = breaks.';
+0208 fittedlines(1:2,2) = (c1 - breaks(1).*s(1)) + s(1).*breaks(1:2).';
+0209 fittedlines(3,2) = (c1 - breaks(1).*s(1) - breaks(2).*s(2)) + (s(1)+s(2)).*breaks(3).';
+0210 <span class="keyword">if</span> numel (breakpoints)==2
+0211     fittedlines(4,2) = (c1 - sum(breaks(1:3).'.*s(1:3))) + sum(s(1:3)).*breaks(4).';
+0212 <span class="keyword">end</span>
+0213 slopes = cumsum(s);slopes=slopes(1:end-1);
+0214 
+0215 <span class="keyword">end</span>
+0216 <span class="comment">%}</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

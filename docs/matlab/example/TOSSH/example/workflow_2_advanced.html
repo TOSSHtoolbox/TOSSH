@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of workflow_2_advanced</title>
+  <meta name="keywords" content="workflow_2_advanced">
+  <meta name="description" content="% TOSSH workflow 2 - advanced workflow">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="index.html">example</a> &gt; workflow_2_advanced.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>workflow_2_advanced
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH workflow 2 - advanced workflow</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH workflow 2 - advanced workflow
+
+   This script shows how to use TOSSH with example data from multiple 
+   catchments. We first show how TOSSH can be used to analyse catchment
+   data. We then show typical issues that need to be taken care of, e.g. 
+   signatures that cannot be calculated for certain input data. 
+
+   The example data used in this workflow are taken from CAMELS-GB 
+   (Coxon et al., 2020), see README_example_data.txt for more information 
+   on data sources.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH workflow 2 - advanced workflow</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   This script shows how to use TOSSH with example data from multiple</span>
+0004 <span class="comment">%   catchments. We first show how TOSSH can be used to analyse catchment</span>
+0005 <span class="comment">%   data. We then show typical issues that need to be taken care of, e.g.</span>
+0006 <span class="comment">%   signatures that cannot be calculated for certain input data.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   The example data used in this workflow are taken from CAMELS-GB</span>
+0009 <span class="comment">%   (Coxon et al., 2020), see README_example_data.txt for more information</span>
+0010 <span class="comment">%   on data sources.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Copyright (C) 2020</span>
+0013 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0014 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0015 
+0016 close all
+0017 <span class="comment">% clear all</span>
+0018 clc
+0019 
+0020 <span class="comment">%% Add directories to path</span>
+0021 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path.</span>
+0022 <span class="comment">% If we already are in this directory, we can use the pwd command:</span>
+0023 mydir = pwd;
+0024 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0025 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0026 cd(mydir)
+0027 addpath(genpath(mydir));
+0028 
+0029 <span class="comment">%% Load data</span>
+0030 path = <span class="string">'./example/example_data/'</span>; <span class="comment">% specify path</span>
+0031 
+0032 <span class="comment">% Daily data from 3 different catchments.</span>
+0033 <span class="comment">% Catchment 1</span>
+0034 data = load(strcat(path,<span class="string">'33029_daily.mat'</span>)); <span class="comment">% load data</span>
+0035 t_1 = data.t;
+0036 Q_1 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0037 P_1 = data.P; <span class="comment">% precipitation [mm/day]</span>
+0038 <span class="comment">% Note: PET and T example data are provided but not used here.</span>
+0039 <span class="comment">% PET_1 = data.PET; % potential evapotranspiration [mm/day]</span>
+0040 <span class="comment">% T_1 = data.T; % temperature [degC]</span>
+0041 <span class="comment">% Catchment 2</span>
+0042 data = load(strcat(path,<span class="string">'39020_daily.mat'</span>)); <span class="comment">% load data</span>
+0043 t_2 = data.t;
+0044 Q_2 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0045 P_2 = data.P; <span class="comment">% precipitation [mm/day]</span>
+0046 <span class="comment">% Catchment 3</span>
+0047 data = load(strcat(path,<span class="string">'73014_daily.mat'</span>)); <span class="comment">% load data</span>
+0048 t_3 = data.t;
+0049 Q_3 = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0050 P_3 = data.P; <span class="comment">% precipitation [mm/day]</span>
+0051 
+0052 clear data
+0053 
+0054 <span class="comment">%% Plot data</span>
+0055 <span class="comment">% We can plot the data to get a first idea of the hydrographs.</span>
+0056 <span class="comment">% The three different catchments show a different response, ranging from</span>
+0057 <span class="comment">% flashy to rather damped.</span>
+0058 figure(<span class="string">'pos'</span>,[100 100 350 200])
+0059 hold on
+0060 plot(t_1,Q_1./mean(Q_1),<span class="string">'b'</span>)
+0061 plot(t_2,Q_2./mean(Q_2),<span class="string">'r'</span>)
+0062 plot(t_3,Q_3./mean(Q_3),<span class="string">'g'</span>)
+0063 xlabel(<span class="string">'Date'</span>)
+0064 ylabel(<span class="string">'Q/mean(Q) [-]'</span>)
+0065 xlim([datetime(2002,10,01) datetime(2005,09,30)])
+0066 legend(<span class="string">'Catchment 1'</span>,<span class="string">'Catchment 2'</span>,<span class="string">'Catchment 3'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0067 
+0068 <span class="comment">%% Calculate signatures</span>
+0069 <span class="comment">% We can calculate some hydrological signatures for the three different</span>
+0070 <span class="comment">% catchments, such as the BFI or the slope of the flow duration.</span>
+0071 BFI_1 = sig_BFI(Q_1,t_1,<span class="string">'method'</span>,<span class="string">'UKIH'</span>);
+0072 BFI_2 = sig_BFI(Q_2,t_2,<span class="string">'method'</span>,<span class="string">'UKIH'</span>);
+0073 BFI_3 = sig_BFI(Q_3,t_3,<span class="string">'method'</span>,<span class="string">'UKIH'</span>);
+0074 FDC_slope_1 = sig_FDC_slope(Q_1,t_1);
+0075 FDC_slope_2 = sig_FDC_slope(Q_2,t_2);
+0076 FDC_slope_3 = sig_FDC_slope(Q_3,t_3);
+0077 <span class="comment">% We can store the results in a table to print them in the command window.</span>
+0078 VarNames = {<span class="string">'BFI'</span>,<span class="string">'FDC_slope'</span>};
+0079 RowNames = {<span class="string">'Catchment 1'</span>;<span class="string">'Catchment 2'</span>;<span class="string">'Catchment 3'</span>};
+0080 Tab = table([BFI_1; BFI_2; BFI_3],<span class="keyword">...</span>
+0081     [FDC_slope_1; FDC_slope_2; FDC_slope_3],<span class="keyword">...</span>
+0082     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0083 disp(Tab)
+0084 <span class="comment">% The signatures (shown in the printed table) correspond well with the</span>
+0085 <span class="comment">% hydrographs. Catchments 1 and 2 show a damped response indicated by high</span>
+0086 <span class="comment">% BFIs and low slopes of the FDC, while catchment 3 shows a flashy response</span>
+0087 <span class="comment">% indicated by a lower BFI and a higher slope of the FDC.</span>
+0088 
+0089 <span class="comment">%% Calculation functions</span>
+0090 <span class="comment">% We can calculate all signatures from one of the signature sets using a</span>
+0091 <span class="comment">% calculation function, e.g. the Euser et al. (2013) calculation fucntion.</span>
+0092 <span class="comment">% First, we need to create cell arrays containing the time series.</span>
+0093 Q_cell = {Q_1; Q_2; Q_3};
+0094 t_cell = {t_1; t_2; t_3};
+0095 Euser_signatures = calc_Euser(Q_cell,t_cell);
+0096 <span class="comment">% The signatures are returned as a single struct file. We can then extract</span>
+0097 <span class="comment">% individual signatures for all three catchments, for example the lag-1</span>
+0098 <span class="comment">% autocorrelation AC1.</span>
+0099 VarNames = {<span class="string">'AC1'</span>};
+0100 Tab = table(Euser_signatures.AC1,<span class="keyword">...</span>
+0101     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0102 disp(Tab)
+0103 
+0104 <span class="comment">% Cell arrays are used to be able to handle time series of different</span>
+0105 <span class="comment">% length which can be the case with real data sets.</span>
+0106 Q_cell = {Q_1(1:1000); Q_2(1:500); Q_3(2000:end)};
+0107 t_cell = {t_1(1:1000); t_2(1:500); t_3(2000:end)};
+0108 Euser_signatures_short = calc_Euser(Q_cell,t_cell);
+0109 <span class="comment">% The shorter time series result in slightly different signature values.</span>
+0110 VarNames = {<span class="string">'AC1'</span>};
+0111 Tab = table(Euser_signatures_short.AC1,<span class="keyword">...</span>
+0112     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0113 disp(Tab)
+0114 
+0115 <span class="comment">%% Signatures with plotting functionality</span>
+0116 <span class="comment">% Some signatures come with a plotting functionality. This can help to</span>
+0117 <span class="comment">% determine the suitability of input parameters or to determine the</span>
+0118 <span class="comment">% suitability of signature assumptions.</span>
+0119 <span class="comment">% If we perform a recession analysis and choose to plot the result, we</span>
+0120 <span class="comment">% obtain a plot that shows the recession segments and a plot that shows the</span>
+0121 <span class="comment">% the fitted recession curves coloured according to the season.</span>
+0122 [para_mat, ~, ~, ~, fig_RecessionAnalysis] = <span class="keyword">...</span>
+0123     sig_RecessionAnalysis(Q_3,t_3,<span class="string">'plot_results'</span>,true);
+0124 <span class="comment">% We can also obtain the figure handles which allows us to manipulate that</span>
+0125 <span class="comment">% figure. For example, we can zoom into the time series to inspect the</span>
+0126 <span class="comment">% chosen recession segments.</span>
+0127 figure(fig_RecessionAnalysis.RecessionSegments)
+0128 xlim([datetime(2002,10,01) datetime(2003,03,31)])
+0129 
+0130 <span class="comment">% We can also calculate the recession constant using a master recession</span>
+0131 <span class="comment">% curve which assumes exponential recession behaviour and check whether</span>
+0132 <span class="comment">% this assumption is reasonable. Note that we set the eps parameter to a</span>
+0133 <span class="comment">% small value that allows for recessions with small &quot;bumps&quot;.</span>
+0134 [K, ~, ~, fig_BaseflowRecessionK] = <span class="keyword">...</span>
+0135     sig_BaseflowRecessionK(Q_3,t_3,<span class="string">'plot_results'</span>,true,<span class="string">'eps'</span>,0.01*median(Q_1));
+0136 
+0137 <span class="comment">% Some signatures focus on patterns that are best analysed visually. For</span>
+0138 <span class="comment">% example, the quickflow response during a rainfall event can indicate</span>
+0139 <span class="comment">% which runoff generation processes occur in a catchment.</span>
+0140 [ie_effect, se_effect, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, fig_EventGraphThresholds] = <span class="keyword">...</span>
+0141     sig_EventGraphThresholds(Q_3,t_3,P_3,<span class="string">'plot_results'</span>,true);
+0142 <span class="comment">% We can see that most summer storms lead to little runoff, while all</span>
+0143 <span class="comment">% winter storms produce runoff. This indicates saturation excess quickflow.</span>
+0144 
+0145 <span class="comment">%% Signatures that are variations of the same signature</span>
+0146 <span class="comment">% Some signatures are variations of existing signatures. For example, many</span>
+0147 <span class="comment">% papers use differen sections of the flow duration curve. The default</span>
+0148 <span class="comment">% option is the slope between the 33th and the 66th percentile.</span>
+0149 FDC_midslope = sig_FDC_slope(Q_1,t_1,<span class="string">'plot_results'</span>,true); 
+0150 <span class="comment">% Alternatively we can calculate the high-section or the low-section slope</span>
+0151 <span class="comment">% (e.g. Yilmaz et al., 2008). Note that the percentiles are defined as</span>
+0152 <span class="comment">% exceedance probabilities, i.e. the high-section corresponds to low values</span>
+0153 <span class="comment">% (e.g. [0 0.3]) and vice versa.</span>
+0154 FDC_highslope = sig_FDC_slope(Q_1,t_1,<span class="string">'slope_range'</span>, [0 0.3], <span class="string">'plot_results'</span>,true); 
+0155 FDC_lowslope = sig_FDC_slope(Q_1,t_1,<span class="string">'slope_range'</span>, [0.8 1.0], <span class="string">'plot_results'</span>,true);
+0156 
+0157 <span class="comment">%% NaN values</span>
+0158 <span class="comment">% A common problem are NaN values (or missing values) in time series. TOSSH</span>
+0159 <span class="comment">% can handle NaN values, for example by calculating the signature using the</span>
+0160 <span class="comment">% remaining series. Many missing values can influence the resulting</span>
+0161 <span class="comment">% signature value. To show the effect of NaN values we can create a new</span>
+0162 <span class="comment">% flow time series that contains NaN values.</span>
+0163 Q_mean_1 = sig_Q_mean(Q_1,t_1);
+0164 Q_tmp = Q_1;
+0165 Q_tmp(1:50) = NaN;
+0166 Q_mean_2 = sig_Q_mean(Q_tmp,t_1);
+0167 Q_tmp(1:2000) = NaN;
+0168 Q_mean_3 = sig_Q_mean(Q_tmp,t_1);
+0169 VarNames = {<span class="string">'Q_mean'</span>};
+0170 RowNames = {<span class="string">'Full series'</span>,<span class="string">'A few NaNs'</span>,<span class="string">'Many NaNs'</span>};
+0171 Tab = table([Q_mean_1; Q_mean_2; Q_mean_3],<span class="keyword">...</span>
+0172     <span class="string">'VariableNames'</span>,VarNames,<span class="string">'RowNames'</span>,RowNames);
+0173 disp(Tab)
+0174 <span class="comment">% We can see that few missing values do not change the mean flow, but many</span>
+0175 <span class="comment">% NaN values have an effect on the signature.</span>
+0176 
+0177 <span class="comment">%% Utility functions</span>
+0178 <span class="comment">% Utility functions are used internally but are coded separately to enhance</span>
+0179 <span class="comment">% reusability, both within TOSSH and externally. For example, we can use</span>
+0180 <span class="comment">% our recession extraction utility function to extract recession segments.</span>
+0181 flow_section = util_RecessionSegments(Q_1(1:365), t_1(1:365), <span class="keyword">...</span>
+0182     <span class="string">'recession_length'</span>,5,<span class="string">'start_of_recession'</span>,<span class="string">'peak'</span>,<span class="string">'plot_results'</span>,true);
+0183 <span class="comment">% util_RecessionSegments returns indices corresponding to the start and end</span>
+0184 <span class="comment">% of each recession segment.</span>
+0185 
+0186 <span class="comment">%% Warnings and errors</span>
+0187 <span class="comment">% NaN values or other problems during signature calculation can be detected</span>
+0188 <span class="comment">% by looking at the warning/error outputs each signature functions returns.</span>
+0189 <span class="comment">% Two outputs can be retrieved: an error flag (error_flag) that corresponds</span>
+0190 <span class="comment">% to a certain type of warning/error, and a string (error_str) that</span>
+0191 <span class="comment">% decribes the warning/error (see also workflow_1_basic.m). If</span>
+0192 <span class="comment">% multiple warnings/errors occur, they are all listed in the error string,</span>
+0193 <span class="comment">% starting with the one that occurred last.</span>
+0194 
+0195 <span class="comment">% Some signatures cannot be calculated for certain catchments. For example,</span>
+0196 <span class="comment">% if a catchment is highly ephemeral, the slope of the flow duration curve</span>
+0197 <span class="comment">% cannot be calculated. We can simulate such a catchment by setting many</span>
+0198 <span class="comment">% values to 0.</span>
+0199 Q_tmp = Q_1;
+0200 Q_tmp(1:2000) = 0;
+0201 [FDC_slope, error_flag, error_str] = sig_FDC_slope(Q_tmp,t_1);
+0202 fprintf(<span class="string">'FDC_slope = %.2f \n'</span>,FDC_slope)
+0203 fprintf(error_str+&quot;\n&quot;)
+0204 <span class="comment">% The function returns NaN and the error statement indicates that the slope</span>
+0205 <span class="comment">% of the FDC could not be calculated.</span>
+0206 
+0207 <span class="comment">% There are also &quot;normal&quot; errors which can happen if the input parameters</span>
+0208 <span class="comment">% are specified incorrectly (wrong format, wrong range, etc.).</span>
+0209 [FDC_slope, error_flag, error_str] = sig_FDC_slope(Q_tmp,t_1,<span class="string">'slope_range'</span>,[0.33 1.1]);
+0210 
+0211 <span class="comment">%% Further information</span>
+0212 <span class="comment">% Further information can be found in the online documentation:</span>
+0213 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

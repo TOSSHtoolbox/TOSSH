@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of TOSSH_test_script_15min_data</title>
+  <meta name="keywords" content="TOSSH_test_script_15min_data">
+  <meta name="description" content="% TOSSH test script for 15min data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../index.html">example</a> &gt; <a href="index.html">old</a> &gt; TOSSH_test_script_15min_data.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\old&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>TOSSH_test_script_15min_data
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH test script for 15min data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH test script for 15min data</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH test script for 15min data</span>
+0002 
+0003 close all
+0004 <span class="comment">% clear all</span>
+0005 clc
+0006 
+0007 <span class="comment">%% Load data</span>
+0008 <span class="comment">% need to be in the directory that contains TOSSH</span>
+0009 
+0010 path = <span class="string">'.\TOSSH_development\example\example_data\old\'</span>; <span class="comment">% specify path</span>
+0011 
+0012 <span class="comment">% 3 years of hourly data from 5 different catchments.</span>
+0013 catchment_id = [&quot;22006&quot;;&quot;39020&quot;;&quot;42003&quot;;&quot;53028&quot;;&quot;71001&quot;];
+0014 
+0015 n = 105121; <span class="comment">% length of time series</span>
+0016 t = NaT(n,length(catchment_id));
+0017 Q = NaN(n,length(catchment_id));
+0018 P = NaN(n,length(catchment_id));
+0019 PET = NaN(n,length(catchment_id));
+0020 T = NaN(n,length(catchment_id));
+0021 
+0022 <span class="keyword">for</span> i = 1:length(catchment_id)
+0023     data = load(strcat(path,catchment_id(i),<span class="string">'_15min.mat'</span>)); <span class="comment">% load data</span>
+0024     t(:,i) = data.t;
+0025     Q(:,i) = data.Q;
+0026     P(:,i) = data.P;
+0027     PET(:,i) = data.PET;
+0028     T(:,i) = data.T;
+0029 <span class="keyword">end</span>
+0030 clear data
+0031 
+0032 <span class="comment">%% Plot data</span>
+0033 <span class="comment">% all flow data</span>
+0034 figure(<span class="string">'pos'</span>,[100 100 350 200])
+0035 hold on
+0036 plot(t,Q)
+0037 xlabel(<span class="string">'Date'</span>)
+0038 ylabel(<span class="string">'Q [mm/day]'</span>)
+0039 <span class="comment">% xlim([datetime(2002,10,01) datetime(2003,09,30)])</span>
+0040 legend
+0041 
+0042 <span class="comment">% flow and precip data for one catchment</span>
+0043 figure(<span class="string">'pos'</span>,[100 100 350 200])
+0044 hold on
+0045 plot(t(:,3),P(:,3)./mean(P(:,3),<span class="string">'omitnan'</span>))
+0046 plot(t(:,3),Q(:,3)./mean(Q(:,3),<span class="string">'omitnan'</span>))
+0047 xlabel(<span class="string">'Date'</span>)
+0048 ylabel(<span class="string">'Q or P [mm/day]'</span>)
+0049 <span class="comment">% xlim([datetime(2002,10,01) datetime(2003,09,30)])</span>
+0050 legend(<span class="string">'P'</span>,<span class="string">'Q'</span>)
+0051 
+0052 <span class="comment">%% Calculate signatures</span>
+0053 <span class="comment">% some example signatures - quite slow!</span>
+0054 
+0055 BFI = NaN(length(catchment_id),1);
+0056 ResponseTime = NaN(length(catchment_id),1);
+0057 RecessionParameters = NaN(length(catchment_id),2);
+0058 
+0059 <span class="keyword">for</span> i = 1:length(catchment_id)
+0060     <span class="keyword">if</span> mod(i,1) == 0 <span class="comment">% check progress</span>
+0061         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,length(catchment_id))
+0062     <span class="keyword">end</span>
+0063     BFI(i) = sig_BFI(Q(:,i),t(:,i));
+0064     ResponseTime(i) = sig_CatchmentResponseTime(Q(:,i),t(:,i),P(:,i));
+0065     [RecessionParameters(i,:),~,~,error_string] = <span class="keyword">...</span>
+0066         sig_RecessionAnalysis(Q(:,i),t(:,i),<span class="keyword">...</span>
+0067         <span class="string">'fit_individual'</span>,false,<span class="string">'eps'</span>,median(Q(:,i),<span class="string">'omitnan'</span>).*0.01);
+0068     disp(error_string)
+0069 <span class="keyword">end</span>
+0070 
+0071 disp(BFI)
+0072 disp(ResponseTime)
+0073 disp(RecessionParameters)
+0074 
+0075 <span class="comment">%% Calculation functions</span>
+0076 Q_mat = num2cell(Q,1)';
+0077 t_mat = num2cell(t,1)';
+0078 P_mat = num2cell(P,1)';
+0079 PET_mat = num2cell(PET,1)';
+0080 T_mat = num2cell(T,1)';
+0081 
+0082 tic
+0083 <span class="comment">% TOSSH_signatures_15min = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0084 TOSSH_signatures_15min = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0085 toc
+0086 
+0087 <span class="comment">%% NaNs in all time series</span>
+0088 Q_mat = num2cell(Q,1)';
+0089 t_mat = num2cell(t,1)';
+0090 P_mat = num2cell(P,1)';
+0091 PET_mat = num2cell(PET,1)';
+0092 T_mat = num2cell(T,1)';
+0093 
+0094 P_mat{1}(1000:2000) = NaN; 
+0095 P_mat{2}(1000:2000) = NaN; 
+0096 P_mat{3}(2000:5000) = NaN; 
+0097 P_mat{4}(10000:50000) = NaN; 
+0098 PET_mat{1}(1000:2000) = NaN; 
+0099 PET_mat{2}(2000:3000) = NaN; 
+0100 PET_mat{3}(1000:20000) = NaN; 
+0101 PET_mat{4}(1000:2000) = NaN; 
+0102 T_mat{1}(1000:2000) = NaN; 
+0103 T_mat{2}(4000:5000) = NaN; 
+0104 T_mat{3}(10000:20000) = NaN; 
+0105 T_mat{4}(10000:50000) = NaN; 
+0106 
+0107 tic
+0108 <span class="comment">% TOSSH_signatures_15min_NaN = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0109 TOSSH_signatures_15min_NaN = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0110 toc
+0111 
+0112 <span class="comment">%% short time series</span>
+0113 Q_mat = num2cell(Q,1)';
+0114 t_mat = num2cell(t,1)';
+0115 P_mat = num2cell(P,1)';
+0116 PET_mat = num2cell(PET,1)';
+0117 T_mat = num2cell(T,1)';
+0118 
+0119 t_mat{1}(100:end) = []; 
+0120 t_mat{2}(1000:end) = []; 
+0121 t_mat{3}(1000:end) = []; 
+0122 t_mat{4}(10000:end) = []; 
+0123 Q_mat{1}(100:end) = []; 
+0124 Q_mat{2}(1000:end) = []; 
+0125 Q_mat{3}(1000:end) = []; 
+0126 Q_mat{4}(10000:end) = []; 
+0127 P_mat{1}(100:end) = []; 
+0128 P_mat{2}(1000:end) = []; 
+0129 P_mat{3}(2000:end) = []; 
+0130 P_mat{4}(10000:end) = []; 
+0131 PET_mat{1}(100:end) = []; 
+0132 PET_mat{2}(1000:end) = []; 
+0133 PET_mat{3}(2000:end) = []; 
+0134 PET_mat{4}(10000:end) = []; 
+0135 T_mat{1}(100:end) = []; 
+0136 T_mat{2}(1000:end) = []; 
+0137 T_mat{3}(2000:end) = []; 
+0138 T_mat{4}(10000:end) = []; 
+0139 
+0140 tic
+0141 TOSSH_signatures_15min_short = calc_Addor(Q_mat, t_mat, P_mat);
+0142 <span class="comment">% TOSSH_signatures_15min_short = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);</span>
+0143 toc</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

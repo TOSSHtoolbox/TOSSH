@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of TOSSH_test_time_resolution</title>
+  <meta name="keywords" content="TOSSH_test_time_resolution">
+  <meta name="description" content="% TOSSH test">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../index.html">example</a> &gt; <a href="index.html">old</a> &gt; TOSSH_test_time_resolution.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\old&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>TOSSH_test_time_resolution
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH test</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH test
+
+   - testing data with different time resolution
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH test</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   - testing data with different time resolution</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   Copyright (C) 2020</span>
+0006 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0007 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0008 
+0009 
+0010 
+0011 <span class="comment">%% load data</span>
+0012 
+0013 <span class="comment">% catchment ID</span>
+0014 ID = 57004;
+0015 <span class="comment">% catchment_id = [&quot;33029&quot;;&quot;39020&quot;;&quot;57004&quot;;&quot;71001&quot;;&quot;96002&quot;];</span>
+0016 
+0017 clc
+0018 path = <span class="string">'./TOSSH_development/example/example_data/new/'</span>;
+0019 
+0020 <span class="comment">% load CAMELS GB data</span>
+0021 <span class="keyword">if</span> exist(<span class="string">'data_CAMELS_GB_struc'</span>) <span class="comment">% check if data is already loaded</span>
+0022 <span class="keyword">else</span>
+0023     data_CAMELS_GB_struc = load(<span class="string">'./CAMELS_Matlab/Data/CAMELS_GB_data.mat'</span>);
+0024 <span class="keyword">end</span>
+0025 CAMELS_GB_data = data_CAMELS_GB_struc.CAMELS_GB_data;
+0026 clear data_CAMELS_GB_struc
+0027 
+0028 <span class="comment">% load daily data</span>
+0029 index = 1:length(CAMELS_GB_data.gauge_id);
+0030 nr = index(CAMELS_GB_data.gauge_id==ID); <span class="comment">%496;</span>
+0031 Q_daily = CAMELS_GB_data.Q{nr};
+0032 P_daily = CAMELS_GB_data.P{nr};
+0033 PET_daily = CAMELS_GB_data.PET{nr};
+0034 
+0035 t_daily = Q_daily(:,1);
+0036 t_daily = datetime(t_daily,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>); <span class="comment">% convert datenum to datetime</span>
+0037 Q_daily = Q_daily(:,2);
+0038 P_daily = P_daily(:,2);
+0039 PET_daily = PET_daily(:,2);
+0040 
+0041 <span class="comment">% get subperiod</span>
+0042 indices = [1:length(t_daily)]';
+0043 start_ind = indices(t_daily==datetime(1999,1,1));
+0044 end_ind = indices(t_daily==datetime(2008,12,31));
+0045 t_daily = t_daily(start_ind:end_ind);
+0046 Q_daily = Q_daily(start_ind:end_ind);
+0047 P_daily = P_daily(start_ind:end_ind);
+0048 PET_daily = PET_daily(start_ind:end_ind);
+0049 
+0050 <span class="comment">% load hourly data</span>
+0051 data = load(strcat(path,<span class="string">'Q_'</span>,num2str(ID),<span class="string">'_hourly.mat'</span>)); <span class="comment">% [matlab_date flow]</span>
+0052 Q_hourly = data.Q;
+0053 data = load(strcat(path,<span class="string">'P_'</span>,num2str(ID),<span class="string">'_hourly.mat'</span>)); <span class="comment">% [matlab_date precipitation]</span>
+0054 P_hourly = data.P;
+0055 data = load(strcat(path,<span class="string">'PET_'</span>,num2str(ID),<span class="string">'_hourly.mat'</span>)); <span class="comment">% [matlab_date pot. evaporation]</span>
+0056 PET_hourly = data.PET;
+0057 PET_hourly(PET_hourly&lt;0) = 0;
+0058 
+0059 t_hourly = Q_hourly(:,1);
+0060 t_hourly = datetime(t_hourly,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>); <span class="comment">% convert datenum to datetime</span>
+0061 Q_hourly = Q_hourly(:,2);
+0062 P_hourly = P_hourly(:,2);
+0063 PET_hourly = PET_hourly(:,2);
+0064 
+0065 <span class="comment">% load 15min Q data</span>
+0066 data = load(strcat(path,<span class="string">'Q_'</span>,num2str(ID),<span class="string">'_15min.mat'</span>)); <span class="comment">% [matlab_date flow]</span>
+0067 Q_15min = data.Q;
+0068 
+0069 t_15min = Q_15min(:,1);
+0070 t_15min = datetime(t_15min,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>); <span class="comment">% convert datenum to datetime</span>
+0071 Q_15min = Q_15min(:,2);
+0072 
+0073 
+0074 <span class="comment">%{</span>
+0075 <span class="comment">% 33029 39020 57004</span>
+0076 data_daily = [datenum(t_daily),Q_daily,P_daily,PET_daily];
+0077 save(strcat(<span class="string">'data_'</span>,num2str(ID),<span class="string">'_daily.txt'</span>), <span class="string">'data_daily'</span>, <span class="string">'-ascii'</span>, <span class="string">'-double'</span>, <span class="string">'-tabs'</span>)
+0078 data_hourly = [datenum(t_hourly),Q_hourly,P_hourly,PET_hourly];
+0079 save(strcat(<span class="string">'data_'</span>,num2str(ID),<span class="string">'_hourly.txt'</span>), <span class="string">'data_hourly'</span>, <span class="string">'-ascii'</span>, <span class="string">'-double'</span>, <span class="string">'-tabs'</span>)
+0080 data_15min = [datenum(t_15min),Q_15min]; <span class="comment">%,P_15min,PET_15min</span>
+0081 save(strcat(<span class="string">'data_'</span>,num2str(ID),<span class="string">'_15min.txt'</span>), <span class="string">'data_15min'</span>, <span class="string">'-ascii'</span>, <span class="string">'-double'</span>, <span class="string">'-tabs'</span>)
+0082 <span class="comment">%}</span>
+0083 
+0084 <span class="comment">%% plot data</span>
+0085 figure(<span class="string">'Name'</span>,num2str(CAMELS_GB_data.gauge_id(nr)),<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'pos'</span>,[10 10 400 250]);
+0086 hold on
+0087 plot(t_daily,Q_daily)
+0088 plot(t_hourly,Q_hourly*24,<span class="string">'--'</span>)
+0089 plot(t_15min,Q_15min*4*24,<span class="string">'--'</span>)
+0090 xlabel(<span class="string">'Date'</span>)
+0091 ylabel(<span class="string">'Q [mm d^{-1}]'</span>)
+0092 <span class="comment">% datetick</span>
+0093 legend(<span class="string">'Daily'</span>,<span class="string">'Hourly'</span>,<span class="string">'15min'</span>)
+0094 
+0095 figure(<span class="string">'Name'</span>,num2str(CAMELS_GB_data.gauge_id(nr)),<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'pos'</span>,[10 10 400 250]);
+0096 hold on
+0097 plot(t_daily,P_daily)
+0098 plot(t_hourly,P_hourly*24,<span class="string">'--'</span>)
+0099 <span class="comment">% plot(t_15min,P_15min*4*24,'--')</span>
+0100 xlabel(<span class="string">'Date'</span>)
+0101 ylabel(<span class="string">'P [mm d^{-1}]'</span>)
+0102 <span class="comment">% datetick</span>
+0103 legend(<span class="string">'Daily'</span>,<span class="string">'Hourly'</span>)
+0104 
+0105 figure(<span class="string">'Name'</span>,num2str(CAMELS_GB_data.gauge_id(nr)),<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'pos'</span>,[10 10 400 250]);
+0106 hold on
+0107 plot(t_daily,PET_daily)
+0108 plot(t_hourly,PET_hourly*24,<span class="string">'--'</span>)
+0109 <span class="comment">% plot(t_15min,P_15min*4*24,'--')</span>
+0110 xlabel(<span class="string">'Date'</span>)
+0111 ylabel(<span class="string">'PET [mm d^{-1}]'</span>)
+0112 <span class="comment">% datetick</span>
+0113 legend(<span class="string">'Daily'</span>,<span class="string">'Hourly'</span>)
+0114 
+0115 <span class="comment">%% plot cumsum</span>
+0116 figure; title(num2str(ID))
+0117 plot(t_daily,cumsum(P_daily-PET_daily-Q_daily));
+0118 xlabel(<span class="string">'date'</span>); ylabel(<span class="string">'cumsum(P-PET-Q)'</span>); datetick
+0119 Q_hourly_nonan = Q_hourly;
+0120 Q_hourly_nonan(isnan(Q_hourly)) = median(Q_hourly,<span class="string">'omitnan'</span>);
+0121 <span class="comment">% figure;</span>
+0122 hold on; 
+0123 plot(t_hourly,cumsum(P_hourly-PET_hourly-Q_hourly_nonan));
+0124 xlabel(<span class="string">'date'</span>); ylabel(<span class="string">'cumsum(P-PET-Q)'</span>); datetick
+0125 legend(<span class="string">'daily'</span>,<span class="string">'hourly'</span>)
+0126 
+0127 <span class="comment">%% to do</span>
+0128 
+0129 <span class="comment">% extremely short time series leads to error</span>
+0130 
+0131 
+0132 <span class="comment">%% some testing</span>
+0133 
+0134 FDC_slope = sig_FDC_slope(Q_daily,t_daily,<span class="string">'plot_results'</span>,true)
+0135 FDC_slope = sig_FDC_slope(Q_hourly,t_hourly,<span class="string">'plot_results'</span>,true)
+0136 FDC_slope = sig_FDC_slope(Q_15min,t_15min,<span class="string">'plot_results'</span>,true)
+0137 
+0138 BFI = sig_BFI(Q_daily,t_daily,<span class="string">'plot_results'</span>,true)
+0139 BFI = sig_BFI(Q_hourly,t_hourly,<span class="string">'plot_results'</span>,true)
+0140 BFI = sig_BFI(Q_15min,t_15min,<span class="string">'plot_results'</span>,true)
+0141 
+0142 [para_mat, recession_month] = sig_RecessionAnalysis(<span class="keyword">...</span>
+0143     Q_daily,t_daily,<span class="string">'plot_results'</span>,true,<span class="string">'dQdt_method'</span>,<span class="string">'ETS'</span>,<span class="string">'fit_individual'</span>,true);
+0144 [para_mat, recession_month] = sig_RecessionAnalysis(<span class="keyword">...</span>
+0145     Q_hourly,t_hourly,<span class="string">'plot_results'</span>,true,<span class="string">'dQdt_method'</span>,<span class="string">'ETS'</span>,<span class="string">'fit_individual'</span>,true,<span class="keyword">...</span>
+0146     <span class="string">'eps'</span>,nanmedian(Q_hourly)./100);
+0147 [para_mat, recession_month] = sig_RecessionAnalysis(<span class="keyword">...</span>
+0148     Q_15min,t_15min,<span class="string">'plot_results'</span>,true,<span class="string">'dQdt_method'</span>,<span class="string">'BN'</span>,<span class="string">'fit_individual'</span>,true,<span class="keyword">...</span>
+0149     <span class="string">'eps'</span>,nanmedian(Q_15min)./100); <span class="comment">% breaks when using ETS scheme</span>
+0150 
+0151 BaseflowRecessionK = sig_BaseflowRecessionK(Q_daily,t_daily,<span class="string">'plot_results'</span>,true);
+0152 BaseflowRecessionK = sig_BaseflowRecessionK(Q_hourly,t_hourly,<span class="string">'plot_results'</span>,true,<span class="string">'eps'</span>,nanmedian(Q_hourly)./100);
+0153 BaseflowRecessionK = sig_BaseflowRecessionK(Q_15min,t_15min,<span class="string">'plot_results'</span>,true,<span class="string">'eps'</span>,nanmedian(Q_hourly)./100);</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

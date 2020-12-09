@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_QP_elasticity</title>
+  <meta name="keywords" content="sig_QP_elasticity">
+  <meta name="description" content="sig_QP_elasticity calculates streamflow-precipitation elasticity.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_QP_elasticity.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_QP_elasticity
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_QP_elasticity calculates streamflow-precipitation elasticity.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [QP_elasticity, error_flag, error_str] = sig_QP_elasticity(Q, t, P, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_QP_elasticity calculates streamflow-precipitation elasticity.
+   Calculates streamflow-precipitation elasticity, the sensitivity of a
+   catchment's streamflow response to changes in precipitation at the
+   annual time scale. Start of water year can be defined.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   P: precipitation [mm/timestep]
+   OPTIONAL
+   start_water_year: first month of water year, default = 10 (October)
+   method: choose method to calculate elasticity ('Sawicz','Sanka'),
+       default = 'Sanka'
+
+   OUTPUT
+   QP_elasticity: streamflow-precipitation elasticity [-]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   P = data.P;
+   QP_elasticity = sig_QP_elasticity(Q,t,P,'start_water_year',10);
+
+   References
+   Sankarasubramanian, A., Vogel, R.M. and Limbrunner, J.F., 2001. Climate
+   elasticity of streamflow in the United States. Water Resources
+   Research, 37(6), pp.1771-1781.
+    Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G.,
+   2011. Catchment classification: empirical analysis of hydrologic
+   similarity based on catchment function in the eastern USA. Hydrology
+   and Earth System Sciences, 15(9), pp.2895-2911.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [QP_elasticity, error_flag, error_str] = sig_QP_elasticity(Q, t, P, varargin)</a>
+0002 <span class="comment">%sig_QP_elasticity calculates streamflow-precipitation elasticity.</span>
+0003 <span class="comment">%   Calculates streamflow-precipitation elasticity, the sensitivity of a</span>
+0004 <span class="comment">%   catchment's streamflow response to changes in precipitation at the</span>
+0005 <span class="comment">%   annual time scale. Start of water year can be defined.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0009 <span class="comment">%   t: time [Matlab datetime]</span>
+0010 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0011 <span class="comment">%   OPTIONAL</span>
+0012 <span class="comment">%   start_water_year: first month of water year, default = 10 (October)</span>
+0013 <span class="comment">%   method: choose method to calculate elasticity ('Sawicz','Sanka'),</span>
+0014 <span class="comment">%       default = 'Sanka'</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%   QP_elasticity: streamflow-precipitation elasticity [-]</span>
+0018 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0019 <span class="comment">%       (error in signature calculation)</span>
+0020 <span class="comment">%   error_str: string contraining error description</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   EXAMPLE</span>
+0023 <span class="comment">%   % load example data</span>
+0024 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0025 <span class="comment">%   Q = data.Q;</span>
+0026 <span class="comment">%   t = data.t;</span>
+0027 <span class="comment">%   P = data.P;</span>
+0028 <span class="comment">%   QP_elasticity = sig_QP_elasticity(Q,t,P,'start_water_year',10);</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   References</span>
+0031 <span class="comment">%   Sankarasubramanian, A., Vogel, R.M. and Limbrunner, J.F., 2001. Climate</span>
+0032 <span class="comment">%   elasticity of streamflow in the United States. Water Resources</span>
+0033 <span class="comment">%   Research, 37(6), pp.1771-1781.</span>
+0034 <span class="comment">%    Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G.,</span>
+0035 <span class="comment">%   2011. Catchment classification: empirical analysis of hydrologic</span>
+0036 <span class="comment">%   similarity based on catchment function in the eastern USA. Hydrology</span>
+0037 <span class="comment">%   and Earth System Sciences, 15(9), pp.2895-2911.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%   Copyright (C) 2020</span>
+0040 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0041 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0042 
+0043 <span class="comment">% check input parameters</span>
+0044 <span class="keyword">if</span> nargin &lt; 3
+0045     error(<span class="string">'Not enough input arguments.'</span>)
+0046 <span class="keyword">end</span>
+0047 
+0048 ip = inputParser;
+0049 ip.CaseSensitive = true;
+0050 
+0051 <span class="comment">% required input arguments</span>
+0052 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0053 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0054 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0055 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0056 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0057 addRequired(ip, <span class="string">'P'</span>, @(P) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0058 
+0059 <span class="comment">% optional input arguments</span>
+0060 validationFcn = @(x) isnumeric(x) &amp;&amp; isscalar(x) &amp;&amp; (x &gt;= 1) &amp;&amp; (x &lt;= 12) &amp;&amp; floor(x)==x;
+0061 addParameter(ip, <span class="string">'start_water_year'</span>, 10, validationFcn) <span class="comment">% When does the water year start? Default: 10</span>
+0062 addParameter(ip, <span class="string">'method'</span>, <span class="string">'Sanka'</span>, @ischar) <span class="comment">% which method? Default: Sanka</span>
+0063 
+0064 parse(ip, Q, t, P, varargin{:})
+0065 start_water_year = ip.Results.start_water_year;
+0066 method = ip.Results.method;
+0067 
+0068 <span class="comment">% data checks</span>
+0069 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, <span class="string">'P'</span>, P);
+0070 <span class="keyword">if</span> error_flag == 2
+0071     QP_elasticity = NaN;
+0072     <span class="keyword">return</span>
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% calculate signature</span>
+0076 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0077 error_str_tmp = error_str;
+0078 <span class="comment">% aggregate time series to get annual sums</span>
+0079 [Q_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(Q, t, start_water_year);
+0080 [P_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(P, t, start_water_year);
+0081 <span class="keyword">if</span> error_flag == 0
+0082     error_flag = error_flag_tmp;
+0083     error_str = error_str_tmp;
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="comment">% calculate elasticity</span>
+0087 <span class="keyword">switch</span> method
+0088     <span class="keyword">case</span> <span class="string">'Sanka'</span>
+0089         dQ = Q_annual-mean(Q_annual,<span class="string">'omitnan'</span>);
+0090         dP = P_annual-mean(P_annual,<span class="string">'omitnan'</span>);
+0091     <span class="keyword">case</span> <span class="string">'Sawicz'</span>
+0092         dQ = diff(Q_annual);
+0093         dP = diff(P_annual);
+0094     <span class="keyword">otherwise</span>
+0095         error(<span class="string">'Please choose one of the available baseflow separation methods (Sawicz or Sanka).'</span>)
+0096 <span class="keyword">end</span>
+0097 
+0098 QP_elasticity = median(<span class="keyword">...</span>
+0099     (dQ./dP)*(mean(P_annual,<span class="string">'omitnan'</span>)/mean(Q_annual,<span class="string">'omitnan'</span>)),<span class="string">'omitnan'</span>);
+0100 
+0101 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_FitExponential</title>
+  <meta name="keywords" content="util_FitExponential">
+  <meta name="description" content="util_FitExponential fits an exponential function to recession segments.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_FitExponential.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_FitExponential
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_FitExponential fits an exponential function to recession segments.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [gamma] = util_FitExponential(Q, t, fitting_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_FitExponential fits an exponential function to recession segments.
+   a: Q = a+b*exp(-gamma*t) (stable when using lsqnonlin)
+   b: Q = Q0*exp(-gamma*t) (seems to be the most stable when using fitnlm)
+
+   INPUT
+   Q: dependent variable, typically streamflow in [mm/timestep]
+   t: independent variable, typically time
+   OPTIONAL
+   fitting_type: what kind of exponential function to fit ('a' or 'b').
+
+   OUTPUT
+   gamma: fitted time parameter of exponential function
+
+   EXAMPLE
+   t = [0:10]';
+   Q = exp(-0.1*t);
+   [gamma] = util_FitExponential(Q, t)
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="util_dQdt.html" class="code" title="function [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section, varargin)">util_dQdt</a>	util_dQdt calculates flow rate gradient with various options.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [gamma] = util_FitExponential(Q, t, fitting_type)</a>
+0002 <span class="comment">%util_FitExponential fits an exponential function to recession segments.</span>
+0003 <span class="comment">%   a: Q = a+b*exp(-gamma*t) (stable when using lsqnonlin)</span>
+0004 <span class="comment">%   b: Q = Q0*exp(-gamma*t) (seems to be the most stable when using fitnlm)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   Q: dependent variable, typically streamflow in [mm/timestep]</span>
+0008 <span class="comment">%   t: independent variable, typically time</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%   fitting_type: what kind of exponential function to fit ('a' or 'b').</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%   gamma: fitted time parameter of exponential function</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   EXAMPLE</span>
+0016 <span class="comment">%   t = [0:10]';</span>
+0017 <span class="comment">%   Q = exp(-0.1*t);</span>
+0018 <span class="comment">%   [gamma] = util_FitExponential(Q, t)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   Copyright (C) 2020</span>
+0021 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0022 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0023 
+0024 <span class="keyword">if</span> nargin &lt; 3
+0025     fitting_type = <span class="string">'a'</span>;
+0026 <span class="keyword">end</span>
+0027 
+0028 <span class="keyword">switch</span> fitting_type
+0029     <span class="keyword">case</span> <span class="string">'a'</span>
+0030         t = [0:length(t)-1]'; <span class="comment">% start of recession equals start of exponential</span>
+0031         <span class="comment">% lsqnonlin is more stable than fitnlm but requires optimization toolbox</span>
+0032         ExponentialObjective = @(para) para(2) + para(3).*exp(-para(1).*t) - Q;
+0033         para0 = [0.1 0.1 0.1];
+0034         options = optimoptions(@lsqnonlin,<span class="string">'Display'</span>,<span class="string">'off'</span>);
+0035         para = lsqnonlin(ExponentialObjective, para0, [1e-9 1e-9 1e-9], [100 100 100], options);
+0036         gamma = para(1);
+0037         
+0038     <span class="keyword">case</span> <span class="string">'b'</span>
+0039         t = [0:length(t)-1]'; <span class="comment">% start of recession equals start of exponential</span>
+0040         <span class="comment">% lsqnonlin is more stable than fitnlm but requires optimization toolbox</span>
+0041         ExponentialObjective = @(para) Q(1).*exp(-para(1).*t) - Q;
+0042         para0 = [0.1];
+0043         options = optimoptions(@lsqnonlin,<span class="string">'Display'</span>,<span class="string">'off'</span>);
+0044         para = lsqnonlin(ExponentialObjective, para0, [1e-9], [100], options);
+0045         gamma = para(1);
+0046         
+0047     <span class="keyword">otherwise</span>
+0048         error(<span class="string">'Please choose one of the available fitting types: a or b.'</span>)
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%{</span>
+0052 <span class="comment">% plot</span>
+0053 figure; plot(t,Q,<span class="string">'o'</span>); hold on
+0054 <span class="comment">% Q_est = Q(1)*exp(t.*-gamma);</span>
+0055 a = para(2);
+0056 b = para(3);
+0057 gamma = para(1);
+0058 Q_est = a+b*exp(t.*-gamma);
+0059 plot(t,Q_est)
+0060 <span class="comment">%}</span>
+0061 
+0062 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

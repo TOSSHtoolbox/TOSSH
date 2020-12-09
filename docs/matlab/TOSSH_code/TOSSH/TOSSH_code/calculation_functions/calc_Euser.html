@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Euser</title>
+  <meta name="keywords" content="calc_Euser">
+  <meta name="description" content="calc_Euser calculates signatures from Euser et al. (2013).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_Euser.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Euser
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_Euser calculates signatures from Euser et al. (2013).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_Euser(Q_mat, t_mat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_Euser calculates signatures from Euser et al. (2013).
+   Euser et al. (2013) use 8 signatures that represent different aspects
+   of hydrological behaviour. The signatures are used to test the 
+   consistency of model performance, within the FARM model evaluation 
+   framework.
+   Some of the 8 signatures used in Euser et al. (2013) are the same but
+   applied to different parts of the time series, e.g. the low flow
+   period. There are two ways of doing this. We can either set all values
+   outside the chosen period to NaN, or we can remove them. The latter is
+   the default option here. Since this leads to gaps in the time series 
+   which would raise a warning, we temporarily disable warnings.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   % create consistent cell arrays
+   Q_mat = {data.Q};
+   t_mat = {data.t};
+   results = calc_Euser(Q_mat,t_mat);
+
+   References
+   Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S.
+   and Savenije, H.H.G., 2013. A framework to assess the realism of model
+   structures using hydrological signatures. Hydrology and Earth System
+   Sciences, 17 (5), 2013.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_Euser(Q_mat, t_mat)</a>
+0002 <span class="comment">%calc_Euser calculates signatures from Euser et al. (2013).</span>
+0003 <span class="comment">%   Euser et al. (2013) use 8 signatures that represent different aspects</span>
+0004 <span class="comment">%   of hydrological behaviour. The signatures are used to test the</span>
+0005 <span class="comment">%   consistency of model performance, within the FARM model evaluation</span>
+0006 <span class="comment">%   framework.</span>
+0007 <span class="comment">%   Some of the 8 signatures used in Euser et al. (2013) are the same but</span>
+0008 <span class="comment">%   applied to different parts of the time series, e.g. the low flow</span>
+0009 <span class="comment">%   period. There are two ways of doing this. We can either set all values</span>
+0010 <span class="comment">%   outside the chosen period to NaN, or we can remove them. The latter is</span>
+0011 <span class="comment">%   the default option here. Since this leads to gaps in the time series</span>
+0012 <span class="comment">%   which would raise a warning, we temporarily disable warnings.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   INPUT</span>
+0015 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0016 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OUTPUT</span>
+0019 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0020 <span class="comment">%       series and associated error strings)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   EXAMPLE</span>
+0023 <span class="comment">%   % load example data</span>
+0024 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0025 <span class="comment">%   % create consistent cell arrays</span>
+0026 <span class="comment">%   Q_mat = {data.Q};</span>
+0027 <span class="comment">%   t_mat = {data.t};</span>
+0028 <span class="comment">%   results = calc_Euser(Q_mat,t_mat);</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   References</span>
+0031 <span class="comment">%   Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S.</span>
+0032 <span class="comment">%   and Savenije, H.H.G., 2013. A framework to assess the realism of model</span>
+0033 <span class="comment">%   structures using hydrological signatures. Hydrology and Earth System</span>
+0034 <span class="comment">%   Sciences, 17 (5), 2013.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   Copyright (C) 2020</span>
+0037 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0038 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0039 
+0040 <span class="comment">% check input parameters</span>
+0041 <span class="keyword">if</span> nargin &lt; 2
+0042     error(<span class="string">'Not enough input arguments.'</span>)
+0043 <span class="keyword">end</span>
+0044 
+0045 ip = inputParser;
+0046 ip.CaseSensitive = true;
+0047 
+0048 <span class="comment">% required input arguments</span>
+0049 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0050 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0051 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0052 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0053 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0054 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0055 
+0056 parse(ip, Q_mat, t_mat)
+0057 
+0058 <span class="comment">% calculate signatures</span>
+0059 
+0060 <span class="comment">% initialise arrays</span>
+0061 AC1 = NaN(size(Q_mat,1),1);
+0062 AC1_error_str = strings(size(Q_mat,1),1);
+0063 AC1_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0064 AC1_low_error_str = strings(size(Q_mat,1),1);
+0065 RLD = NaN(size(Q_mat,1),1);
+0066 RLD_error_str = strings(size(Q_mat,1),1);
+0067 PeakDistribution = NaN(size(Q_mat,1),1);
+0068 PeakDistribution_error_str = strings(size(Q_mat,1),1);
+0069 PeakDistribution_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0070 PeakDistribution_low_error_str = strings(size(Q_mat,1),1);
+0071 FDC = cell(size(Q_mat,1),1); <span class="comment">% they use the total FDC to evaluate models</span>
+0072 FDC_error_str = strings(size(Q_mat,1),1);
+0073 FDC_low = cell(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0074 FDC_low_error_str = strings(size(Q_mat,1),1);
+0075 FDC_high = cell(size(Q_mat,1),1); <span class="comment">% high flow season</span>
+0076 FDC_high_error_str = strings(size(Q_mat,1),1);
+0077 
+0078 low_flow_season = [5:9]; <span class="comment">% May to September</span>
+0079 high_flow_season = [11:12, 1:4]; <span class="comment">% November to April</span>
+0080 
+0081 <span class="comment">% loop over all catchments</span>
+0082 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0083     
+0084     [Q_low, t_low] = <span class="keyword">...</span>
+0085         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, low_flow_season);
+0086     [Q_high, t_high] = <span class="keyword">...</span>
+0087         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, high_flow_season);
+0088     
+0089     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i},<span class="string">'lag'</span>,1);
+0090     [AC1_low(i),~,AC1_low_error_str(i)] = sig_Autocorrelation(Q_low,t_low,<span class="string">'lag'</span>,1);
+0091     [RLD(i),~,RLD_error_str(i)] = sig_RisingLimbDensity(Q_mat{i},t_mat{i});
+0092     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
+0093     [PeakDistribution_low(i),~,PeakDistribution_low_error_str(i)] = sig_PeakDistribution(Q_low,t_low);
+0094     [FDC{i}(:,1),FDC{i}(:,2),~,FDC_error_str(i)] = sig_FDC(Q_mat{i},t_mat{i});
+0095     [FDC_low{i}(:,1),FDC_low{i}(:,2),~,FDC_low_error_str(i)] = sig_FDC(Q_low,t_low);
+0096     [FDC_high{i}(:,1),FDC_high{i}(:,2),~,FDC_high_error_str(i)] = sig_FDC(Q_high,t_high);
+0097     
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% add results to struct array</span>
+0101 results.AC1 = AC1;
+0102 results.AC1_error_str = AC1_error_str;
+0103 results.AC1_low = AC1_low;
+0104 results.AC1_low_error_str = AC1_low_error_str;
+0105 results.RLD = RLD;
+0106 results.RLD_error_str = RLD_error_str;
+0107 results.PeakDistribution = PeakDistribution;
+0108 results.PeakDistribution_error_str = PeakDistribution_error_str;
+0109 results.PeakDistribution_low = PeakDistribution_low;
+0110 results.PeakDistribution_low_error_str = PeakDistribution_low_error_str;
+0111 results.FDC = FDC;
+0112 results.FDC_error_str = FDC_error_str;
+0113 results.FDC_low = FDC_low;
+0114 results.FDC_low_error_str = FDC_low_error_str;
+0115 results.FDC_high = FDC_high;
+0116 results.FDC_high_error_str = FDC_high_error_str;
+0117 
+0118 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_VariabilityIndex</title>
+  <meta name="keywords" content="sig_VariabilityIndex">
+  <meta name="description" content="sig_VariabilityIndex calculates variability index (VI) from FDC.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_VariabilityIndex.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_VariabilityIndex
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_VariabilityIndex calculates variability index (VI) from FDC.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [VariabilityIndex, error_flag, error_str] = sig_VariabilityIndex(Q, t) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_VariabilityIndex calculates variability index (VI) from FDC.
+   VI is the standard deviation of the common logarithms of discharge 
+   determined at 10% intervals from 10% to 90% of the cumulative frequency 
+   distribution (flow duration curve, FDC). Low variability index shows 
+   higher water storage (Estrany et al., 2010).
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+
+   OUTPUT
+   VariabilityIndex: variability index [-]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   VariabilityIndex = sig_VariabilityIndex(Q,t);
+
+   References
+   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response
+   of a small mediterranean agricultural catchment. Journal of Hydrology,
+   380(1-2), pp.180-190.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [VariabilityIndex, error_flag, error_str] = sig_VariabilityIndex(Q, t)</a>
+0002 <span class="comment">%sig_VariabilityIndex calculates variability index (VI) from FDC.</span>
+0003 <span class="comment">%   VI is the standard deviation of the common logarithms of discharge</span>
+0004 <span class="comment">%   determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
+0005 <span class="comment">%   distribution (flow duration curve, FDC). Low variability index shows</span>
+0006 <span class="comment">%   higher water storage (Estrany et al., 2010).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT</span>
+0009 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0010 <span class="comment">%   t: time [Matlab datetime]</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%   VariabilityIndex: variability index [-]</span>
+0014 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0015 <span class="comment">%       (error in signature calculation)</span>
+0016 <span class="comment">%   error_str: string contraining error description</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   EXAMPLE</span>
+0019 <span class="comment">%   % load example data</span>
+0020 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0021 <span class="comment">%   Q = data.Q;</span>
+0022 <span class="comment">%   t = data.t;</span>
+0023 <span class="comment">%   VariabilityIndex = sig_VariabilityIndex(Q,t);</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   References</span>
+0026 <span class="comment">%   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response</span>
+0027 <span class="comment">%   of a small mediterranean agricultural catchment. Journal of Hydrology,</span>
+0028 <span class="comment">%   380(1-2), pp.180-190.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Copyright (C) 2020</span>
+0031 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0032 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0033 
+0034 <span class="comment">% check input parameters</span>
+0035 <span class="keyword">if</span> nargin &lt; 2
+0036     error(<span class="string">'Not enough input arguments.'</span>)
+0037 <span class="keyword">end</span>
+0038 
+0039 ip = inputParser;
+0040 ip.CaseSensitive = true;
+0041 
+0042 <span class="comment">% required input arguments</span>
+0043 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0044 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0045 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0046 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0047 
+0048 parse(ip, Q, t)
+0049 
+0050 <span class="comment">% data checks</span>
+0051 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0052 <span class="keyword">if</span> error_flag == 2
+0053     VariabilityIndex = NaN;
+0054     <span class="keyword">return</span>
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="comment">% calculate signature</span>
+0058 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
+0059 Q_sorted = sort(Q,<span class="string">'descend'</span>);
+0060 
+0061 <span class="comment">% percentiles required are 10%, 20%, ..., 90%</span>
+0062 percs = [10:10:90];
+0063 
+0064 <span class="comment">% get the corresponding rank of the FDC values</span>
+0065 indices_percs = round(length(Q_sorted).*percs./100);
+0066 
+0067 <span class="comment">% get the flow value at each rank</span>
+0068 flow_percs = Q_sorted(indices_percs);
+0069 
+0070 <span class="comment">% variation needed if some flow percentiles are zero for an intermittent</span>
+0071 <span class="comment">% stream - exclude these from the calculation</span>
+0072 recs = flow_percs &gt; 0;
+0073 
+0074 <span class="comment">% VI is the standard deviation of the common logarithms of discharge</span>
+0075 <span class="comment">% determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
+0076 <span class="comment">% distribution</span>
+0077 VariabilityIndex = std(log10(flow_percs(recs)));
+0078 
+0079 <span class="keyword">end</span>
+0080</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

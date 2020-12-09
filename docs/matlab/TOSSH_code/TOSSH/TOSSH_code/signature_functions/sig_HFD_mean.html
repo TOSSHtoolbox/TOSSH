@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_HFD_mean</title>
+  <meta name="keywords" content="sig_HFD_mean">
+  <meta name="description" content="sig_HFD_mean calculates mean half flow date.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_HFD_mean.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_HFD_mean
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_HFD_mean calculates mean half flow date.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [HFD_mean, error_flag, error_str] = sig_HFD_mean(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_HFD_mean calculates mean half flow date.
+   Calculates day since start of water year on which the cumulative 
+   discharge (default: October) reaches half of the annual discharge.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   start_month: starting month, default = 10 (October)
+
+   OUTPUT
+   HFD_mean: mean half flow date [day since start of water year]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t;
+   HFD_mean = sig_HFD_mean(Q,t);
+   HFD_mean = sig_HFD_mean(Q,t,'start_month',1);
+
+   References
+   Court, A., 1962. Measures of streamflow timing. Journal of Geophysical
+   Research, 67(11), pp.4335-4339.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [HFD_mean, error_flag, error_str] = sig_HFD_mean(Q, t, varargin)</a>
+0002 <span class="comment">%sig_HFD_mean calculates mean half flow date.</span>
+0003 <span class="comment">%   Calculates day since start of water year on which the cumulative</span>
+0004 <span class="comment">%   discharge (default: October) reaches half of the annual discharge.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0008 <span class="comment">%   t: time [Matlab datetime]</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%   start_month: starting month, default = 10 (October)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%   HFD_mean: mean half flow date [day since start of water year]</span>
+0014 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0015 <span class="comment">%       (error in signature calculation)</span>
+0016 <span class="comment">%   error_str: string contraining error description</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   EXAMPLE</span>
+0019 <span class="comment">%   % load example data</span>
+0020 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0021 <span class="comment">%   Q = data.Q;</span>
+0022 <span class="comment">%   t = data.t;</span>
+0023 <span class="comment">%   HFD_mean = sig_HFD_mean(Q,t);</span>
+0024 <span class="comment">%   HFD_mean = sig_HFD_mean(Q,t,'start_month',1);</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   References</span>
+0027 <span class="comment">%   Court, A., 1962. Measures of streamflow timing. Journal of Geophysical</span>
+0028 <span class="comment">%   Research, 67(11), pp.4335-4339.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Copyright (C) 2020</span>
+0031 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0032 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0033 
+0034 <span class="comment">% check input parameters</span>
+0035 <span class="keyword">if</span> nargin &lt; 2
+0036     error(<span class="string">'Not enough input arguments.'</span>)
+0037 <span class="keyword">end</span>
+0038 
+0039 ip = inputParser;
+0040 ip.CaseSensitive = true;
+0041 
+0042 <span class="comment">% required input arguments</span>
+0043 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0044 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1)) 
+0045 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0046 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1)) 
+0047 
+0048 <span class="comment">% optional input arguments</span>
+0049 addParameter(ip, <span class="string">'start_month'</span>, 10, @(month) isnumeric(month) &amp;&amp; numel(month)==1) 
+0050 
+0051 parse(ip, Q, t, varargin{:})
+0052 start_month = ip.Results.start_month;
+0053 
+0054 <span class="comment">% data checks</span>
+0055 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0056 <span class="keyword">if</span> error_flag == 2
+0057     HFD_mean = NaN;
+0058     <span class="keyword">return</span>
+0059 <span class="keyword">end</span>
+0060 timestep_days = days(timestep); <span class="comment">% adjust for timestep</span>
+0061 
+0062 <span class="keyword">if</span> any(start_month&lt;1 | start_month&gt;12) || any(floor(start_month)~=start_month)
+0063     error(<span class="string">'Month has to be a vector containing integers between 1 and 12.'</span>)
+0064 <span class="keyword">end</span>
+0065 
+0066 <span class="comment">% calculate signature</span>
+0067 <span class="comment">% get individual years</span>
+0068 [year_vec, month_vec, day_vec] = ymd(t);
+0069 year_start = min(year_vec);
+0070 year_end = max(year_vec);
+0071 year_list = [year_start:year_end]';
+0072 
+0073 Q_temp = Q;
+0074 <span class="comment">% Q_annual = NaN(year_end-year_start,1);</span>
+0075 <span class="comment">% Q_daily = NaN(365,year_end-year_start);</span>
+0076 HFD = NaN(year_end-year_start,1);
+0077 
+0078 <span class="comment">% extract years</span>
+0079 error_tmp = false;
+0080 <span class="keyword">for</span> y = 2:length(year_list) <span class="comment">% since we use water years, we always start in the &quot;2nd year&quot;</span>
+0081     <span class="keyword">try</span>
+0082         year = year_list(y);
+0083         Q_water_year = <span class="keyword">...</span>
+0084             [Q_temp(year_vec==year-1 &amp; month_vec&gt;=start_month); <span class="keyword">...</span>
+0085             Q_temp(year_vec==year &amp; month_vec&lt;start_month)];
+0086         Q_half_sum = 0.5*sum(Q_water_year);
+0087         Q_cumsum = cumsum(Q_water_year);
+0088         aux_index = 1:length(Q_water_year);
+0089         HFD_aux = aux_index(Q_cumsum&gt;=Q_half_sum);
+0090         HFD(y-1) = HFD_aux(1);
+0091     <span class="keyword">catch</span>
+0092         error_tmp = true;
+0093     <span class="keyword">end</span>
+0094 <span class="keyword">end</span>
+0095 
+0096 <span class="keyword">if</span> error_tmp
+0097     error_flag = 1;
+0098     error_str = [<span class="string">'Warning: Years containing NaN values are ignored. '</span>, error_str];
+0099 <span class="keyword">end</span>
+0100 
+0101 <span class="comment">% get mean half flow date</span>
+0102 HFD_mean = mean(HFD,<span class="string">'omitnan'</span>)*timestep_days;
+0103 
+0104 <span class="keyword">end</span>
+0105 
+0106</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

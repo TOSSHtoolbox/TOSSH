@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_BaseflowRecessionK</title>
+  <meta name="keywords" content="sig_BaseflowRecessionK">
+  <meta name="description" content="sig_BaseflowRecessionK calculates baseflow recession constant.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_BaseflowRecessionK.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_BaseflowRecessionK
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_BaseflowRecessionK calculates baseflow recession constant.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [BaseflowRecessionK, error_flag, error_str, fig_handles] =sig_BaseflowRecessionK(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_BaseflowRecessionK calculates baseflow recession constant.
+   Calculates baseflow recession constant assuming exponential recession
+   behaviour (Safeeq et al., 2013). Master recession curve (MRC) is
+   constructed using the adapted matching strip method (Posavec et al.,
+   2006).
+
+   Notes:
+   According to Safeeq et al. (2013), K&lt;0.065 represent groundwater
+   dominated slow-draining systems, K&gt;=0.065 represent shallow subsurface
+   flow dominated fast draining systems.
+   (to do: remove snow-affected sections of the timeseries)
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   recession_length: min. length of recessions [days], default = 15
+   n_start: days to be removed after start of recession
+   eps: allowed increase in flow during recession period, default = 0
+   start_of_recession: define start of recession when baseflow filter
+       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)
+   fit_method: method to fit MRC, default = 'nonparametric_analytic'
+   filter_par: smoothing parameter of Lyne-Hollick filter to determine
+      start of recession (higher = later recession start), default = 0.925
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   BaseflowRecessionK: Baseflow recession constant [1/timestep]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   BaseflowRecessionK = sig_BaseflowRecessionK(Q,t);
+   BaseflowRecessionK = sig_BaseflowRecessionK(Q,t,'plot_results',true,'recession_length',5);
+
+   References
+   Safeeq, M., Grant, G.E., Lewis, S.L. and Tague, C.L., 2013. Coupling
+   snowpack and groundwater dynamics to interpret historical streamflow
+   trends in the western United States. Hydrological Processes, 27(5),
+   pp.655-668.
+   Posavec, K., Bacani, A. and Nakic, Z., 2006. A visual basic spreadsheet
+   macro for recession curve analysis. Groundwater, 44(5), pp.764-767.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [BaseflowRecessionK, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     sig_BaseflowRecessionK(Q, t, varargin)
+0003 <span class="comment">%sig_BaseflowRecessionK calculates baseflow recession constant.</span>
+0004 <span class="comment">%   Calculates baseflow recession constant assuming exponential recession</span>
+0005 <span class="comment">%   behaviour (Safeeq et al., 2013). Master recession curve (MRC) is</span>
+0006 <span class="comment">%   constructed using the adapted matching strip method (Posavec et al.,</span>
+0007 <span class="comment">%   2006).</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Notes:</span>
+0010 <span class="comment">%   According to Safeeq et al. (2013), K&lt;0.065 represent groundwater</span>
+0011 <span class="comment">%   dominated slow-draining systems, K&gt;=0.065 represent shallow subsurface</span>
+0012 <span class="comment">%   flow dominated fast draining systems.</span>
+0013 <span class="comment">%   (to do: remove snow-affected sections of the timeseries)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   INPUT</span>
+0016 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0017 <span class="comment">%   t: time [Matlab datetime]</span>
+0018 <span class="comment">%   OPTIONAL</span>
+0019 <span class="comment">%   recession_length: min. length of recessions [days], default = 15</span>
+0020 <span class="comment">%   n_start: days to be removed after start of recession</span>
+0021 <span class="comment">%   eps: allowed increase in flow during recession period, default = 0</span>
+0022 <span class="comment">%   start_of_recession: define start of recession when baseflow filter</span>
+0023 <span class="comment">%       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)</span>
+0024 <span class="comment">%   fit_method: method to fit MRC, default = 'nonparametric_analytic'</span>
+0025 <span class="comment">%   filter_par: smoothing parameter of Lyne-Hollick filter to determine</span>
+0026 <span class="comment">%      start of recession (higher = later recession start), default = 0.925</span>
+0027 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   OUTPUT</span>
+0030 <span class="comment">%   BaseflowRecessionK: Baseflow recession constant [1/timestep]</span>
+0031 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0032 <span class="comment">%       (error in signature calculation)</span>
+0033 <span class="comment">%   error_str: string contraining error description</span>
+0034 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0035 <span class="comment">%       not requested)</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   EXAMPLE</span>
+0038 <span class="comment">%   % load example data</span>
+0039 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0040 <span class="comment">%   Q = data.Q;</span>
+0041 <span class="comment">%   t = data.t;</span>
+0042 <span class="comment">%   BaseflowRecessionK = sig_BaseflowRecessionK(Q,t);</span>
+0043 <span class="comment">%   BaseflowRecessionK = sig_BaseflowRecessionK(Q,t,'plot_results',true,'recession_length',5);</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%   References</span>
+0046 <span class="comment">%   Safeeq, M., Grant, G.E., Lewis, S.L. and Tague, C.L., 2013. Coupling</span>
+0047 <span class="comment">%   snowpack and groundwater dynamics to interpret historical streamflow</span>
+0048 <span class="comment">%   trends in the western United States. Hydrological Processes, 27(5),</span>
+0049 <span class="comment">%   pp.655-668.</span>
+0050 <span class="comment">%   Posavec, K., Bacani, A. and Nakic, Z., 2006. A visual basic spreadsheet</span>
+0051 <span class="comment">%   macro for recession curve analysis. Groundwater, 44(5), pp.764-767.</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%   Copyright (C) 2020</span>
+0054 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0055 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0056 
+0057 <span class="comment">% check input parameters</span>
+0058 <span class="keyword">if</span> nargin &lt; 2
+0059     error(<span class="string">'Not enough input arguments.'</span>)
+0060 <span class="keyword">end</span>
+0061 
+0062 ip = inputParser;
+0063 ip.CaseSensitive = true;
+0064 
+0065 <span class="comment">% required input arguments</span>
+0066 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0067 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0068 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0069 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0070 
+0071 <span class="comment">% optional input arguments</span>
+0072 addParameter(ip, <span class="string">'ignoreNaN'</span>, <span class="string">'y'</span>, @ischar) <span class="comment">% ignore NaN values y/n?</span>
+0073 addParameter(ip, <span class="string">'recession_length'</span>, 15, @isnumeric) <span class="comment">% length of decreasing</span>
+0074 <span class="comment">% flow in days to be declared a recession</span>
+0075 addParameter(ip, <span class="string">'n_start'</span>, 0, @isnumeric) <span class="comment">% days to be removed at beginning of recession</span>
+0076 addParameter(ip, <span class="string">'eps'</span>, 0, @isnumeric) <span class="comment">% allowed increase in flow during recession period</span>
+0077 addParameter(ip, <span class="string">'start_of_recession'</span>, <span class="string">'baseflow'</span>, @ischar) <span class="comment">% defines start of a recession</span>
+0078 addParameter(ip, <span class="string">'fit_method'</span>, <span class="string">'nonparametric_analytic'</span>, @ischar) <span class="comment">% how to fit MRC</span>
+0079 addParameter(ip, <span class="string">'filter_par'</span>, 0.925, @isnumeric) <span class="comment">% smoothing parameter of</span>
+0080 <span class="comment">% Lyne Hollick Filter to determine start of recession (higher = later recession start)</span>
+0081 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0082 
+0083 parse(ip, Q, t, varargin{:})
+0084 recession_length = ip.Results.recession_length;
+0085 n_start = ip.Results.n_start;
+0086 eps = ip.Results.eps;
+0087 start_of_recession = ip.Results.start_of_recession;
+0088 fit_method = ip.Results.fit_method;
+0089 filter_par = ip.Results.filter_par;
+0090 plot_results = ip.Results.plot_results;
+0091 
+0092 <span class="comment">% create empty figure handle</span>
+0093 fig_handles = [];
+0094 
+0095 <span class="comment">% data checks</span>
+0096 [error_flag ,error_str, timestep, t] = util_DataCheck(Q, t);
+0097 <span class="keyword">if</span> error_flag == 2
+0098     BaseflowRecessionK = NaN;
+0099     <span class="keyword">return</span>
+0100 <span class="keyword">end</span>
+0101 
+0102 <span class="comment">% calculate signature</span>
+0103 <span class="comment">% steps from Safeeq et al. (2013)</span>
+0104 
+0105 <span class="comment">% identify all individual baseflow recession segments</span>
+0106 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0107 error_str_tmp = error_str;
+0108 [flow_section, error_flag, error_str, fig_handles] = util_RecessionSegments(Q, t, <span class="keyword">...</span>
+0109     <span class="string">'recession_length'</span>, recession_length, <span class="string">'eps'</span>, eps, <span class="keyword">...</span>
+0110     <span class="string">'filter_par'</span>, filter_par, <span class="string">'plot_results'</span>, plot_results, <span class="keyword">...</span>
+0111     <span class="string">'start_of_recession'</span>, start_of_recession, <span class="string">'n_start'</span>, n_start);
+0112 <span class="keyword">if</span> error_flag == 3
+0113     BaseflowRecessionK = NaN;
+0114     <span class="keyword">return</span>
+0115 <span class="keyword">else</span>
+0116     error_flag = max([error_flag_tmp, error_flag]);
+0117     error_str = [error_str_tmp, error_str];
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">% From Safeeq et al. (2013): To minimize the effect of snowmelt recharge on</span>
+0121 <span class="comment">% k, recession segments identified between the onset of the</span>
+0122 <span class="comment">% snowmelt-derived streamflow pulse and 15 August were excluded. Days of</span>
+0123 <span class="comment">% snowmelt pulse onset were determined following the method of Cayan et al.</span>
+0124 <span class="comment">% (2001). This is not implemented. Requires additional information on the</span>
+0125 <span class="comment">% time series such as whether it is in a snow region, and requires series</span>
+0126 <span class="comment">% to consist of complete years only.</span>
+0127 
+0128 <span class="comment">% MRC constucted using the adapted matching strip method (Posavec et al., 2006)</span>
+0129 [MRC] = util_MasterRecessionCurve(Q, flow_section,<span class="string">'fit_method'</span>,fit_method,<span class="string">'plot_results'</span>,false);
+0130 
+0131 <span class="comment">% k = slope of the linear regression between log-transformed discharge and recession length</span>
+0132 mdl = [(MRC(:,1).^0) (MRC(:,1))]\log(MRC(:,2));
+0133 BaseflowRecessionK = -mdl(2);
+0134 <span class="keyword">if</span> ~isreal(BaseflowRecessionK)
+0135     error_flag = 3;
+0136     error_str = [<span class="string">'Error: Complex BaseflowRecessionK. '</span>, error_str];
+0137     BaseflowRecessionK = NaN;
+0138     <span class="keyword">return</span>
+0139 <span class="keyword">end</span>
+0140 
+0141 <span class="comment">% optional plotting</span>
+0142 <span class="keyword">if</span> plot_results
+0143     fig = figure(<span class="string">'Position'</span>,[100 100 750 300]);
+0144     subplot(1,2,1)
+0145     plot(MRC(:,1),(MRC(:,2)),<span class="string">'kx'</span>)
+0146     hold on
+0147     plot(sort(MRC(:,1)),exp(mdl(1) + mdl(2).*(sort(MRC(:,1)))),<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,2)
+0148     xlabel(<span class="string">'Relative time [timestep]'</span>)
+0149     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0150     title(<span class="string">'Fitted recession curve'</span>)
+0151     legend(<span class="string">'MRC'</span>,<span class="string">'Exponential fit'</span>)
+0152     
+0153     subplot(1,2,2)
+0154     semilogy(MRC(:,1),(MRC(:,2)),<span class="string">'kx'</span>)
+0155     hold on
+0156     semilogy(sort(MRC(:,1)),exp(mdl(1) + mdl(2).*(sort(MRC(:,1)))),<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,2)
+0157     xlabel(<span class="string">'Relative time [timestep]'</span>)
+0158     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0159     title(<span class="string">'Fitted recession curve - log scale'</span>)
+0160     legend(<span class="string">'MRC'</span>,<span class="string">'Exponential fit'</span>)
+0161     
+0162     fig_handles.BaseflowRecessionK = fig;
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="keyword">end</span>
+0166</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

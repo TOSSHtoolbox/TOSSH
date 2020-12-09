@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_EventSeparation</title>
+  <meta name="keywords" content="util_EventSeparation">
+  <meta name="description" content="util_EventSeparation takes rainfall data and picks out storm periods.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_EventSeparation.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_EventSeparation
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_EventSeparation takes rainfall data and picks out storm periods.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [stormarray, error_flag, error_str, fig_handles] = util_EventSeparation(dates, P, timestep, min_termination, min_duration,min_intensity_hour, min_intensity_day,min_intensity_hour_during, min_intensity_day_during,max_recessiondays, plot_results) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_EventSeparation takes rainfall data and picks out storm periods.
+
+   INPUT
+   dates: column vector of datenums
+   P: precipitation [mm/timestep]
+   timestep: time step of precipitation array [hours] (1=hourly, 24=daily)
+   min_termination: minimum termination time (time between storms) [hours]
+   min_duration: minimum duration of storm [hours]
+   min_intensity_hour: minimum intensity (per hour)
+   min_intensity_day: minimum intensity (per day)
+   min_intensity_hour_during: minimum timestep intensity allowed during
+       storm event without contributing to termination time
+   min_intensity_day_during: minimum timestep intensity allowed during
+       storm event without contributing to termination time
+   max_recessiondays: maximum number of days to allow recession after rain
+       ends
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   stormarray: 2-column array with start and end locations of each storm
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t;
+   P = data.P;
+   stormarray = util_EventSeparation(...
+       datenum(t), P, 1, 8, 5, 2, 10, 0.2, 1, 1, true);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [stormarray, error_flag, error_str, fig_handles] = util_EventSeparation(</a><span class="keyword">...</span>
+0002     dates, P, timestep, min_termination, min_duration, <span class="keyword">...</span>
+0003     min_intensity_hour, min_intensity_day, <span class="keyword">...</span>
+0004     min_intensity_hour_during, min_intensity_day_during, <span class="keyword">...</span>
+0005     max_recessiondays, plot_results)
+0006 <span class="comment">%util_EventSeparation takes rainfall data and picks out storm periods.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT</span>
+0009 <span class="comment">%   dates: column vector of datenums</span>
+0010 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0011 <span class="comment">%   timestep: time step of precipitation array [hours] (1=hourly, 24=daily)</span>
+0012 <span class="comment">%   min_termination: minimum termination time (time between storms) [hours]</span>
+0013 <span class="comment">%   min_duration: minimum duration of storm [hours]</span>
+0014 <span class="comment">%   min_intensity_hour: minimum intensity (per hour)</span>
+0015 <span class="comment">%   min_intensity_day: minimum intensity (per day)</span>
+0016 <span class="comment">%   min_intensity_hour_during: minimum timestep intensity allowed during</span>
+0017 <span class="comment">%       storm event without contributing to termination time</span>
+0018 <span class="comment">%   min_intensity_day_during: minimum timestep intensity allowed during</span>
+0019 <span class="comment">%       storm event without contributing to termination time</span>
+0020 <span class="comment">%   max_recessiondays: maximum number of days to allow recession after rain</span>
+0021 <span class="comment">%       ends</span>
+0022 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   OUTPUT</span>
+0025 <span class="comment">%   stormarray: 2-column array with start and end locations of each storm</span>
+0026 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0027 <span class="comment">%       (error in signature calculation)</span>
+0028 <span class="comment">%   error_str: string contraining error description</span>
+0029 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0030 <span class="comment">%       not requested)</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   EXAMPLE</span>
+0033 <span class="comment">%   % load example data</span>
+0034 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0035 <span class="comment">%   Q = data.Q;</span>
+0036 <span class="comment">%   t = data.t;</span>
+0037 <span class="comment">%   P = data.P;</span>
+0038 <span class="comment">%   stormarray = util_EventSeparation(...</span>
+0039 <span class="comment">%       datenum(t), P, 1, 8, 5, 2, 10, 0.2, 1, 1, true);</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   Copyright (C) 2020</span>
+0042 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0043 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0044 
+0045 <span class="comment">% check input parameters</span>
+0046 <span class="keyword">if</span> nargin &lt; 11
+0047     error(<span class="string">'Not enough input arguments.'</span>)
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% create empty figure handle</span>
+0051 fig_handles = [];
+0052 
+0053 <span class="comment">% data checks</span>
+0054 
+0055 <span class="comment">% default setting reads as good data</span>
+0056 error_flag = 0;
+0057 error_str = <span class="string">''</span>;
+0058 
+0059 <span class="keyword">if</span> ~ismember(timestep,[0.25,1,24])
+0060     warning(<span class="string">'Caution: The event separation function was designed for timesteps of 15 min, 1 hour or 1 day.'</span>)
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="keyword">if</span> and(timestep&lt;1,1/timestep ~= floor(1/timestep))
+0064     error(<span class="string">'Timestep must divide into 1 hour.'</span>)
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="comment">% P is rainfall with timestep (hr) - 15 min (0.25), hour (1), day (24)</span>
+0068 
+0069 <span class="comment">% create moving average series to check hourly/daily intensities</span>
+0070 <span class="comment">% create hourly moving average series</span>
+0071 <span class="keyword">if</span> timestep == 1
+0072     P_hr = P;
+0073 <span class="keyword">elseif</span> timestep &lt; 1
+0074     <span class="comment">% calculate size of moving average window for 1 hr</span>
+0075     hr_window = 1/timestep;
+0076     <span class="comment">% append zeros, filter, remove zeros to center filter on each timestep</span>
+0077     P_hr = [P; zeros(floor(hr_window/2),1)];
+0078     P_hr = filter((1/hr_window)*ones(1,hr_window),1,P_hr);
+0079     P_hr = P_hr(1+floor(hr_window/2):end);
+0080 <span class="keyword">end</span>
+0081 <span class="comment">% create daily moving average series</span>
+0082 <span class="keyword">if</span> timestep == 24
+0083     P_day = P;
+0084 <span class="keyword">elseif</span> timestep &lt; 24
+0085     day_window = 24/timestep;
+0086     P_day = [P; zeros(floor(day_window/2),1)];
+0087     P_day = filter((1/day_window)*ones(1,day_window),1,P_day);
+0088     P_day = P_day(1+floor(day_window/2):end);
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="comment">% find gaps between storm events</span>
+0092 <span class="comment">% storm gaps when hourly rainfall below threshold for time greater than min_termination</span>
+0093 <span class="keyword">if</span> timestep &lt;= 1
+0094     <span class="comment">% find all timesteps with hourly rainfall below threshold</span>
+0095     P_lowrain = P_hr &lt;= min_intensity_hour_during;
+0096 <span class="keyword">else</span>
+0097     P_lowrain = P_day &lt;= min_intensity_day_during;
+0098 <span class="keyword">end</span>
+0099 P_lowrain(1) = 0;
+0100 <span class="comment">% find beginning and end of runs of hourly rainfall below threshold</span>
+0101 P_lowrain_change = P_lowrain(2:end)-P_lowrain(1:end-1);
+0102 begin_gap = find(P_lowrain_change == 1)+1;
+0103 end_gap = find(P_lowrain_change == -1);
+0104 <span class="comment">% get complete gaps only</span>
+0105 begin_gap = begin_gap(1:length(end_gap));
+0106 <span class="comment">% get length of gaps in hours</span>
+0107 length_gap = end_gap-begin_gap+1;
+0108 <span class="comment">% identify too short gaps</span>
+0109 short_gaps = find(length_gap &lt; min_termination/timestep);
+0110 <span class="keyword">for</span> i = 1:length(short_gaps) <span class="comment">% delete these short gaps</span>
+0111     P_lowrain(begin_gap(short_gaps(i)):end_gap(short_gaps(i)))=0;
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% check if potential storm periods meet criteria</span>
+0115 <span class="comment">% get potential storm periods</span>
+0116 <span class="comment">% all timesteps where intensity is high enough at hourly/daily timescale</span>
+0117 potential_storms = (P_lowrain == 0);
+0118 potential_storms(1) = 0;
+0119 <span class="comment">% identify runs (consecutive timesteps of rainfall intensity)</span>
+0120 potential_storms_change = potential_storms(2:end)-potential_storms(1:end-1);
+0121 <span class="comment">% identify beginning and end of storm periods</span>
+0122 begin_storm = find(potential_storms_change == 1)+1;
+0123 end_storm = find(potential_storms_change == -1);
+0124 <span class="comment">% remove last 'beginning of storm' if it does not complete within timeseries</span>
+0125 begin_storm = begin_storm(1:length(end_storm));
+0126 
+0127 valid_storm = zeros(length(begin_storm),3);
+0128 <span class="comment">% cycle through potential storms and check if valid</span>
+0129 <span class="keyword">for</span> i = 1:length(begin_storm)
+0130     
+0131     <span class="comment">% check duration</span>
+0132     <span class="keyword">if</span> end_storm(i) - begin_storm(i) + 1 &gt;= min_duration/timestep
+0133         valid_storm(i,1) = 1;
+0134     <span class="keyword">end</span>
+0135     
+0136     <span class="comment">% check hourly intensity (if timestep &lt;= 1 hr)</span>
+0137     <span class="keyword">if</span> timestep &lt;= 1
+0138         <span class="keyword">if</span> max(P_hr(begin_storm(i):end_storm(i))) &gt;= min_intensity_hour
+0139             valid_storm(i,2) = 1;
+0140         <span class="keyword">end</span>
+0141     <span class="keyword">end</span>
+0142     
+0143     <span class="comment">% check daily intensity</span>
+0144     <span class="keyword">if</span> max(P_day(begin_storm(i):end_storm(i))) &gt;= min_intensity_day/(24/timestep)
+0145         valid_storm(i,3) = 1;
+0146     <span class="keyword">end</span>
+0147 <span class="keyword">end</span>
+0148 
+0149 <span class="comment">% valid storm should have long enough duration and high enough intensity at either hourly or daily timescale</span>
+0150 valid_overall = and(valid_storm(:,1),or(valid_storm(:,2),valid_storm(:,3)));
+0151 
+0152 <span class="comment">% oputput array records beginning and end of storm periods</span>
+0153 stormarray = [begin_storm(valid_overall),end_storm(valid_overall)];
+0154 <span class="comment">% disp(['Number of storm events: ', num2str(size(stormarray,1))]);</span>
+0155 
+0156 <span class="keyword">if</span> size(stormarray,1)==0
+0157     error_flag = 3;
+0158     error_str = [<span class="string">'Error: No events detected. '</span>, error_str];
+0159     <span class="keyword">return</span>
+0160 <span class="keyword">elseif</span> size(stormarray,1) &lt; 10
+0161     error_flag = 1;
+0162     error_str = [<span class="string">'Warning: Fewer than 10 events detected, results might not be robust. '</span>, error_str];
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="comment">% Get suitable end of storm event for signatures that use flow. An event</span>
+0166 <span class="comment">% goes for either 5 days after rain, or until the next event starts, or</span>
+0167 <span class="comment">% until rainfall is greater than the min_intensity_hour_during.</span>
+0168 
+0169 <span class="comment">% max-day criterion or until next event</span>
+0170 stormarray(1:end-1,3) = min(stormarray(1:end-1,2)+max_recessiondays*24/timestep,stormarray(2:<span class="keyword">end</span>,2)-1);
+0171 stormarray(<span class="keyword">end</span>,3) = min(stormarray(<span class="keyword">end</span>,2)+max_recessiondays*24/timestep,length(P));
+0172 
+0173 <span class="comment">% until rainfall is over the maximum</span>
+0174 <span class="keyword">if</span> timestep &lt;= 1
+0175     <span class="comment">% find all timesteps with hourly rainfall below threshold</span>
+0176     P_lowrain = P_hr &gt; min_intensity_hour_during;
+0177 <span class="keyword">else</span>
+0178     P_lowrain = P_day &gt; min_intensity_day_during;
+0179 <span class="keyword">end</span>
+0180 
+0181 <span class="comment">% find length of recession period after rainfall ends, before next storm begins</span>
+0182 recession_rain = zeros(size(stormarray,1),1);
+0183 <span class="keyword">for</span> i = 1:size(stormarray,1)
+0184     rain_index = find(P_lowrain((stormarray(i,2)+1):stormarray(i,3))==1,1,<span class="string">'first'</span>);
+0185     <span class="keyword">if</span> numel(rain_index) &gt; 0
+0186         recession_rain(i) = rain_index-1;
+0187     <span class="keyword">else</span>
+0188         recession_rain(i) = inf;
+0189     <span class="keyword">end</span>
+0190 <span class="keyword">end</span>
+0191 stormarray(:,3) = min(stormarray(:,3),stormarray(:,2)+recession_rain);
+0192 
+0193 <span class="comment">% optional plotting</span>
+0194 <span class="keyword">if</span> plot_results
+0195     <span class="comment">% if plotting requested, show rainfall with overlaid storm events</span>
+0196     dates_dt = datetime(dates,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0197     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]);
+0198     P_max = max(P);
+0199     hold on
+0200     <span class="keyword">for</span> i = 1:size(stormarray,1)
+0201         h1=fill([dates_dt(stormarray(i,1)),dates_dt(stormarray(i,1)),<span class="keyword">...</span>
+0202             dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2))],<span class="keyword">...</span>
+0203             [0, P_max, P_max, 0],<span class="string">'g'</span>,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+0204         h2=fill([dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2)),<span class="keyword">...</span>
+0205             dates_dt(stormarray(i,3)),dates_dt(stormarray(i,3))],<span class="keyword">...</span>
+0206             [0, P_max, P_max, 0],<span class="string">'c'</span>,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+0207     <span class="keyword">end</span>
+0208     h3=plot(dates_dt(:),P(:),<span class="string">'k-'</span>,<span class="string">'linewidth'</span>,1.5);
+0209     xlabel(<span class="string">'Date'</span>)
+0210     ylabel(<span class="string">'Rainfall [mm/timestep]'</span>)
+0211     legend([h3,h1,h2],{<span class="string">'Rainfall'</span>,<span class="string">'Storm Period'</span>,<span class="string">'Recession Period'</span>})
+0212     fig_handles.EventSeparation = fig;
+0213     
+0214 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

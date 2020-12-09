@@ -1,0 +1,595 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_EventGraphThresholds</title>
+  <meta name="keywords" content="sig_EventGraphThresholds">
+  <meta name="description" content="%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_EventGraphThresholds.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_EventGraphThresholds
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh,SE_thresh_signif, SE_thresh, SE_slope,Storage_thresh, Storage_thresh_signif, min_Qf_perc,error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
+   Calculates a variety of signatures related to saturation excess (SE)
+   and infiltration excess (IE) flow, based on the relationship between
+   precipitation or antecedent conditions and flow response (volume or
+   peak magnitude) during storm events.
+
+   Notes:
+   Uses util_EventSeparation to separate individual storm events.
+   Enables plotting of the relationship between rainfall/flow quantities,
+   and calculation of regression coefficients and threshold strength.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   P: precipitation [mm/timestep]
+   OPTIONAL
+   (All these parameters enable the user to tweak the definition of storm
+   events:)
+   min_termination: minimum termination time between storm events [hours],
+       default = 8
+   min_duration: minimum duration of storm [hours], default = 5
+   min_intensity_hour: minimum hourly rainfall [mm/hour], default = 2
+   min_intensity_day: minimum daily rainfall [mm/day], default = 10
+   min_intensity_hour_during: minimum rainfall allowed during an event
+       without contributing to termination time [mm/hour], default = 0.2
+   min_intensity_day_during: minimum rainfall allowed during an event
+       without contributing to termination time [mm/day], default = 1
+   max_recessiondays: maximum length of recession period after rainfall
+       [days] deemed to be part of the preceeding event (shorter if
+       another event starts), default = 1
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   IE_effect: infiltration excess (IE) importance [-]
+   SE_effect: saturation excess (SE) importance [-]
+   IE and SE importance based on their coefficients in regression
+   equations to predict event flow characteristics, adapted from
+   qualitative description in Estrany et al. (2010).
+
+   IE_thresh_signif: infiltration excess threshold significance [-]
+   IE_thresh: infiltration excess threshold location [mm/timestep]
+   Significance (using likelihood ratio test) and location of a threshold
+   in a plot of quickflow volume vs. maximum intensity, signifying IE
+   process, adapted from qualitative description in Ali et al. (2013);
+   IE is indicated when ie_thresh_sig &lt; 0.05.
+
+   SE_thresh_signif: saturation excess threshold significance [-]
+   SE_thresh: saturation excess threshold location [mm]
+   SE_slope: saturation excess threshold above-threshold slope [mm/mm]
+   Significance, location, and above-threshold slope of a threshold in a
+   plot of quickflow volume vs. total precipitation. No threshold
+   indicates flow generation from riparian areas (Tani, 1997). Slope above
+   threshold indicates rate at which saturated areas expand (Tani, 1997;
+   Becker and McDonnell, 1998); SE is indicated when se_thresh_sig &lt; 0.05.
+
+   Storage_thresh: storage/saturation excess threshold significance [-]
+   Storage_thresh_signif: storage/saturation excess threshold location [mm]
+   Significance and location of a threshold in a plot of quickflow volume
+   vs. antecedent precipitation index + total precipitation, adapted from
+   qualitative description in Ali et al. (2013) and McGrath et al. (2007);
+   SE is indicated when storage_thresh_sig &lt; 0.05.
+
+   min_Qf_perc: minimum quickflow as a percentage of precipitation [%],
+   Indicates impermeable area contribution (qualitative description in
+   Becker and McDonnell, 1998).
+
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   P = data.P;
+   [IE_effect, SE_effect] = sig_EventGraphThresholds(Q,t,P);
+   [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
+   SE_thresh_signif, SE_thresh, SE_slope, Storage_thresh, ...
+   Storage_thresh_signif, min_Qf_perc] = ...
+   sig_EventGraphThresholds(Q,t,P,'plot_results',true);
+
+   References
+   Ali, G., Oswald, C.J., Spence, C., Cammeraat, E.L., McGuire, K.J.,
+   Meixner, T. and Reaney, S.M., 2013. Towards a unified threshold-based
+   hydrological theory: necessary components and recurring challenges.
+   Hydrological Processes, 27(2), pp.313-318.
+   Becker, A. and McDonnell, J.J., 1998. Topographical and ecological
+   controls of runoff generation and lateral flows in mountain catchments.
+   IAHS Publications-Series of Proceedings and Reports-Intern Assoc
+   Hydrological Sciences, 248, pp.199-206.
+   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response
+   of a small mediterranean agricultural catchment. Journal of Hydrology,
+   380(1-2), pp.180-190.
+   McGrath, G.S., Hinz, C. and Sivapalan, M., 2007. Temporal dynamics of
+   hydrological threshold events. Hydrology and Earth System Sciences,
+   11(2), pp.923-938.
+   Mosley, M.P., 1979. Streamflow generation in a forested watershed, New
+   Zealand. Water Resources Research, 15(4), pp.795-806.
+   Tani, M., 1997. Runoff generation processes estimated from hydrological
+   observations on a steep forested hillslope with a thin soil layer.
+   Journal of Hydrology, 200(1-4), pp.84-109.
+   Wrede, S., Fenicia, F., MartÃ­nezâ€?Carreras, N., Juilleret, J., Hissler,
+   C., Krein, A., Savenije, H.H., Uhlenbrook, S., Kavetski, D. and
+   Pfister, L., 2015. Towards more systematic perceptual model
+   development: a case study using 3 Luxembourgish catchments.
+   Hydrological Processes, 29(12), pp.2731-2750.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, </a><span class="keyword">...</span>
+0002     SE_thresh_signif, SE_thresh, SE_slope, <span class="keyword">...</span>
+0003     Storage_thresh, Storage_thresh_signif, min_Qf_perc, <span class="keyword">...</span>
+0004     error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin)
+0005 <span class="comment">%%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</span>
+0006 <span class="comment">%   Calculates a variety of signatures related to saturation excess (SE)</span>
+0007 <span class="comment">%   and infiltration excess (IE) flow, based on the relationship between</span>
+0008 <span class="comment">%   precipitation or antecedent conditions and flow response (volume or</span>
+0009 <span class="comment">%   peak magnitude) during storm events.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Notes:</span>
+0012 <span class="comment">%   Uses util_EventSeparation to separate individual storm events.</span>
+0013 <span class="comment">%   Enables plotting of the relationship between rainfall/flow quantities,</span>
+0014 <span class="comment">%   and calculation of regression coefficients and threshold strength.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   INPUT</span>
+0017 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0018 <span class="comment">%   t: time [Matlab datetime]</span>
+0019 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0020 <span class="comment">%   OPTIONAL</span>
+0021 <span class="comment">%   (All these parameters enable the user to tweak the definition of storm</span>
+0022 <span class="comment">%   events:)</span>
+0023 <span class="comment">%   min_termination: minimum termination time between storm events [hours],</span>
+0024 <span class="comment">%       default = 8</span>
+0025 <span class="comment">%   min_duration: minimum duration of storm [hours], default = 5</span>
+0026 <span class="comment">%   min_intensity_hour: minimum hourly rainfall [mm/hour], default = 2</span>
+0027 <span class="comment">%   min_intensity_day: minimum daily rainfall [mm/day], default = 10</span>
+0028 <span class="comment">%   min_intensity_hour_during: minimum rainfall allowed during an event</span>
+0029 <span class="comment">%       without contributing to termination time [mm/hour], default = 0.2</span>
+0030 <span class="comment">%   min_intensity_day_during: minimum rainfall allowed during an event</span>
+0031 <span class="comment">%       without contributing to termination time [mm/day], default = 1</span>
+0032 <span class="comment">%   max_recessiondays: maximum length of recession period after rainfall</span>
+0033 <span class="comment">%       [days] deemed to be part of the preceeding event (shorter if</span>
+0034 <span class="comment">%       another event starts), default = 1</span>
+0035 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   OUTPUT</span>
+0038 <span class="comment">%   IE_effect: infiltration excess (IE) importance [-]</span>
+0039 <span class="comment">%   SE_effect: saturation excess (SE) importance [-]</span>
+0040 <span class="comment">%   IE and SE importance based on their coefficients in regression</span>
+0041 <span class="comment">%   equations to predict event flow characteristics, adapted from</span>
+0042 <span class="comment">%   qualitative description in Estrany et al. (2010).</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%   IE_thresh_signif: infiltration excess threshold significance [-]</span>
+0045 <span class="comment">%   IE_thresh: infiltration excess threshold location [mm/timestep]</span>
+0046 <span class="comment">%   Significance (using likelihood ratio test) and location of a threshold</span>
+0047 <span class="comment">%   in a plot of quickflow volume vs. maximum intensity, signifying IE</span>
+0048 <span class="comment">%   process, adapted from qualitative description in Ali et al. (2013);</span>
+0049 <span class="comment">%   IE is indicated when ie_thresh_sig &lt; 0.05.</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%   SE_thresh_signif: saturation excess threshold significance [-]</span>
+0052 <span class="comment">%   SE_thresh: saturation excess threshold location [mm]</span>
+0053 <span class="comment">%   SE_slope: saturation excess threshold above-threshold slope [mm/mm]</span>
+0054 <span class="comment">%   Significance, location, and above-threshold slope of a threshold in a</span>
+0055 <span class="comment">%   plot of quickflow volume vs. total precipitation. No threshold</span>
+0056 <span class="comment">%   indicates flow generation from riparian areas (Tani, 1997). Slope above</span>
+0057 <span class="comment">%   threshold indicates rate at which saturated areas expand (Tani, 1997;</span>
+0058 <span class="comment">%   Becker and McDonnell, 1998); SE is indicated when se_thresh_sig &lt; 0.05.</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%   Storage_thresh: storage/saturation excess threshold significance [-]</span>
+0061 <span class="comment">%   Storage_thresh_signif: storage/saturation excess threshold location [mm]</span>
+0062 <span class="comment">%   Significance and location of a threshold in a plot of quickflow volume</span>
+0063 <span class="comment">%   vs. antecedent precipitation index + total precipitation, adapted from</span>
+0064 <span class="comment">%   qualitative description in Ali et al. (2013) and McGrath et al. (2007);</span>
+0065 <span class="comment">%   SE is indicated when storage_thresh_sig &lt; 0.05.</span>
+0066 <span class="comment">%</span>
+0067 <span class="comment">%   min_Qf_perc: minimum quickflow as a percentage of precipitation [%],</span>
+0068 <span class="comment">%   Indicates impermeable area contribution (qualitative description in</span>
+0069 <span class="comment">%   Becker and McDonnell, 1998).</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0072 <span class="comment">%       (error in signature calculation)</span>
+0073 <span class="comment">%   error_str: string contraining error description</span>
+0074 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0075 <span class="comment">%       not requested)</span>
+0076 <span class="comment">%</span>
+0077 <span class="comment">%   EXAMPLE</span>
+0078 <span class="comment">%   % load example data</span>
+0079 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0080 <span class="comment">%   Q = data.Q;</span>
+0081 <span class="comment">%   t = data.t;</span>
+0082 <span class="comment">%   P = data.P;</span>
+0083 <span class="comment">%   [IE_effect, SE_effect] = sig_EventGraphThresholds(Q,t,P);</span>
+0084 <span class="comment">%   [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...</span>
+0085 <span class="comment">%   SE_thresh_signif, SE_thresh, SE_slope, Storage_thresh, ...</span>
+0086 <span class="comment">%   Storage_thresh_signif, min_Qf_perc] = ...</span>
+0087 <span class="comment">%   sig_EventGraphThresholds(Q,t,P,'plot_results',true);</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">%   References</span>
+0090 <span class="comment">%   Ali, G., Oswald, C.J., Spence, C., Cammeraat, E.L., McGuire, K.J.,</span>
+0091 <span class="comment">%   Meixner, T. and Reaney, S.M., 2013. Towards a unified threshold-based</span>
+0092 <span class="comment">%   hydrological theory: necessary components and recurring challenges.</span>
+0093 <span class="comment">%   Hydrological Processes, 27(2), pp.313-318.</span>
+0094 <span class="comment">%   Becker, A. and McDonnell, J.J., 1998. Topographical and ecological</span>
+0095 <span class="comment">%   controls of runoff generation and lateral flows in mountain catchments.</span>
+0096 <span class="comment">%   IAHS Publications-Series of Proceedings and Reports-Intern Assoc</span>
+0097 <span class="comment">%   Hydrological Sciences, 248, pp.199-206.</span>
+0098 <span class="comment">%   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response</span>
+0099 <span class="comment">%   of a small mediterranean agricultural catchment. Journal of Hydrology,</span>
+0100 <span class="comment">%   380(1-2), pp.180-190.</span>
+0101 <span class="comment">%   McGrath, G.S., Hinz, C. and Sivapalan, M., 2007. Temporal dynamics of</span>
+0102 <span class="comment">%   hydrological threshold events. Hydrology and Earth System Sciences,</span>
+0103 <span class="comment">%   11(2), pp.923-938.</span>
+0104 <span class="comment">%   Mosley, M.P., 1979. Streamflow generation in a forested watershed, New</span>
+0105 <span class="comment">%   Zealand. Water Resources Research, 15(4), pp.795-806.</span>
+0106 <span class="comment">%   Tani, M., 1997. Runoff generation processes estimated from hydrological</span>
+0107 <span class="comment">%   observations on a steep forested hillslope with a thin soil layer.</span>
+0108 <span class="comment">%   Journal of Hydrology, 200(1-4), pp.84-109.</span>
+0109 <span class="comment">%   Wrede, S., Fenicia, F., MartÃ­nezâ€?Carreras, N., Juilleret, J., Hissler,</span>
+0110 <span class="comment">%   C., Krein, A., Savenije, H.H., Uhlenbrook, S., Kavetski, D. and</span>
+0111 <span class="comment">%   Pfister, L., 2015. Towards more systematic perceptual model</span>
+0112 <span class="comment">%   development: a case study using 3 Luxembourgish catchments.</span>
+0113 <span class="comment">%   Hydrological Processes, 29(12), pp.2731-2750.</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">%   Copyright (C) 2020</span>
+0116 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0117 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0118 
+0119 <span class="comment">% check input parameters</span>
+0120 <span class="keyword">if</span> nargin &lt; 3
+0121     error(<span class="string">'Not enough input arguments.'</span>)
+0122 <span class="keyword">end</span>
+0123 
+0124 ip = inputParser;
+0125 ip.CaseSensitive = true;
+0126 
+0127 <span class="comment">% required input arguments</span>
+0128 <span class="comment">% flow time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0129 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0130 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0131 addRequired(ip, <span class="string">'t'</span>, @(t) ((isnumeric(t) || isdatetime(t))) &amp;&amp; ((size(t,1)==1 || size(t,2)==1)))
+0132 <span class="comment">% precipitation time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0133 addRequired(ip, <span class="string">'P'</span>, @(P) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0134 
+0135 <span class="comment">% optional input arguments</span>
+0136 addParameter(ip, <span class="string">'min_termination'</span>, 8, @isnumeric) <span class="comment">% minimum termination time</span>
+0137 <span class="comment">% (time between storms) in hours</span>
+0138 addParameter(ip, <span class="string">'min_duration'</span>, 5, @isnumeric) <span class="comment">% minimum duration of storm in hour</span>
+0139 addParameter(ip, <span class="string">'min_intensity_hour'</span>, 2, @isnumeric) <span class="comment">% minimum hourly rainfall (per hour)</span>
+0140 addParameter(ip, <span class="string">'min_intensity_day'</span>, 10, @isnumeric) <span class="comment">% minimum daily rainfall (per day)</span>
+0141 addParameter(ip, <span class="string">'min_intensity_hour_during'</span>, 0.2, @isnumeric) <span class="comment">% minimum timestep</span>
+0142 <span class="comment">% intensity allowed during storm event without contributing to termination time</span>
+0143 addParameter(ip, <span class="string">'min_intensity_day_during'</span>, 1, @isnumeric) <span class="comment">% minimum timestep</span>
+0144 <span class="comment">% intensity allowed during storm event without contributing to termination time</span>
+0145 addParameter(ip, <span class="string">'max_recessiondays'</span>, 1, @isnumeric) <span class="comment">% maximum number of days to allow recession after rain</span>
+0146 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (1 graph)</span>
+0147 
+0148 parse(ip, Q, t, P, varargin{:})
+0149 
+0150 min_termination = ip.Results.min_termination;
+0151 min_duration = ip.Results.min_duration;
+0152 min_intensity_hour = ip.Results.min_intensity_hour;
+0153 min_intensity_day = ip.Results.min_intensity_day;
+0154 min_intensity_hour_during = ip.Results.min_intensity_hour_during;
+0155 min_intensity_day_during = ip.Results.min_intensity_day_during;
+0156 max_recessiondays = ip.Results.max_recessiondays;
+0157 plot_results = ip.Results.plot_results;
+0158 
+0159 <span class="comment">% create empty figure handle</span>
+0160 fig_handles = [];
+0161 
+0162 <span class="comment">% data checks</span>
+0163 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, <span class="string">'P'</span>, P);
+0164 <span class="keyword">if</span> error_flag == 2
+0165     IE_effect = NaN;
+0166     SE_effect = NaN;
+0167     IE_thresh_signif = NaN;
+0168     IE_thresh = NaN;
+0169     SE_thresh_signif = NaN;
+0170     SE_thresh = NaN;
+0171     SE_slope = NaN;
+0172     Storage_thresh = NaN;
+0173     Storage_thresh_signif = NaN;
+0174     min_Qf_perc = NaN;
+0175     <span class="keyword">return</span>
+0176 <span class="keyword">end</span>
+0177 timestep = hours(timestep);
+0178 
+0179 <span class="comment">%% separate P and Q series into events</span>
+0180 
+0181 <span class="comment">% run event separation algorithm</span>
+0182 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0183 error_str_tmp = error_str;
+0184 [stormarray, error_flag, error_str, fig_handles] = util_EventSeparation(<span class="keyword">...</span>
+0185     datenum(t), P, timestep, min_termination, min_duration, <span class="keyword">...</span>
+0186     min_intensity_hour, min_intensity_day, <span class="keyword">...</span>
+0187     min_intensity_hour_during, min_intensity_day_during, <span class="keyword">...</span>
+0188     max_recessiondays, plot_results);
+0189 <span class="keyword">if</span> error_flag == 3
+0190     IE_effect = NaN;
+0191     SE_effect = NaN;
+0192     IE_thresh_signif = NaN;
+0193     IE_thresh = NaN;
+0194     SE_thresh_signif = NaN;
+0195     SE_thresh = NaN;
+0196     SE_slope = NaN;
+0197     Storage_thresh = NaN;
+0198     Storage_thresh_signif = NaN;
+0199     min_Qf_perc = NaN;
+0200     <span class="keyword">return</span>
+0201 <span class="keyword">else</span>
+0202     error_flag = max([error_flag_tmp, error_flag]);
+0203     error_str = [error_str_tmp, error_str];
+0204 <span class="keyword">end</span>
+0205 
+0206 <span class="comment">% remove events where there is missing flow data</span>
+0207 storm_array_check = true(size(stormarray,1),1);
+0208 <span class="keyword">for</span> i = 1:size(stormarray,1)
+0209     storm_array_check(i) = ~isnan(sum(Q(stormarray(i,1):stormarray(i,3))));
+0210 <span class="keyword">end</span>
+0211 stormarray = stormarray(storm_array_check,:);
+0212 
+0213 <span class="comment">%% separate flow series into baseflow and quickflow</span>
+0214 <span class="comment">% create baseflow array</span>
+0215 B = util_LyneHollickFilter(Q, <span class="string">'filter_parameter'</span>, 0.925, <span class="string">'nr_passes'</span>, 3);
+0216 
+0217 <span class="comment">%% calculate P and Q characteristics for each storm</span>
+0218 <span class="comment">% cycle through storms and calculate the required storm characteristics</span>
+0219 event_array = zeros(size(stormarray,1),9);
+0220 <span class="keyword">for</span> i = 1:size(stormarray,1)
+0221     <span class="comment">% total event precipitation [mm] (Estrany names this as X3 coefficient)</span>
+0222     event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)));
+0223     
+0224     <span class="comment">% event average precipitation intensity [mm/timestep] (Estrany X4)</span>
+0225     event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)));
+0226     
+0227     <span class="comment">% event maximum precipitation intensity [mm/timestep] (Estrany X5; but they used 5 min data)</span>
+0228     event_array(i,3) = max(P(stormarray(i,1):stormarray(i,3)));
+0229     
+0230     <span class="comment">% antecedent precipitation 3 days before [mm] (Estrany X1)</span>
+0231     time_antecedent = max(stormarray(i,1) - 3*24/timestep,1);
+0232     event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)));
+0233     
+0234     <span class="comment">% antecedent precipitation 7 days before [mm] (Estrany X2)</span>
+0235     time_antecedent = max(stormarray(i,1) - 7*24/timestep,1);
+0236     event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)));
+0237     
+0238     <span class="comment">% total event flow volume [mm]</span>
+0239     event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)));
+0240     
+0241     <span class="comment">% total event quickflow volume [mm]</span>
+0242     event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)))-<span class="keyword">...</span>
+0243         sum(B(stormarray(i,1):stormarray(i,3)));
+0244     
+0245     <span class="comment">% maximum event runoff [mm/timestep]</span>
+0246     event_array(i,8) = max(Q(stormarray(i,1):stormarray(i,3)));
+0247     
+0248     <span class="comment">% antecedent precipitation index (API) using Mosley (1979) method</span>
+0249     <span class="comment">% (sum Pi/i for 30 days)</span>
+0250     <span class="comment">% get total antecedent time</span>
+0251     time_antecedent = max(stormarray(i,1) - 30*24/timestep,1);
+0252     <span class="comment">% form into daily blocks</span>
+0253     numdays = floor((stormarray(i,1) - time_antecedent)/(24/timestep));
+0254     time_array = reshape(P(stormarray(i,1)-[1:1:(numdays*24/timestep)]),24/timestep,[]);
+0255     time_array = sum(time_array,1);
+0256     event_array(i,9) = sum(time_array./[1:length(time_array)]).';
+0257 <span class="keyword">end</span>
+0258 
+0259 <span class="comment">% calculate Becker and McDonnell (1998) signatures, minimum value of</span>
+0260 <span class="comment">% quickflow as a percentage of precipitation</span>
+0261 min_Qf_perc = 100*(min(event_array(i,7)./event_array(i,1)));
+0262 
+0263 <span class="comment">% check if time series only consists of baseflow</span>
+0264 <span class="keyword">if</span> all(event_array(:,6)==0) || all(event_array(:,7)==0) || all(event_array(:,8)==0)
+0265     IE_effect = NaN;
+0266     SE_effect = NaN;
+0267     IE_thresh_signif = NaN;
+0268     IE_thresh = NaN;
+0269     SE_thresh_signif = NaN;
+0270     SE_thresh = NaN;
+0271     SE_slope = NaN;
+0272     Storage_thresh = NaN;
+0273     Storage_thresh_signif = NaN;
+0274     min_Qf_perc = NaN;
+0275     error_flag = 3;
+0276     error_str = [<span class="string">'Error: Event flow or quickflow volumes are zero for all events. '</span>, error_str];
+0277     <span class="keyword">return</span>
+0278 <span class="keyword">end</span>
+0279 
+0280 <span class="comment">%% calculate importance of storage vs. intensity characteristics</span>
+0281 <span class="comment">% this is done via multiple regressions to predict max flow and quickflow</span>
+0282 <span class="comment">% volumes (following Estrany et al., 2010)</span>
+0283 
+0284 <span class="comment">% regression for maximum flow</span>
+0285 flow_events = event_array(:,8) &gt; 0;
+0286 <span class="keyword">if</span> numel(flow_events(flow_events==1)) &lt;= 1
+0287     IE_effect = NaN;
+0288     SE_effect = NaN;
+0289     IE_thresh_signif = NaN;
+0290     IE_thresh = NaN;
+0291     SE_thresh_signif = NaN;
+0292     SE_thresh = NaN;
+0293     SE_slope = NaN;
+0294     Storage_thresh = NaN;
+0295     Storage_thresh_signif = NaN;
+0296     min_Qf_perc = NaN;
+0297     error_flag = 3;
+0298     error_str = [<span class="string">'Error: Fewer than two suitable storm events found, try relaxing storm event criteria. '</span>, error_str];
+0299     <span class="keyword">return</span>
+0300 <span class="keyword">end</span>
+0301 mdl_max = stepwiselm(zscore(event_array(flow_events,1:5)),zscore(log(event_array(flow_events,8))),<span class="string">'Upper'</span>,<span class="string">'linear'</span>,<span class="string">'Verbose'</span>,0);
+0302 max_coeffs = mdl_max.Coefficients.Estimate;
+0303 max_vars = mdl_max.VariableInfo.InModel;
+0304 
+0305 <span class="comment">% regression for quickflow volume</span>
+0306 flow_events = event_array(:,7) &gt; 0;
+0307 <span class="keyword">if</span> numel(flow_events(flow_events==1)) &lt;= 1
+0308     IE_effect = NaN;
+0309     SE_effect = NaN;
+0310     IE_thresh_signif = NaN;
+0311     IE_thresh = NaN;
+0312     SE_thresh_signif = NaN;
+0313     SE_thresh = NaN;
+0314     SE_slope = NaN;
+0315     Storage_thresh = NaN;
+0316     Storage_thresh_signif = NaN;
+0317     min_Qf_perc = NaN;
+0318     error_flag = 3;
+0319     error_str = [<span class="string">'Error: Fewer than two suitable storm events found, try relaxing storm event criteria. '</span>, error_str];
+0320     <span class="keyword">return</span>
+0321 <span class="keyword">end</span>
+0322 mdl_qf = stepwiselm(zscore(event_array(flow_events,1:5)),zscore(log(event_array(flow_events,7))),<span class="string">'Upper'</span>,<span class="string">'linear'</span>,<span class="string">'Verbose'</span>,0);
+0323 qf_coeffs = mdl_qf.Coefficients.Estimate;
+0324 qf_vars = mdl_qf.VariableInfo.InModel;
+0325 
+0326 <span class="comment">% average scores for infiltration explanatory variables</span>
+0327 ie_indices_max = and(max_vars(1:5),[0;1;1;0;0]);
+0328 ie_var_numbers_max = max_vars(1:5).*cumsum(max_vars(1:5));
+0329 ie_coeff_numbers_max = ie_var_numbers_max(ie_indices_max)+1;
+0330 
+0331 ie_indices_qf = and(qf_vars(1:5),[0;1;1;0;0]);
+0332 ie_var_numbers_qf = qf_vars(1:5).*cumsum(qf_vars(1:5));
+0333 ie_coeff_numbers_qf = ie_var_numbers_qf(ie_indices_qf)+1;
+0334 
+0335 IE_effect = mean([sum(max_coeffs(ie_coeff_numbers_max));sum(qf_coeffs(ie_coeff_numbers_qf))]);
+0336 
+0337 <span class="comment">% average scores for storage-related explanatory variables</span>
+0338 se_indices_max = and(max_vars(1:5),[1;0;0;1;1]);
+0339 se_var_numbers_max = max_vars(1:5).*cumsum(max_vars(1:5));
+0340 se_coeff_numbers_max = se_var_numbers_max(se_indices_max)+1;
+0341 
+0342 se_indices_qf = and(qf_vars(1:5),[1;0;0;1;1]);
+0343 se_var_numbers_qf = qf_vars(1:5).*cumsum(qf_vars(1:5));
+0344 se_coeff_numbers_qf = se_var_numbers_qf(se_indices_qf)+1;
+0345 
+0346 SE_effect = mean([sum(max_coeffs(se_coeff_numbers_max));sum(qf_coeffs(se_coeff_numbers_qf))]);
+0347 
+0348 <span class="comment">%% check for thresholds and return locations and significance scores</span>
+0349 <span class="comment">% total precip against quickflow</span>
+0350 [thresh_tp_qf,slope_tp_qf,slope_linear_tp_qf,p_value_tp_qf] = <span class="keyword">...</span>
+0351     util_Threshold(event_array(:,1), event_array(:,7));
+0352 SE_thresh_signif = p_value_tp_qf;
+0353 SE_thresh = thresh_tp_qf;
+0354 SE_slope = slope_tp_qf;
+0355 
+0356 <span class="comment">% maximum intensity against quickflow</span>
+0357 [thresh_mi_qf,slope_mi_qf,slope_linear_mi_qf,p_value_mi_qf] = <span class="keyword">...</span>
+0358     util_Threshold(event_array(:,3), event_array(:,7));
+0359 IE_thresh_signif = p_value_mi_qf;
+0360 IE_thresh = thresh_mi_qf;
+0361 
+0362 <span class="comment">% API + total precipitation (proxy for storage) against quickflow</span>
+0363 [thresh_st_qf,slope_st_qf,slope_linear_st_qf,p_value_st_qf] = <span class="keyword">...</span>
+0364     util_Threshold(event_array(:,1)+event_array(:,9), event_array(:,7));
+0365 Storage_thresh_signif = p_value_st_qf;
+0366 Storage_thresh = thresh_st_qf;
+0367 
+0368 <span class="comment">%% optional plotting</span>
+0369 <span class="keyword">if</span> plot_results
+0370     
+0371     <span class="comment">% plot total precip against quickflow, with threshold</span>
+0372     fig = figure(<span class="string">'Position'</span>,[100 100 900 250]);
+0373     subplot(1,3,1)
+0374     title([<span class="string">'Quickflow vs P, p = '</span>,num2str(round(p_value_tp_qf,6))])
+0375     hold on
+0376     p1 = plot(event_array(:,1),event_array(:,7),<span class="string">'bo'</span>);
+0377     p2 = plot([min(event_array(:,1)),max(event_array(:,1))],<span class="keyword">...</span>
+0378         [min(event_array(:,1)),max(event_array(:,1))].*slope_linear_tp_qf,<span class="string">'k-'</span>);
+0379     plot([0 thresh_tp_qf],[0 0],<span class="string">'g-'</span>)
+0380     p3 = plot([thresh_tp_qf max(event_array(:,1))],<span class="keyword">...</span>
+0381         [0 max(event_array(:,1)).*slope_tp_qf],<span class="string">'g-'</span>);
+0382     xlabel(<span class="string">'Event precipitation [mm]'</span>)
+0383     ylabel(<span class="string">'Event quickflow volume [mm]'</span>)
+0384     legend([p1, p2, p3],{<span class="string">'Data'</span>,<span class="string">'No threshold'</span>,<span class="string">'With threshold'</span>},<span class="string">'location'</span>,<span class="string">'best'</span>)
+0385     
+0386     <span class="comment">% maximum intensity against quickflow, with threshold</span>
+0387     subplot(1,3,2)
+0388     title([<span class="string">'Quickflow vs intensity, p = '</span>,num2str(round(p_value_mi_qf,6))])
+0389     hold on
+0390     p1 = plot(event_array(:,3),event_array(:,7),<span class="string">'bo'</span>);
+0391     p2 = plot([min(event_array(:,3)),max(event_array(:,3))],<span class="keyword">...</span>
+0392         [min(event_array(:,3)),max(event_array(:,3))].*slope_linear_mi_qf,<span class="string">'k-'</span>);
+0393     plot([0 thresh_mi_qf],[0 0],<span class="string">'g-'</span>)
+0394     p3 = plot([thresh_mi_qf max(event_array(:,3))],<span class="keyword">...</span>
+0395         [0 max(event_array(:,3)).*slope_mi_qf],<span class="string">'g-'</span>);
+0396     xlabel(<span class="string">'Event maximum intensity [mm/timestep]'</span>)
+0397     ylabel(<span class="string">'Event quickflow volume [mm]'</span>)
+0398     legend([p1, p2, p3],{<span class="string">'Data'</span>,<span class="string">'No threshold'</span>,<span class="string">'With threshold'</span>},<span class="string">'location'</span>,<span class="string">'best'</span>)
+0399     
+0400     <span class="comment">% API + total precipitation against quickflow, with threshold</span>
+0401     subplot(1,3,3)
+0402     title([<span class="string">'Quickflow vs API + P, p = '</span>,num2str(round(p_value_st_qf,6))])
+0403     hold on
+0404     x_val = event_array(:,1)+event_array(:,9);
+0405     p1 = plot(x_val,event_array(:,7),<span class="string">'bo'</span>);
+0406     p2 = plot([min(x_val),max(x_val)],[min(x_val),max(x_val)].*slope_linear_st_qf,<span class="string">'k-'</span>);
+0407     plot([0 thresh_st_qf],[0 0],<span class="string">'g-'</span>)
+0408     p3 = plot([thresh_st_qf max(x_val)],[0 max(x_val).*slope_st_qf],<span class="string">'g-'</span>);
+0409     xlabel(<span class="string">'Event API + precipitation [mm]'</span>)
+0410     ylabel(<span class="string">'Event quickflow volume [mm]'</span>)
+0411     legend([p1, p2, p3],{<span class="string">'Data'</span>,<span class="string">'No threshold'</span>,<span class="string">'With threshold'</span>},<span class="string">'location'</span>,<span class="string">'best'</span>)
+0412     fig_handles.EventGraphThresholds = fig;
+0413     
+0414     <span class="comment">% Wrede et al. (2015) say &quot;high intensity storms that don't produce</span>
+0415     <span class="comment">% flow imply no IE processes&quot;. We plot max intensity against quickflow</span>
+0416     <span class="comment">% on a seasonal basis for the user to evaluate this.</span>
+0417     fig2 = figure(<span class="string">'Position'</span>,[100 100 350 300]);
+0418     <span class="comment">% split events by season</span>
+0419     tmonth = month(t(stormarray(:,1)));
+0420     i_djf = ismember(tmonth,[12,1,2]);
+0421     i_mam = ismember(tmonth,[3,4,5]);
+0422     i_jja = ismember(tmonth,[6,7,8]);
+0423     i_son = ismember(tmonth,[9,10,11]);
+0424     <span class="comment">% plot per season</span>
+0425     plot(event_array(i_djf,3),event_array(i_djf,7),<span class="string">'bo'</span>)
+0426     hold on
+0427     plot(event_array(i_mam,3),event_array(i_mam,7),<span class="string">'gx'</span>)
+0428     plot(event_array(i_jja,3),event_array(i_jja,7),<span class="string">'r^'</span>)
+0429     plot(event_array(i_son,3),event_array(i_son,7),<span class="string">'ks'</span>)
+0430     xlabel(<span class="string">'Event maximum intensity [mm/timestep]'</span>)
+0431     ylabel(<span class="string">'Event quickflow volume [mm]'</span>)
+0432     legend(<span class="string">'DJF'</span>,<span class="string">'MAM'</span>,<span class="string">'JJA'</span>,<span class="string">'SON'</span>,<span class="string">'location'</span>,<span class="string">'best'</span>)
+0433     title(<span class="string">'Quickflow vs intensity per season'</span>) <span class="comment">% Wrede 2015</span>
+0434     fig_handles.EventGraphThresholdsSeasons = fig2;
+0435     
+0436 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

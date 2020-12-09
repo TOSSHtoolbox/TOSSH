@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_Threshold</title>
+  <meta name="keywords" content="util_Threshold">
+  <meta name="description" content="util_Threshold fits threshold to data and returns significance value.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_Threshold.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_Threshold
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_Threshold fits threshold to data and returns significance value.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [thresh, slope, slope_linear, p_value] = util_Threshold(x, y, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_Threshold fits threshold to data and returns significance value.
+   This function fits a threshold to point data and returns a
+   significance value that indicates whether threshold exists. Different 
+   types of threshold shape are possible and should be specified in the 
+   shape parameter.
+
+   INPUT
+   x: x variable
+   y: y variable
+   OPTIONAL
+   shape: shape of threshold
+
+   OUTPUT
+   thresh: threshold
+   slope: slope of line starting at threshold
+   slope_linear: slope of linear function strating at origin
+   p_value: p_value &lt; 0.05 implies that the threshold exists
+
+   EXAMPLE
+   x = [1:10]';
+   y = zeros(size(x));
+   y(1:5) = 0*x(1:5);
+   y(6:10) = y(5) + 0.5*(x(6:10)-5);
+   [thresh,slope,slope_linear,p_value] = util_Threshold(x, y);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [sse] = FitBrokenLine(b,x,y)</a></li><li><a href="#_sub2" class="code">function [f,xl,yl,tstat,yfitted] = FitBrokenLine2(b,x,y)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [thresh, slope, slope_linear, p_value] = util_Threshold(x, y, varargin)</a>
+0002 <span class="comment">%util_Threshold fits threshold to data and returns significance value.</span>
+0003 <span class="comment">%   This function fits a threshold to point data and returns a</span>
+0004 <span class="comment">%   significance value that indicates whether threshold exists. Different</span>
+0005 <span class="comment">%   types of threshold shape are possible and should be specified in the</span>
+0006 <span class="comment">%   shape parameter.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT</span>
+0009 <span class="comment">%   x: x variable</span>
+0010 <span class="comment">%   y: y variable</span>
+0011 <span class="comment">%   OPTIONAL</span>
+0012 <span class="comment">%   shape: shape of threshold</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   OUTPUT</span>
+0015 <span class="comment">%   thresh: threshold</span>
+0016 <span class="comment">%   slope: slope of line starting at threshold</span>
+0017 <span class="comment">%   slope_linear: slope of linear function strating at origin</span>
+0018 <span class="comment">%   p_value: p_value &lt; 0.05 implies that the threshold exists</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   EXAMPLE</span>
+0021 <span class="comment">%   x = [1:10]';</span>
+0022 <span class="comment">%   y = zeros(size(x));</span>
+0023 <span class="comment">%   y(1:5) = 0*x(1:5);</span>
+0024 <span class="comment">%   y(6:10) = y(5) + 0.5*(x(6:10)-5);</span>
+0025 <span class="comment">%   [thresh,slope,slope_linear,p_value] = util_Threshold(x, y);</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   Copyright (C) 2020</span>
+0028 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0029 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0030 
+0031 <span class="comment">% check input parameters</span>
+0032 <span class="keyword">if</span> nargin &lt; 2
+0033     error(<span class="string">'Not enough input arguments.'</span>)
+0034 <span class="keyword">end</span>
+0035 
+0036 ip = inputParser;
+0037 ip.CaseSensitive = true;
+0038 
+0039 <span class="comment">% required input arguments</span>
+0040 <span class="comment">% values to fit threshold for have to be numeric and either a (n,1) or a (1,n) vector</span>
+0041 addRequired(ip, <span class="string">'x'</span>, @(x) isnumeric(x) &amp;&amp; (size(x,1)==1 || size(x,2)==1))
+0042 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0043 addRequired(ip, <span class="string">'y'</span>, @(y) isnumeric(y) &amp;&amp; (size(y,1)==1 || size(y,2)==1))
+0044 
+0045 <span class="comment">% optional input arguments</span>
+0046 <span class="comment">% shape of threshold. zero_linear fits a flat zero portion followed by a linear segment</span>
+0047 addParameter(ip, <span class="string">'shape'</span>, <span class="string">'zero_linear'</span>, @ischar) 
+0048 
+0049 parse(ip, x, y, varargin{:})
+0050 shape = ip.Results.shape;
+0051 
+0052 <span class="comment">% data checks</span>
+0053 <span class="keyword">if</span> length(x) ~= length(y)
+0054     error(<span class="string">'x and y data for threshold fit must have equal lengths'</span>)
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="comment">% 1. compute goodness of fit for trial run of possible breakpoints</span>
+0058 n = 30;
+0059 <span class="comment">% calculate potential breakpoint locations equally spaced between maximum</span>
+0060 <span class="comment">% and minimum of data</span>
+0061 bil = linspace(.5/n,1-.5/n,n);
+0062 bi = min(x)+bil.*(max(x)-min(x));
+0063 <span class="comment">% calculate potential slopes equally spaced between 0 and max</span>
+0064 <span class="comment">% where max slope is for a line starting 80% of the way along the x axis</span>
+0065 <span class="comment">% and reaching the highest point</span>
+0066 max_slope = max(y)/(0.8*max(x));
+0067 si = linspace(max_slope/n,1-max_slope/n,n).*max_slope;
+0068 
+0069 <span class="comment">% possible breakpoint locations depend on shape of threshold</span>
+0070 <span class="comment">% create an array of possible breakpoint locations</span>
+0071 <span class="keyword">switch</span> shape
+0072     <span class="keyword">case</span> <span class="string">'zero_linear'</span>
+0073         <span class="comment">% test the broken stick fit for each possible breakpoint location</span>
+0074         trialfit = zeros(n,1);
+0075         <span class="keyword">for</span> i = 1:n
+0076             trialfit(i) = <a href="#_sub1" class="code" title="subfunction [sse] = FitBrokenLine(b,x,y)">FitBrokenLine</a>([bi(i),si(i)],x,y);
+0077         <span class="keyword">end</span>
+0078         [~,i] = min(trialfit(:)); <span class="comment">% find the best of the breakpoint/slopes tested</span>
+0079         b0 = [bi(i) si(i)]; <span class="comment">% initialize breakpoint/slope to that value</span>
+0080 <span class="keyword">end</span>
+0081 
+0082 <span class="comment">% create a helper function to pass the x, y data to the objective function</span>
+0083 fun = @(b)<a href="#_sub1" class="code" title="subfunction [sse] = FitBrokenLine(b,x,y)">FitBrokenLine</a>(b,x,y);
+0084 
+0085 <span class="comment">% 2. search for the optimal breakpoint, starting from the best so far, b0</span>
+0086 <span class="comment">% b_old=fminsearch(fun,b0) % returns b, the optimal breakpoint/slope</span>
+0087 options = optimoptions(<span class="string">'fmincon'</span>,<span class="string">'Display'</span>,<span class="string">'off'</span>);
+0088 b = fmincon(fun,b0,[],[],[],[],[0, 0],[inf, inf],[],options);
+0089 
+0090 <span class="comment">% 3. call brokenline to find the sse for threshold vs non-threshold models</span>
+0091 <span class="comment">% sse is sum of squared errors, yfitted are the modelled values</span>
+0092 [sse_thresh] = <a href="#_sub1" class="code" title="subfunction [sse] = FitBrokenLine(b,x,y)">FitBrokenLine</a>(b,x,y);
+0093 
+0094 <span class="comment">% get the slope for the H0 hypothesis that threshold = 0;</span>
+0095 slp_linear = x\y;
+0096 sse_linear = sum((y - x.*slp_linear).^2);
+0097 
+0098 <span class="comment">% likelihood ratio</span>
+0099 lr_statistic = length(x).*log(sse_linear/sse_thresh);
+0100 
+0101 <span class="comment">% degree of freedom lost in simpler model</span>
+0102 dof = 1;
+0103 
+0104 <span class="comment">% find the p value to tell whether the threshold model is indicated over the</span>
+0105 <span class="comment">% simpler linear model</span>
+0106 p = chi2cdf(lr_statistic,dof);
+0107 
+0108 <span class="comment">% set outputs</span>
+0109 thresh = b(1);
+0110 slope = b(2);
+0111 slope_linear = slp_linear;
+0112 <span class="comment">% p_value&lt;0.05 implies that the threshold exists</span>
+0113 p_value = 1-p;
+0114 
+0115 <span class="keyword">end</span>
+0116 
+0117 <a name="_sub1" href="#_subfunctions" class="code">function [sse] = FitBrokenLine(b,x,y)</a>
+0118 <span class="comment">% b is a vector (x value of the threshold, slope of line)</span>
+0119 <span class="comment">% x and y are the arrays of point data</span>
+0120 
+0121 <span class="comment">% unpack the variables to be fitted</span>
+0122 x_thresh = b(1);
+0123 slope = b(2);
+0124 
+0125 <span class="comment">% get the estimated y values according to the fitted model</span>
+0126 yfitted = zeros(size(y));
+0127 yfitted(x&lt;x_thresh) = 0;
+0128 yfitted(x&gt;=x_thresh) = slope.*(x(x&gt;=x_thresh)-x_thresh);
+0129 
+0130 <span class="comment">% calculate the sum of squared errors between model and data</span>
+0131 sse = sum((yfitted-y).^2);
+0132 
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">%%%%%%%%%%%%%%%%%%%%%</span>
+0136 <span class="comment">%sub-function</span>
+0137 <span class="comment">%%%%%%%%%%%%%%%%%%%%%</span>
+0138 <a name="_sub2" href="#_subfunctions" class="code">function [f,xl,yl,tstat,yfitted] = FitBrokenLine2(b,x,y)</a>
+0139 <span class="comment">% if b defines the breakpoint of the x-values, fit a sloping line to y-data</span>
+0140 <span class="comment">% below b, and fit a sloping line to the y-data with x above b.</span>
+0141 <span class="comment">% f is sum of squared errors,</span>
+0142 <span class="comment">% (xl,yl) are points defining fitted line</span>
+0143 <span class="comment">% tstat is value of tstatistic for slope: b/(stderror of b)</span>
+0144 <span class="comment">% yfitted is value of fitted line at each x</span>
+0145 
+0146 f=0; <span class="comment">% sum of squared errors between y-data and fitted broken line</span>
+0147 bx = b(1);
+0148 by = b(2);
+0149 k=find(x&lt;bx); n1=numel(k); <span class="comment">% points below b</span>
+0150 <span class="keyword">if</span> ~isempty(k)
+0151     <span class="comment">% best fit line which must pass through (bx,by)</span>
+0152     q(1)=sum(y(k)-by)/sum(x(k)-bx); <span class="comment">% q(1) is slope of best fit line</span>
+0153     q(2)=by-q(1)*bx; <span class="comment">% q(2) is intercept of best fit line</span>
+0154     ndf=numel(x)-1; <span class="comment">% ndf is number of points less than break point -1</span>
+0155     
+0156     y2a=q(2)+q(1)*x(k); <span class="comment">% calculate value of sloping line at each x below b</span>
+0157     SSEresid=sum((y(k)-y2a).^2)/(ndf-2); <span class="comment">% sqrt of numerator of SE of slope coeff</span>
+0158     SXX=sum(x(k).^2)-(sum(x(k)).^2)/numel(x(k));<span class="comment">% sqrt of denominator of SE of slope coeff</span>
+0159     Sb=sqrt(SSEresid)/sqrt(SXX); <span class="comment">% Sb is SE of the slope coeff</span>
+0160     tstat=q(1)/Sb; <span class="comment">% tscore of t-test that slope = 0</span>
+0161     f=f+sum((y(k)-y2a).^2); <span class="comment">% sum of squared errors</span>
+0162     xl=[min(x) bx];yl=[q(2)+q(1)*[min(x) bx]]; <span class="comment">% points at either end of sloping line</span>
+0163    yfitted(k)=y2a;
+0164 
+0165 <span class="comment">%     y1=mean(y(k)); %best fit flat line is the mean of y data</span>
+0166 <span class="comment">%     f=f+sum((y(k)-y1).^2); %sum of squared errors</span>
+0167 <span class="comment">%     xl=[min(x) b];yl=[y1 y1]; %points at either end of the fitted line</span>
+0168 <span class="keyword">else</span> <span class="comment">% no data points to the left of threshold</span>
+0169     y1=[];
+0170     xl=[];yl=[];
+0171 <span class="keyword">end</span>
+0172 
+0173 k=find(x&gt;=bx); <span class="comment">% points above b</span>
+0174 <span class="keyword">if</span> ~isempty(k)
+0175     <span class="comment">% find best fit line through rest of data</span>
+0176     <span class="keyword">if</span> isempty(y2a) <span class="comment">%if there was nothing to the left of threshold then we fit least squares</span>
+0177         p=polyfit(x,y,1);ndf=numel(x);
+0178     <span class="keyword">else</span>
+0179         <span class="comment">% best fit line which must pass through (b,y1)</span>
+0180         p(1)=sum(y(k)-by)/sum(x(k)-bx);p(2)=by-p(1)*bx;ndf=numel(x)-1;
+0181     <span class="keyword">end</span>
+0182     y2=p(2)+p(1)*x(k); <span class="comment">% calculate value of sloping line at each x above b</span>
+0183     SSEresid=sum((y(k)-y2).^2)/(ndf-2);
+0184     SXX=sum(x(k).^2)-(sum(x(k)).^2)/numel(x(k));
+0185     Sb=sqrt(SSEresid)/sqrt(SXX);tstat=p(1)/Sb;
+0186     f=f+sum((y(k)-y2).^2); <span class="comment">% sum of squared errors</span>
+0187     xl=[xl bx max(x)];yl=[yl p(2)+p(1)*[bx max(x)]]; <span class="comment">% points at either end of sloping line</span>
+0188 <span class="keyword">else</span>
+0189     <span class="comment">% nothing to the right of threshold</span>
+0190     y2=[];tstat=[];
+0191 <span class="keyword">end</span>
+0192 yfitted(k)=y2;
+0193 
+0194 <span class="comment">% statistic returned is a test of whether the slopes are equal</span>
+0195 
+0196 <span class="keyword">end</span>
+0197</pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

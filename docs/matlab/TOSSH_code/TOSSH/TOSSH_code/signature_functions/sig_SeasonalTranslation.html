@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_SeasonalTranslation</title>
+  <meta name="keywords" content="sig_SeasonalTranslation">
+  <meta name="description" content="sig_SeasonalTranslation calculates seasonal translation signatures.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_SeasonalTranslation.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_SeasonalTranslation
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_SeasonalTranslation calculates seasonal translation signatures.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [A, phi, error_flag, error_str, fig_handles] =sig_SeasonalTranslation(Q, t, P, PET, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_SeasonalTranslation calculates seasonal translation signatures.
+   Calculates amplitude ratio and phase shift between P-PET and Q. Uses
+   linear equation system to fit sine curve (see Gnann et al., 2020).
+
+   Notes:
+   The signatures were only properly tested in energy-limited catchments,
+   where AET is approximately equal to PET. AET can be estimated using a
+   simple water balance model, but that has not been properly tested yet.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   P: precipitation [mm/timestep]
+   PET: potential evapotranspiration [mm/timestep]
+   OPTIONAL
+   period: period of cycle to be extracted [timestep], default = 365
+   useAET: whether to use AET in the input, default = false
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   A: amplitude ratio [-]
+   phi: phase shift [timestep]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   P = data.P;
+   PET = data.PET;
+   [A,phi] = sig_SeasonalTranslation(Q, t, P, PET, 'plot_results', true);
+
+   References
+   Gnann, S.J., Howden, N.J. and Woods, R.A., 2020. Hydrological
+   signatures describing the translation of climate seasonality into
+   streamflow seasonality. Hydrology and Earth System Sciences, 24(2),
+   pp.561-580.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [A, phi, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     sig_SeasonalTranslation(Q, t, P, PET, varargin)
+0003 <span class="comment">%sig_SeasonalTranslation calculates seasonal translation signatures.</span>
+0004 <span class="comment">%   Calculates amplitude ratio and phase shift between P-PET and Q. Uses</span>
+0005 <span class="comment">%   linear equation system to fit sine curve (see Gnann et al., 2020).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Notes:</span>
+0008 <span class="comment">%   The signatures were only properly tested in energy-limited catchments,</span>
+0009 <span class="comment">%   where AET is approximately equal to PET. AET can be estimated using a</span>
+0010 <span class="comment">%   simple water balance model, but that has not been properly tested yet.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   INPUT</span>
+0013 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0014 <span class="comment">%   t: time [Matlab datetime]</span>
+0015 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0016 <span class="comment">%   PET: potential evapotranspiration [mm/timestep]</span>
+0017 <span class="comment">%   OPTIONAL</span>
+0018 <span class="comment">%   period: period of cycle to be extracted [timestep], default = 365</span>
+0019 <span class="comment">%   useAET: whether to use AET in the input, default = false</span>
+0020 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   OUTPUT</span>
+0023 <span class="comment">%   A: amplitude ratio [-]</span>
+0024 <span class="comment">%   phi: phase shift [timestep]</span>
+0025 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0026 <span class="comment">%       (error in signature calculation)</span>
+0027 <span class="comment">%   error_str: string contraining error description</span>
+0028 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0029 <span class="comment">%       not requested)</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%   EXAMPLE</span>
+0032 <span class="comment">%   % load example data</span>
+0033 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0034 <span class="comment">%   Q = data.Q;</span>
+0035 <span class="comment">%   t = data.t;</span>
+0036 <span class="comment">%   P = data.P;</span>
+0037 <span class="comment">%   PET = data.PET;</span>
+0038 <span class="comment">%   [A,phi] = sig_SeasonalTranslation(Q, t, P, PET, 'plot_results', true);</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%   References</span>
+0041 <span class="comment">%   Gnann, S.J., Howden, N.J. and Woods, R.A., 2020. Hydrological</span>
+0042 <span class="comment">%   signatures describing the translation of climate seasonality into</span>
+0043 <span class="comment">%   streamflow seasonality. Hydrology and Earth System Sciences, 24(2),</span>
+0044 <span class="comment">%   pp.561-580.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%   Copyright (C) 2020</span>
+0047 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0048 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0049 
+0050 <span class="comment">% check input parameters</span>
+0051 <span class="keyword">if</span> nargin &lt; 4
+0052     error(<span class="string">'Not enough input arguments.'</span>)
+0053 <span class="keyword">end</span>
+0054 
+0055 ip = inputParser;
+0056 ip.CaseSensitive = true;
+0057 
+0058 <span class="comment">% required input arguments</span>
+0059 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0060 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0061 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0062 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0063 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0064 addRequired(ip, <span class="string">'P'</span>, @(P) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0065 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0066 addRequired(ip, <span class="string">'PET'</span>, @(PET) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0067 
+0068 <span class="comment">% optional input arguments</span>
+0069 addParameter(ip, <span class="string">'period'</span>, 365, @isnumeric) <span class="comment">% period of cycle (default 1 year)</span>
+0070 addParameter(ip, <span class="string">'useAET'</span>, false, @islogical) <span class="comment">% whether to use AET in the input</span>
+0071 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results</span>
+0072 
+0073 parse(ip, Q, t, P, PET, varargin{:})
+0074 period = ip.Results.period;
+0075 useAET = ip.Results.useAET;
+0076 plot_results = ip.Results.plot_results;
+0077 
+0078 <span class="comment">% create empty figure handle</span>
+0079 fig_handles = [];
+0080 
+0081 <span class="comment">% data checks</span>
+0082 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, <span class="string">'P'</span>, P, <span class="string">'PET'</span>, PET);
+0083 <span class="keyword">if</span> error_flag == 2
+0084     A = NaN;
+0085     phi = NaN;
+0086     <span class="keyword">return</span>
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="comment">% get rid of NaN values</span>
+0090 Q(isnan(Q)) = median(Q,<span class="string">'omitnan'</span>); <span class="comment">% Q NaNs are set to the median flow</span>
+0091 P(isnan(P)) = 0; <span class="comment">% P NaNs are set to zero</span>
+0092 PET(isnan(PET)) = median(PET,<span class="string">'omitnan'</span>); <span class="comment">% PET NaNs are set to median PET</span>
+0093 
+0094 <span class="comment">% calculate signature</span>
+0095 <span class="keyword">if</span> useAET
+0096     [~, AET] = util_StorageAndAET(Q, t, P, PET);
+0097     F = P-AET; <span class="comment">% proxy for incoming signal (forcing)</span>
+0098 <span class="keyword">else</span>
+0099     F = P-PET; <span class="comment">% proxy for incoming signal (forcing)</span>
+0100 <span class="keyword">end</span>
+0101 w = 2*pi/period; <span class="comment">% angular frequency</span>
+0102 
+0103 <span class="comment">% linear regression fitting</span>
+0104 [A_F,phi_F,mean_F] = util_FitSineCurve(datenum(t), F, w);
+0105 [A_Q,phi_Q,mean_Q] = util_FitSineCurve(datenum(t), Q, w);
+0106 
+0107 <span class="comment">% calculate amplitude ratio</span>
+0108 A = A_Q/A_F;
+0109 
+0110 <span class="comment">% calculate phase shift (we assume it's always less than 360 degrees)</span>
+0111 phase_shift = phi_F-phi_Q;
+0112 <span class="keyword">if</span> phase_shift &lt; 0 <span class="comment">% if Q &quot;leads&quot; P</span>
+0113     phase_shift = 2*pi+phase_shift;
+0114 <span class="keyword">end</span>
+0115 phi = phase_shift./w;
+0116 
+0117 <span class="keyword">if</span> plot_results
+0118     <span class="comment">% get estimated sine curves</span>
+0119     F_hat = A_F*sin(w*datenum(t) + phi_F) + mean_F;
+0120     Q_hat = A_Q*sin(w*datenum(t) + phi_Q) + mean_Q;
+0121     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on
+0122     <span class="comment">% t_avg = datetime([0.*year(t),month(t),day(t)]);</span>
+0123     <span class="comment">% t_avg(t_avg == datetime([0,12,31])) = NaT;</span>
+0124     plot(t,movmean(F,30),<span class="string">'color'</span>,[.8 .8 .8]);
+0125     plot(t,movmean(Q,30),<span class="string">'color'</span>,[.4 .4 .4]);
+0126     plot(t,F_hat,<span class="string">'-'</span>,<span class="string">'Linewidth'</span>,1.5)
+0127     plot(t,Q_hat,<span class="string">'-'</span>,<span class="string">'Linewidth'</span>,1.5)
+0128     xlabel(<span class="string">'Date'</span>)
+0129     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0130     title(strcat(<span class="string">'A [-]: '</span>,num2str(round(A,2)),<span class="string">'; phi [timestep]: '</span>,num2str(round(phi))))
+0131     legend(<span class="string">'Forcing'</span>,<span class="string">'Streamflow'</span>,<span class="string">'Sine curve forcing'</span>,<span class="string">'Sine curve streamflow'</span>)
+0132     fig_handles.SeasonalTranslation = fig;
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 09-Dec-2020 16:59:32 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
