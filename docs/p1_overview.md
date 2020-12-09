@@ -63,10 +63,15 @@ function [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, varargin)
 % check input parameters
 [...]
 
+% default setting reads as good data
+error_flag = 0;
+error_str = '';
+[...]
+
 % data checks
 if min(Q)<0
     error_flag = 2;
-    error_str = 'Error: Negative values in flow series.';
+    error_str = ['Error: Negative values in flow series. ', error_str];
     return
 end
 [...]

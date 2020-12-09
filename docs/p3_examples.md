@@ -137,7 +137,7 @@ calculated as K_b = BFI*TotalRR. We therefore do not provide an extra
 signature function, but suggest to use the two existing functions.
 ```
 K_b = sig_BFI(Q,t)*sig_TotalRR(Q,t,P);
-fprintf('Kb = %.2f \n',K_b)
+fprintf('K_b = %.2f \n',K_b)
 ```
 ```
 K_b = 0.21
@@ -229,15 +229,15 @@ Example scripts can be found in *TOSSH/example/*.
 For each signature, we also provide small examples in the description of each m-file. 
 ```
 function [Q_mean, error_flag, error_str] = sig_Q_mean(Q, t)
-%sig_Q_mean calculates mean flow time series.
-...
+%sig_Q_mean calculates mean flow of time series.
+[...]
 %   EXAMPLE
 %   % load example data 
 %   data = load('example/example_data/33029_daily.mat'); 
 %   Q = data.Q; 
 %   t = data.t;
 %   Q_mean = sig_Q_mean(Q,t);
-...
+[...]
 ```
 
 If any of the examples, errors or warnings are unclear, please [contact](./p4_contact.md/) us. 
