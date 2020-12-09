@@ -5,7 +5,7 @@
 
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/TOSSHtoolbox/TOSSH/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/xxx)](https://zenodo.org/badge/latestdoi/xxx)
+[![DOI](https://zenodo.org/badge/319343774.svg)](https://zenodo.org/badge/latestdoi/319343774)
 
 
 This repository contains TOSSH: A Toolbox for Streamflow Signatures in Hydrology (Gnann et al., submitted).
