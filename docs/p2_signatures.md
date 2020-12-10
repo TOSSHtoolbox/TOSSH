@@ -30,7 +30,7 @@ and specific hydrologic phenomena, such as floods or low flows, that are critica
 | Q_mean | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean.html" target="_blank">sig_Q_mean.m</a> | mm/timestep | Mean streamflow |
 | Q5 | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html" target="_blank">sig_x_percentile.m</a> | mm/timestep | 5-th streamflow percentile |
 | Q95 | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html" target="_blank">sig_x_percentile.m</a> | mm/timestep | 95-th streamflow percentile |
-| Q_mean_monthly | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean_monthly.html" target="_blank">sig_Q_mean_monthly.m</a> | mm/timestep | Mean monthly streamflow |
+| Q_mean_monthly<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean_monthly.html" target="_blank">sig_Q_mean_monthly.m</a> | mm/timestep | Mean monthly streamflow |
 | Q_7_day_min | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_min.html" target="_blank">sig_Q_n_day_min.m</a> | mm/timestep | 7-day minimum streamflow |
 | BFI | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html" target="_blank">sig_BFI.m</a> | - | Baseflow index |
 | CoV | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_CoV.html" target="_blank">sig_Q_CoV.m</a> | - | Coefficient of variation |
@@ -50,6 +50,7 @@ and specific hydrologic phenomena, such as floods or low flows, that are critica
 | FDC_slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html" target="_blank">sig_FDC_slope.m</a> | - | Slope of the flow duration curve |
 | BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Exponential recession constant |
 
+<sup>a</sup>Note that this signature function returns a value for each month.
 
 ### Benchmark sets 
 
@@ -107,10 +108,11 @@ Some signatures are the same but applied to different parts of the time series, 
 | RLD | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RisingLimbDensity.html" target="_blank">sig_RisingLimbDensity.m</a> | 1/timestep | Rising limb density |
 | PeakDistribution | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html" target="_blank">sig_PeakDistribution.m</a> | - | Slope of distribution of peaks |
 | PeakDistribution_low | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html" target="_blank">sig_PeakDistribution.m</a> | - | Slope of distribution of peaks for low flow period |
-| FDC | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve |
-| FDC_low | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve for low flow period |
-| FDC_high | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve for high flow period |
+| FDC<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve |
+| FDC_low<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve for low flow period |
+| FDC_high<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html" target="_blank">sig_FDC.m</a> | - | Flow duration curve for high flow period |
 
+<sup>a</sup>Note that this signature function returns the whole flow duration curve.
 
 ###  Process-based signature sets 
 
@@ -128,21 +130,22 @@ from a qualitative description in the paper.
 | TotalRR | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html" target="_blank">sig_TotalRR.m</a> | - | Total runoff ratio |
 | RR_Seasonality | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RR_Seasonality.html" target="_blank">sig_RR_Seasonality.m</a> | - | Runoff ratio seasonality |
 | EventRR | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html" target="_blank">sig_EventRR.m</a> | - | Event runoff ratio |
-| StorageFraction<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html" target="_blank">sig_StorageFraction.m</a> | - | Ratio between active and total storage |
+| StorageFraction<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html" target="_blank">sig_StorageFraction.m</a> | - | Ratio between active and total storage |
 | Recession_a_Seasonality | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalVarRecessions.html" target="_blank">sig_SeasonalVarRecessions.m</a> | - | Seasonal variations in recession parameters |
 | AverageStorage | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFromBaseflow.html" target="_blank">sig_StorageFromBaseflow.m</a> | - | Average storage from average baseflow and storage-discharge relationship|
-| RecessionParameters<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html" target="_blank">sig_RecessionAnalysis.m</a> | - | Recession analysis parameters approximate storage-discharge relationship |
+| RecessionParameters<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html" target="_blank">sig_RecessionAnalysis.m</a> | - | Recession analysis parameters approximate storage-discharge relationship |
 | MRC_num_segments | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | - | Number of different segments in master recession curve (MRC) |
 | First_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Steep section of MRC = storage that is quickly depleted |
 | Mid_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Mid section of MRC = water retention capacity of the catchment |
 | Spearmans_rho | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionUniqueness.html" target="_blank">sig_RecessionUniqueness.m</a> | - | Non-uniqueness in the storage-discharge relationship |
-| EventRR_TotalRR_ratio<sup>2</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html" target="_blank">sig_EventRR.m</a>/<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html" target="_blank">sig_TotalRR.m</a> | - | Ratio between event and total runoff ratio |
+| EventRR_TotalRR_ratio<sup>b</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html" target="_blank">sig_EventRR.m</a>/<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html" target="_blank">sig_TotalRR.m</a> | - | Ratio between event and total runoff ratio |
 | VariabilityIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_VariabilityIndex.html" target="_blank">sig_VariabilityIndex.m</a> | - | Variability index of flow |
 | BFI | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html" target="_blank">sig_BFI.m</a> | - | Baseflow index |
 | BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Exponential recession constant |
 
-<sup>1</sup>Note that these signature functions return multiple signatures.
-<sup>2</sup>Note that this signature is a combination of two other signatures.
+<sup>a</sup>Note that these signature functions return multiple signatures.
+
+<sup>b</sup>Note that this signature is a combination of two other signatures.
 
 
 #### McMillan (2020) overland flow set
@@ -172,22 +175,23 @@ Note that these signatures are all calculated with the same function.
 ### TOSSH: all remaining signatures 
 
 This is a list of all remaining signatures currently contained in TOSSH.
-[comment]: <> (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html" target="_blank">calc_All.m</a>). 
+
+[comment]: <> (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html" target="_blank">calc_All.m</a>)
 
 | Signature | Function (click for code) | Unit | Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
 | ----------- | ----------- | ----------- | ----------- |
 | BaseflowMagnitude | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowMagnitude.html" target="_blank">sig_BaseflowMagnitude.m</a> | mm | Difference between maximum and minimum of annual baseflow regime |
 | ResponseTime | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_ResponseTime.html" target="_blank">sig_ResponseTime.m</a> | timestep | Catchment response time |
-| FlashinessIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html" target="_blank">sig_FlashinessIndex.m</a> | - | Richards-Baker flashiness idex || HFI_mean | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFI_mean.html" target="_blank">sig_HFI_mean.m</a> | timestep | Half flow interval |
-| PQ_Curve<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PQ_Curve.html" target="_blank">sig_PQ_Curve.m</a> | - | Slopes and breakpoints in cumulative P-Q regime curve |
+| FlashinessIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html" target="_blank">sig_FlashinessIndex.m</a> | - | Richards-Baker flashiness idex |
+| PQ_Curve<sup>a</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PQ_Curve.html" target="_blank">sig_PQ_Curve.m</a> | - | Slopes and breakpoints in cumulative P-Q regime curve |
 | Q_n_day_max | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_max.html" target="_blank">sig_Q_n_day_max.m</a> | mm/timestep | n-day maximum streamflow |
 | Q_skew | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_skew.html" target="_blank">sig_Q_skew.m</a> | mm<sup>3</sup>/timestep<sup>3</sup> | Skewness of streamflow|
 | Q_var | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_var.html" target="_blank">sig_Q_var.m</a> | mm<sup>2</sup>/timestep<sup>2</sup> | Variance of streamflow |
 | RecessionK_part | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionParts.html" target="_blank">sig_RecessionParts.m</a> | 1/timestep | Recession constant of early/late (exponential) recessions |
-| SeasonalTranslation<sup>1</sup>| <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalTranslation.html" target="_blank">sig_SeasonalTranslation.m</a> | - | Amplitude ratio and phase shift between seasonal forcing and flow cycles  |
+| SeasonalTranslation<sup>a</sup>| <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalTranslation.html" target="_blank">sig_SeasonalTranslation.m</a> | - | Amplitude ratio and phase shift between seasonal forcing and flow cycles  |
 | SnowStorage | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowStorage.html" target="_blank">sig_SnowStorage.m</a> | mm | Snow storage derived from cumulative P-Q regime curve |
 
-<sup>1</sup>Note that these signature functions return multiple signatures.
+<sup>a</sup>Note that these signature functions return multiple signatures.
 
 ## References
 
