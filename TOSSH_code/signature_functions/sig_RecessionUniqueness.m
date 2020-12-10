@@ -1,8 +1,8 @@
 function [Spearmans_rho, error_flag, error_str, fig_handles] ...
     = sig_RecessionUniqueness(Q, t, varargin)
-%sig_RecessionUniqueness calculates uniqueness of recession relationship.
-%   Calculates Spearman's rank correlation between Q and dQdt to measure 
-%   how unique the recession relationship is.
+%sig_RecessionUniqueness calculates uniqueness of storage-discharge relationship.
+%   Calculates Spearman's rank correlation between Q and dQ/dt to measure 
+%   how unique the storage-discharge relationship is.
 %
 %   INPUT
 %   Q: streamflow [mm/timestep]
@@ -19,7 +19,7 @@ function [Spearmans_rho, error_flag, error_str, fig_handles] ...
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
-%   Spearmans_rho: Spearman's rank correlation between Q and dQdt
+%   Spearmans_rho: Spearman's rank correlation between Q and dQ/dt
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
@@ -103,15 +103,15 @@ end
 [dQdt, Qm, ~, ~] = ...
     util_dQdt(Q, t, flow_section, 'method', dQdt_method);
 
-% calculate Spearman's rho between Q and dQdt
+% calculate Spearman's rho between Q and dQ/dt
 rec = ~isnan(Qm);
 Spearmans_rho = corr(Qm(rec),dQdt(rec),'Type','Spearman');
 
 if plot_results
     fig = figure('Position',[100 100 350 300]); hold on
     plot(Qm,-dQdt,'k .','linewidth',2)
-    xlabel('Q [mm/timestep]') % [mm/timestep]
-    ylabel('-dQ/dt [mm/timestep^2]') % [mm/timestep^2]
+    xlabel('Q [mm/timestep]') 
+    ylabel('-dQ/dt [mm/timestep^2]') 
     set(gca,'XScale','log')
     set(gca,'YScale','log')
     title(['Spearmans rho:','{ }',num2str(Spearmans_rho)])

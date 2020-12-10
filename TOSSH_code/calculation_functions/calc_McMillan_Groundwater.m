@@ -2,8 +2,8 @@ function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, var
 %calc_McMillan_Groundwater calculates various groundwater signatures.
 %   Calculates 15 signatures from McMillan (2020), related to groundwater 
 %   storage, groundwater dynamics and baseflow. These signatures come from 
-%   previous experimental studies that link watershed or hillslope 
-%   processes to streamflow reponse dynamics. Some signatures are 
+%   previous experimental studies that link catchment or hillslope 
+%   processes to streamflow response dynamics. Some signatures are 
 %   implemented direct from the original papers, others are interpreted
 %   from a qualitative description in the paper.
 %
@@ -70,21 +70,21 @@ plot_results = ip.Results.plot_results;
 % Total runoff ratio describes overall water loss to deep groundwater.
 TotalRR = NaN(size(Q_mat,1),1);
 TotalRR_error_str = strings(size(Q_mat,1),1);
-% Ratio between summer and winter runoff ratios, Low ratios show high
-% bedrock permeability, Pfister et al. (2017).
+% Ratio between summer and winter runoff ratios, low ratios show high
+% bedrock permeability (Pfister et al., 2017).
 RR_Seasonality = NaN(size(Q_mat,1),1);
 RR_Seasonality_error_str = strings(size(Q_mat,1),1);
-% Low event runoff ratios show show rapid vertical drainage of water to
-% groundwater, McMillan et al (2011), Noguchi et al. (1997).
+% Low event runoff ratios show rapid vertical drainage of water to
+% groundwater (McMillan et al., 2011, Noguchi et al., 1997).
 EventRR = NaN(size(Q_mat,1),1);
 EventRR_error_str = strings(size(Q_mat,1),1);
 % Ratio of active to total storage volumes, low ratios show permeable
-% bedrock and high total storage, Pfister et al. (2017).
+% bedrock and high total storage (Pfister et al., 2017).
 StorageFraction = NaN(size(Q_mat,1),3);
 StorageFraction_error_str = strings(size(Q_mat,1),1);
 
 % Section: Storage (especially groundwater)
-% Seasonal variations in recession rate (Shaw and Riha; 2012).
+% Seasonal variations in recession parameters (Shaw and Riha, 2012).
 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
 % Average storage from average baseflow and storage-discharge relationship 
@@ -95,21 +95,22 @@ AverageStorage_error_str = strings(size(Q_mat,1),1);
 % This fits a single relationship to the point cloud.
 RecessionParameters = NaN(size(Q_mat,1),2);
 RecessionParameters_error_str = strings(size(Q_mat,1),1);
-% Changes of slope in a master recession curve or recession analysis plot
-% indicate multiple linear reservoirs.
+% Changes of slope in a master recession curve (MRC) or recession analysis 
+% plot indicate multiple linear reservoirs.
 MRC_num_segments = NaN(size(Q_mat,1),1);
 MRC_num_segments_error_str = strings(size(Q_mat,1),1);
-% First, steep section of the master recession curve = storage that is
+% First: steep section of the master recession curve = storage that is
 % quickly depleted (Estrany et al., 2010).
 First_Recession_Slope = NaN(size(Q_mat,1),1);
-% Mid section of the master recession curve = Water retention capacity of 
-% the watershed (Estrany et al., 2010).
+% Second: mid section of the master recession curve = water retention 
+% capacity of  the catchment (Estrany et al., 2010).
 Mid_Recession_Slope = NaN(size(Q_mat,1),1);
-% Non-uniqueness in the recession relationship (McMillan et al., 2011;
-% Harman et al., 2009). Tested using spearman rank correlation on Q vs dQdt.
+% Non-uniqueness in the storage-discharge relationship (McMillan et al., 
+% 2011; Harman et al., 2009). Tested using Spearman's rank correlation on Q 
+% vs. dQ/dt.
 Spearmans_rho = NaN(size(Q_mat,1),1);
 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
-% Ratio between event and total Runoff coefficient: Low = Large storage 
+% Ratio between event and total runoff coefficient: low = large storage 
 % capacity (Blume et al., 2008).
 EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
 % Variability index of flow. Low variability index shows higher water 
@@ -123,8 +124,9 @@ VariabilityIndex_error_str = strings(size(Q_mat,1),1);
 % (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).
 BFI = NaN(size(Q_mat,1),1);
 BFI_error_str = strings(size(Q_mat,1),1);
-% Baseflow recession constant K, slower recessions show greater groundwater
-% influence and longer subsurface flow paths (Safeeq et al., 2013).
+% Baseflow recession constant K (assuming exponential recession behaviour), 
+% slower recessions show greater groundwater influence and longer 
+% subsurface flow paths (Safeeq et al., 2013).
 BaseflowRecessionK = NaN(size(Q_mat,1),1);
 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
 

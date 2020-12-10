@@ -30,8 +30,8 @@
 <div class="fragment"><pre class="comment">calc_McMillan_Groundwater calculates various groundwater signatures.
    Calculates 15 signatures from McMillan (2020), related to groundwater 
    storage, groundwater dynamics and baseflow. These signatures come from 
-   previous experimental studies that link watershed or hillslope 
-   processes to streamflow reponse dynamics. Some signatures are 
+   previous experimental studies that link catchment or hillslope 
+   processes to streamflow response dynamics. Some signatures are 
    implemented direct from the original papers, others are interpreted
    from a qualitative description in the paper.
 
@@ -80,8 +80,8 @@ This function is called by:
 0002 <span class="comment">%calc_McMillan_Groundwater calculates various groundwater signatures.</span>
 0003 <span class="comment">%   Calculates 15 signatures from McMillan (2020), related to groundwater</span>
 0004 <span class="comment">%   storage, groundwater dynamics and baseflow. These signatures come from</span>
-0005 <span class="comment">%   previous experimental studies that link watershed or hillslope</span>
-0006 <span class="comment">%   processes to streamflow reponse dynamics. Some signatures are</span>
+0005 <span class="comment">%   previous experimental studies that link catchment or hillslope</span>
+0006 <span class="comment">%   processes to streamflow response dynamics. Some signatures are</span>
 0007 <span class="comment">%   implemented direct from the original papers, others are interpreted</span>
 0008 <span class="comment">%   from a qualitative description in the paper.</span>
 0009 <span class="comment">%</span>
@@ -148,21 +148,21 @@ This function is called by:
 0070 <span class="comment">% Total runoff ratio describes overall water loss to deep groundwater.</span>
 0071 TotalRR = NaN(size(Q_mat,1),1);
 0072 TotalRR_error_str = strings(size(Q_mat,1),1);
-0073 <span class="comment">% Ratio between summer and winter runoff ratios, Low ratios show high</span>
-0074 <span class="comment">% bedrock permeability, Pfister et al. (2017).</span>
+0073 <span class="comment">% Ratio between summer and winter runoff ratios, low ratios show high</span>
+0074 <span class="comment">% bedrock permeability (Pfister et al., 2017).</span>
 0075 RR_Seasonality = NaN(size(Q_mat,1),1);
 0076 RR_Seasonality_error_str = strings(size(Q_mat,1),1);
-0077 <span class="comment">% Low event runoff ratios show show rapid vertical drainage of water to</span>
-0078 <span class="comment">% groundwater, McMillan et al (2011), Noguchi et al. (1997).</span>
+0077 <span class="comment">% Low event runoff ratios show rapid vertical drainage of water to</span>
+0078 <span class="comment">% groundwater (McMillan et al., 2011, Noguchi et al., 1997).</span>
 0079 EventRR = NaN(size(Q_mat,1),1);
 0080 EventRR_error_str = strings(size(Q_mat,1),1);
 0081 <span class="comment">% Ratio of active to total storage volumes, low ratios show permeable</span>
-0082 <span class="comment">% bedrock and high total storage, Pfister et al. (2017).</span>
+0082 <span class="comment">% bedrock and high total storage (Pfister et al., 2017).</span>
 0083 StorageFraction = NaN(size(Q_mat,1),3);
 0084 StorageFraction_error_str = strings(size(Q_mat,1),1);
 0085 
 0086 <span class="comment">% Section: Storage (especially groundwater)</span>
-0087 <span class="comment">% Seasonal variations in recession rate (Shaw and Riha; 2012).</span>
+0087 <span class="comment">% Seasonal variations in recession parameters (Shaw and Riha, 2012).</span>
 0088 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
 0089 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
 0090 <span class="comment">% Average storage from average baseflow and storage-discharge relationship</span>
@@ -173,103 +173,105 @@ This function is called by:
 0095 <span class="comment">% This fits a single relationship to the point cloud.</span>
 0096 RecessionParameters = NaN(size(Q_mat,1),2);
 0097 RecessionParameters_error_str = strings(size(Q_mat,1),1);
-0098 <span class="comment">% Changes of slope in a master recession curve or recession analysis plot</span>
-0099 <span class="comment">% indicate multiple linear reservoirs.</span>
+0098 <span class="comment">% Changes of slope in a master recession curve (MRC) or recession analysis</span>
+0099 <span class="comment">% plot indicate multiple linear reservoirs.</span>
 0100 MRC_num_segments = NaN(size(Q_mat,1),1);
 0101 MRC_num_segments_error_str = strings(size(Q_mat,1),1);
-0102 <span class="comment">% First, steep section of the master recession curve = storage that is</span>
+0102 <span class="comment">% First: steep section of the master recession curve = storage that is</span>
 0103 <span class="comment">% quickly depleted (Estrany et al., 2010).</span>
 0104 First_Recession_Slope = NaN(size(Q_mat,1),1);
-0105 <span class="comment">% Mid section of the master recession curve = Water retention capacity of</span>
-0106 <span class="comment">% the watershed (Estrany et al., 2010).</span>
+0105 <span class="comment">% Second: mid section of the master recession curve = water retention</span>
+0106 <span class="comment">% capacity of  the catchment (Estrany et al., 2010).</span>
 0107 Mid_Recession_Slope = NaN(size(Q_mat,1),1);
-0108 <span class="comment">% Non-uniqueness in the recession relationship (McMillan et al., 2011;</span>
-0109 <span class="comment">% Harman et al., 2009). Tested using spearman rank correlation on Q vs dQdt.</span>
-0110 Spearmans_rho = NaN(size(Q_mat,1),1);
-0111 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
-0112 <span class="comment">% Ratio between event and total Runoff coefficient: Low = Large storage</span>
-0113 <span class="comment">% capacity (Blume et al., 2008).</span>
-0114 EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
-0115 <span class="comment">% Variability index of flow. Low variability index shows higher water</span>
-0116 <span class="comment">% storage (Estrany et al., 2010).</span>
-0117 VariabilityIndex = NaN(size(Q_mat,1),1);
-0118 VariabilityIndex_error_str = strings(size(Q_mat,1),1);
-0119 
-0120 <span class="comment">% Section: Baseflow</span>
-0121 <span class="comment">% Visual inspection of hydrograph for stable baseflow: not coded.</span>
-0122 <span class="comment">% Baseflow index indicates baseflow proportion and baseflow residence time</span>
-0123 <span class="comment">% (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).</span>
-0124 BFI = NaN(size(Q_mat,1),1);
-0125 BFI_error_str = strings(size(Q_mat,1),1);
-0126 <span class="comment">% Baseflow recession constant K, slower recessions show greater groundwater</span>
-0127 <span class="comment">% influence and longer subsurface flow paths (Safeeq et al., 2013).</span>
-0128 BaseflowRecessionK = NaN(size(Q_mat,1),1);
-0129 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
-0130 
-0131 <span class="comment">% loop over all catchments</span>
-0132 <span class="keyword">for</span> i = 1:size(Q_mat,1)
-0133     
-0134     <span class="comment">% Section: Groundwater</span>
-0135     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
-0136     [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i});
-0137     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
-0138     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = <span class="keyword">...</span>
-0139         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
-0140     
-0141     <span class="comment">% Section: Storage (especially groundwater)</span>
-0142     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = <span class="keyword">...</span>
-0143         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,median(Q_mat{i},<span class="string">'omitnan'</span>)*0.001,<span class="string">'plot_results'</span>,plot_results);
-0144     [AverageStorage(i),~,AverageStorage_error_str(i)] = <span class="keyword">...</span>
-0145         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},<span class="string">'plot_results'</span>,plot_results);
-0146     [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = <span class="keyword">...</span>
-0147         sig_RecessionAnalysis(Q_mat{i},t_mat{i},<span class="string">'fit_individual'</span>,false,<span class="string">'plot_results'</span>,plot_results);
-0148     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = <span class="keyword">...</span>
-0149         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},<span class="string">'plot_results'</span>,plot_results,<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
-0150     First_Recession_Slope(i) = Segment_slopes(1);
-0151     <span class="keyword">if</span> length(Segment_slopes) &gt;= 2
-0152         Mid_Recession_Slope(i) = Segment_slopes(2);
-0153     <span class="keyword">end</span>
-0154     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
-0155     EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
-0156     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
-0157     
-0158     <span class="comment">% Section: Baseflow</span>
-0159     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},<span class="string">'method'</span>,<span class="string">'UKIH'</span>,<span class="string">'parameters'</span>,5);
-0160     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
-0161         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>)); 
-0162     
-0163 <span class="keyword">end</span>
-0164 
-0165 <span class="comment">% add results to struct array</span>
-0166 results.TotalRR = TotalRR;
-0167 results.TotalRR_error_str = TotalRR_error_str;
-0168 results.EventRR = EventRR;
-0169 results.EventRR_error_str = EventRR_error_str;
-0170 results.RR_Seasonality = RR_Seasonality;
-0171 results.RR_Seasonality_error_str = RR_Seasonality_error_str;
-0172 results.StorageFraction = StorageFraction;
-0173 results.StorageFraction_error_str = StorageFraction_error_str;
-0174 results.Recession_a_Seasonality = Recession_a_Seasonality;
-0175 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
-0176 results.AverageStorage = AverageStorage;
-0177 results.AverageStorage_error_str = AverageStorage_error_str;
-0178 results.RecessionParameters = RecessionParameters;
-0179 results.RecessionParameters_error_str = RecessionParameters_error_str;
-0180 results.MRC_num_segments = MRC_num_segments;
-0181 results.MRC_num_segments_error_str = MRC_num_segments_error_str;
-0182 results.BFI = BFI;
-0183 results.BFI_error_str = BFI_error_str;
-0184 results.BaseflowRecessionK = BaseflowRecessionK;
-0185 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
-0186 results.First_Recession_Slope = First_Recession_Slope;
-0187 results.Mid_Recession_Slope = Mid_Recession_Slope;
-0188 results.Spearmans_rho = Spearmans_rho;
-0189 results.Spearmans_rho_error_str = Spearmans_rho_error_str;
-0190 results.EventRR_TotalRR_ratio = EventRR_TotalRR_ratio;
-0191 results.VariabilityIndex = VariabilityIndex;
-0192 results.VariabilityIndex_error_str = VariabilityIndex_error_str;
-0193 
-0194 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 09-Dec-2020 17:11:35 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0108 <span class="comment">% Non-uniqueness in the storage-discharge relationship (McMillan et al.,</span>
+0109 <span class="comment">% 2011; Harman et al., 2009). Tested using Spearman's rank correlation on Q</span>
+0110 <span class="comment">% vs. dQ/dt.</span>
+0111 Spearmans_rho = NaN(size(Q_mat,1),1);
+0112 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
+0113 <span class="comment">% Ratio between event and total runoff coefficient: low = large storage</span>
+0114 <span class="comment">% capacity (Blume et al., 2008).</span>
+0115 EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
+0116 <span class="comment">% Variability index of flow. Low variability index shows higher water</span>
+0117 <span class="comment">% storage (Estrany et al., 2010).</span>
+0118 VariabilityIndex = NaN(size(Q_mat,1),1);
+0119 VariabilityIndex_error_str = strings(size(Q_mat,1),1);
+0120 
+0121 <span class="comment">% Section: Baseflow</span>
+0122 <span class="comment">% Visual inspection of hydrograph for stable baseflow: not coded.</span>
+0123 <span class="comment">% Baseflow index indicates baseflow proportion and baseflow residence time</span>
+0124 <span class="comment">% (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).</span>
+0125 BFI = NaN(size(Q_mat,1),1);
+0126 BFI_error_str = strings(size(Q_mat,1),1);
+0127 <span class="comment">% Baseflow recession constant K (assuming exponential recession behaviour),</span>
+0128 <span class="comment">% slower recessions show greater groundwater influence and longer</span>
+0129 <span class="comment">% subsurface flow paths (Safeeq et al., 2013).</span>
+0130 BaseflowRecessionK = NaN(size(Q_mat,1),1);
+0131 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
+0132 
+0133 <span class="comment">% loop over all catchments</span>
+0134 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0135     
+0136     <span class="comment">% Section: Groundwater</span>
+0137     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
+0138     [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i});
+0139     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
+0140     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = <span class="keyword">...</span>
+0141         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+0142     
+0143     <span class="comment">% Section: Storage (especially groundwater)</span>
+0144     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = <span class="keyword">...</span>
+0145         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,median(Q_mat{i},<span class="string">'omitnan'</span>)*0.001,<span class="string">'plot_results'</span>,plot_results);
+0146     [AverageStorage(i),~,AverageStorage_error_str(i)] = <span class="keyword">...</span>
+0147         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},<span class="string">'plot_results'</span>,plot_results);
+0148     [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = <span class="keyword">...</span>
+0149         sig_RecessionAnalysis(Q_mat{i},t_mat{i},<span class="string">'fit_individual'</span>,false,<span class="string">'plot_results'</span>,plot_results);
+0150     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = <span class="keyword">...</span>
+0151         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},<span class="string">'plot_results'</span>,plot_results,<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
+0152     First_Recession_Slope(i) = Segment_slopes(1);
+0153     <span class="keyword">if</span> length(Segment_slopes) &gt;= 2
+0154         Mid_Recession_Slope(i) = Segment_slopes(2);
+0155     <span class="keyword">end</span>
+0156     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
+0157     EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
+0158     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
+0159     
+0160     <span class="comment">% Section: Baseflow</span>
+0161     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},<span class="string">'method'</span>,<span class="string">'UKIH'</span>,<span class="string">'parameters'</span>,5);
+0162     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
+0163         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>)); 
+0164     
+0165 <span class="keyword">end</span>
+0166 
+0167 <span class="comment">% add results to struct array</span>
+0168 results.TotalRR = TotalRR;
+0169 results.TotalRR_error_str = TotalRR_error_str;
+0170 results.EventRR = EventRR;
+0171 results.EventRR_error_str = EventRR_error_str;
+0172 results.RR_Seasonality = RR_Seasonality;
+0173 results.RR_Seasonality_error_str = RR_Seasonality_error_str;
+0174 results.StorageFraction = StorageFraction;
+0175 results.StorageFraction_error_str = StorageFraction_error_str;
+0176 results.Recession_a_Seasonality = Recession_a_Seasonality;
+0177 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
+0178 results.AverageStorage = AverageStorage;
+0179 results.AverageStorage_error_str = AverageStorage_error_str;
+0180 results.RecessionParameters = RecessionParameters;
+0181 results.RecessionParameters_error_str = RecessionParameters_error_str;
+0182 results.MRC_num_segments = MRC_num_segments;
+0183 results.MRC_num_segments_error_str = MRC_num_segments_error_str;
+0184 results.BFI = BFI;
+0185 results.BFI_error_str = BFI_error_str;
+0186 results.BaseflowRecessionK = BaseflowRecessionK;
+0187 results.BaseflowRecessionK_error_str = BaseflowRecessionK_error_str;
+0188 results.First_Recession_Slope = First_Recession_Slope;
+0189 results.Mid_Recession_Slope = Mid_Recession_Slope;
+0190 results.Spearmans_rho = Spearmans_rho;
+0191 results.Spearmans_rho_error_str = Spearmans_rho_error_str;
+0192 results.EventRR_TotalRR_ratio = EventRR_TotalRR_ratio;
+0193 results.VariabilityIndex = VariabilityIndex;
+0194 results.VariabilityIndex_error_str = VariabilityIndex_error_str;
+0195 
+0196 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

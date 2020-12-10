@@ -44,9 +44,10 @@ t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
 
 % Typically, users will have their own data which they want to analyse. 
 % We provide an example file to get a more realistic time series.
-% The example file also contains precipitation (P) and potential
-% evapotranspiration (PET) data which are required for some signatures.
-% The paths are relative and assume that we are in the TOSSH directory.
+% The example file also contains precipitation (P), potential
+% evapotranspiration (PET), and temperature (T) data which are required 
+% for some signatures. The paths are relative and assume that we are in 
+% the TOSSH directory.
 path = './example/example_data/'; % specify path
 data = load(strcat(path,'33029_daily.mat')); % load data
 t = data.t;
@@ -54,7 +55,7 @@ Q = data.Q; % streamflow [mm/day]
 P = data.P; % precipitation [mm/day]
 % Note: PET and T example data are provided but not used here.
 % PET = data.PET; % potential evapotranspiration [mm/day]
-% T = data.T; % temperature [°C]
+% T = data.T; % temperature [degC]
 
 %% Plot data
 % We can plot the data to get a first idea of the hydrograph.
@@ -75,7 +76,7 @@ fprintf('Q_mean = %.2f \n',Q_mean)
 % Some signatures can be calculated using different methods and/or
 % parameter values. For example, there are different options to calculate 
 % the baseflow index (BFI). The default method is the UKIH smoothed minima 
-% method with a default parameter of 5 days.
+% method with a parameter of 5 days.
 BFI_UKIH = sig_BFI(Q,t);
 fprintf('BFI_UKIH = %.2f \n',BFI_UKIH)
 % Alternatively, we can use the Lyne-Hollick filter with a filter parameter 
@@ -102,9 +103,9 @@ fprintf('FDC_slope = %.2f \n',FDC_slope)
 
 % Some signatures are combinations of existing signatures, e.g. the
 % baseflow fraction (K_b) defined as the ratio between mean baseflow Q_b  
-% and mean precipitation P (Gnann et al., 2019). This signature can also be 
-% calculated as K_b = BFI*TotalRR. We therefore do not provide an extra
-% signature function, but suggest to use the two existing functions.
+% and mean precipitation P. This signature can also be calculated as
+% K_b = BFI*TotalRR. We therefore do not provide an extra signature
+% function, but suggest to use the two existing functions.
 K_b = sig_BFI(Q,t)*sig_TotalRR(Q,t,P);
 fprintf('K_b = %.2f \n',K_b)
 

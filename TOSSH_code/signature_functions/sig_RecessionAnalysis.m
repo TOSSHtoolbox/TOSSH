@@ -192,8 +192,8 @@ if plot_results
         str = (sprintf('median: -dQ/dt = %.3f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
         title(str);
     end
-    xlabel('Q [mm/timestep]') % [mm/timestep]
-    ylabel('-dQ/dt [mm/timestep^2]') % [mm/timestep^2]
+    xlabel('Q [mm/timestep]') 
+    ylabel('-dQ/dt [mm/timestep^2]')
     set(gca,'XScale','log')
     set(gca,'YScale','log')
     fig_handles.RecessionAnalysis = fig;

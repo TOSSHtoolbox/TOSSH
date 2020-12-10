@@ -30,8 +30,8 @@
 <div class="fragment"><pre class="comment">calc_McMillan_OverlandFlow calculates various overland flow signatures.
    Calculates 10 overland flow (infiltration excess and saturation excess)
    signatures from McMillan (2020). These signatures come from previous
-   experimental studies that link watershed or hillslope processes to
-   streamflow reponse dynamics. Some signatures are implemented direct
+   experimental studies that link catchment or hillslope processes to
+   streamflow response dynamics. Some signatures are implemented direct
    from the original papers, others are interpreted from a qualitative
    description in the paper.
 
@@ -80,8 +80,8 @@ This function is called by:
 0002 <span class="comment">%calc_McMillan_OverlandFlow calculates various overland flow signatures.</span>
 0003 <span class="comment">%   Calculates 10 overland flow (infiltration excess and saturation excess)</span>
 0004 <span class="comment">%   signatures from McMillan (2020). These signatures come from previous</span>
-0005 <span class="comment">%   experimental studies that link watershed or hillslope processes to</span>
-0006 <span class="comment">%   streamflow reponse dynamics. Some signatures are implemented direct</span>
+0005 <span class="comment">%   experimental studies that link catchment or hillslope processes to</span>
+0006 <span class="comment">%   streamflow response dynamics. Some signatures are implemented direct</span>
 0007 <span class="comment">%   from the original papers, others are interpreted from a qualitative</span>
 0008 <span class="comment">%   description in the paper.</span>
 0009 <span class="comment">%</span>
@@ -149,7 +149,7 @@ This function is called by:
 0071 
 0072 <span class="comment">% Significance (using likelihood ratio test) and location of a threshold in</span>
 0073 <span class="comment">% a plot of quickflow volume vs. maximum intensity, signifying IE process</span>
-0074 <span class="comment">% (Ali et al., 2013); IE is indicated when IE_thresh_sig &lt; 0.05.</span>
+0074 <span class="comment">% (Ali et al., 2013). IE is indicated when IE_thresh_sig &lt; 0.05.</span>
 0075 IE_thresh_signif = NaN(size(Q_mat,1),1);
 0076 IE_thresh = NaN(size(Q_mat,1),1);
 0077 
@@ -165,7 +165,7 @@ This function is called by:
 0087 
 0088 <span class="comment">% Significance and location of a threshold in a plot of quickflow volume</span>
 0089 <span class="comment">% vs. antecedent precipitation index + total precipitation. SE is indicated</span>
-0090 <span class="comment">% when storage_thresh_sig &lt; 0.05 (Ali et al., 2013, McGrath et al., 2007).</span>
+0090 <span class="comment">% when storage_thresh_sig &lt; 0.05 (Ali et al., 2013; McGrath et al., 2007).</span>
 0091 Storage_thresh_signif = NaN(size(Q_mat,1),1);
 0092 Storage_thresh = NaN(size(Q_mat,1),1);
 0093 
@@ -176,7 +176,7 @@ This function is called by:
 0098 <span class="comment">% variable to store error strings</span>
 0099 OF_error_str = strings(size(Q_mat,1),1);
 0100 
-0101 <span class="comment">% calculate signatures for each watershed</span>
+0101 <span class="comment">% loop over all catchments</span>
 0102 <span class="keyword">for</span> i = 1:size(Q_mat,1)
 0103     
 0104     [IE_effect(i),SE_effect(i),IE_thresh_signif(i),IE_thresh(i), <span class="keyword">...</span>
@@ -200,6 +200,6 @@ This function is called by:
 0122 results.OF_error_str = OF_error_str;
 0123 
 0124 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 09-Dec-2020 17:11:35 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

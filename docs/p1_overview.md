@@ -44,11 +44,12 @@ end
 ```
 
 Some signature functions return more than one signature and optionally create a plot (e.g. *sig_RecessionAnalysis.m*).
-Every signature function optionally returns an error flag and an error string, which contain information about problems that occurred during signature calculation.
+Signature functions with plotting functionality optionally return a figure handle that allows to manipulate the figure. 
+Every signature function optionally returns an error flag and an error string, which contain information about problems that occurred during signature calculation. 
 
-We provide two templates which should be used to implement new signatures in a consistent way. 
-A basic template *sig_TemplateBasic.m* which only contains Q, t, and optional parameters inputs 
-and an advanced template *sig_TemplateAdvanced.m* which contains all possible inputs (i.e. Q, t, P, PET, T, required parameters, and optional parameters).
+We provide two templates which should be used to implement new signatures in a consistent way:
+a basic template *sig_TemplateBasic.m* which only contains Q, t, and optional parameters inputs 
+and an advanced template *sig_TemplateAdvanced.m* which contains all possible inputs (Q, t, P, PET, T, required parameters, and optional parameters).
 
 
 ### Utility functions
@@ -86,7 +87,7 @@ The signature sets are described in the corresponding paper and [here](./p2_sign
 
 ### Other scripts and functions
 There are a few other scripts and functions. 
-Most of them are workflow scripts (e.g. *workflow_1_basic.m*) which show how the toolbox can be used with some test data (see [here](./p3_examples.md/) for more information on workflow scripts).
+Most of them are workflow scripts (e.g. *workflow_1_basic.m*) which show how the toolbox can be used with some example data (see [here](./p3_examples.md/) for more information on workflow scripts).
 The remaining functions are helper functions used to load data, to create plots, etc., and they are mainly used in the workflow scripts.
 
 
@@ -94,7 +95,7 @@ The remaining functions are helper functions used to load data, to create plots,
 
 ### Input time series 
 Every signature function requires streamflow data (as a MATLAB vector, typically in mm/timestep) and corresponding dates (as a MATLAB datetime vector).
-Additionally, some signatures require precipitation or potential evapotranspiration data (as a MATLAB vector, same units as streamflow).
+Additionally, some signatures require precipitation, potential evapotranspiration (both in mm/timestep), or temperature data (in °C).
 
 ### Input parameters
 Most signatures that require parameter values will use default parameter values unless the parameters are specified in the inputs. 
@@ -121,7 +122,7 @@ Such errors stop code execution but can be avoided if the functions are called w
 
 ## Required MATLAB toolboxes
 The toolbox was developed using Matlab R2020a.
-Some functions require MATLAB toolboxes, which are listed below.
+Some functions require MATLAB toolboxes, which are listed below:
 
 [comment]: <>  - 'MATLAB'	'9.4'
 

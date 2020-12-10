@@ -25,8 +25,8 @@ t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
 
 Typically, users will have their own data which they want to analyse. 
 We provide an example file to get a more realistic time series.
-The example file also contains precipitation (P) and potential
-evapotranspiration (PET) data which are required for some signatures.
+The example file also contains precipitation (P), potential
+evapotranspiration (PET), and temperature (T) data which are required for some signatures.
 The paths are relative and assume that we are in the TOSSH directory.
 
 ```
@@ -71,7 +71,7 @@ Q_mean = 0.54
 Some signatures can be calculated using different methods and/or
 parameter values. For example, there are different options to calculate 
 the baseflow index (BFI). The default method is the UKIH smoothed minima 
-method with a default parameter of 5 days.
+method with a parameter of 5 days.
 ```
 BFI_UKIH = sig_BFI(Q,t);
 fprintf('BFI_UKIH = %.2f \n',BFI_UKIH)
@@ -213,7 +213,7 @@ Error in workflow_1_basic (line 149)
 Q_mean = sig_Q_mean(t,Q);
 ```
 
-While this will stop code execution, such errors should be easily 
+While this will stop code execution, such errors are
 avoidable by specifying all inputs correctly. 
 
 

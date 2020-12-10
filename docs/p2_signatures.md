@@ -18,9 +18,9 @@ At the end of the page you can also find a list with all remaining signatures co
  
 ### Basic set 
 The basic set of signatures (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_BasicSet.html" target="_blank">calc_BasicSet.m</a>) 
-are designed to cover the five components of a natural streamflow regime 
+is designed to cover the five components of a natural streamflow regime 
 as defined by Richter et al. (1996) and Poff et al. (1997): 
-magnitude, frequency, duration, timing and rate of change.
+magnitude, frequency, duration, timing, and rate of change.
 As Poff et al. (1997) state, these components “can be used to characterize the entire range of flows 
 and specific hydrologic phenomena, such as floods or low flows, that are critical to the integrity of river ecosystems”. 
 
@@ -33,7 +33,7 @@ and specific hydrologic phenomena, such as floods or low flows, that are critica
 | Q_mean_monthly | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean_monthly.html" target="_blank">sig_Q_mean_monthly.m</a> | mm/timestep | Mean monthly streamflow |
 | Q_7_day_min | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_min.html" target="_blank">sig_Q_n_day_min.m</a> | mm/timestep | 7-day minimum streamflow |
 | BFI | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html" target="_blank">sig_BFI.m</a> | - | Baseflow index |
-| CoV | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_CoV.html" target="_blank">sig_CoV.m</a> | - | Coefficient of variation |
+| CoV | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_CoV.html" target="_blank">sig_Q_CoV.m</a> | - | Coefficient of variation |
 | **Frequency** |
 | high_Q_frequency | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html" target="_blank">sig_x_Q_frequency.m</a> | - | High flow frequency |
 | low_Q_frequency | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html" target="_blank">sig_x_Q_frequency.m</a> | - | Low flow frequency |
@@ -48,7 +48,7 @@ and specific hydrologic phenomena, such as floods or low flows, that are critica
 | **Rate of change** |
 | AC1 | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html" target="_blank">sig_Autocorrelation.m</a> | - | Lag-1 autocorrelation |
 | FDC_slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html" target="_blank">sig_FDC_slope.m</a> | - | Slope of the flow duration curve |
-| BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Recession constant |
+| BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Exponential recession constant |
 
 
 ### Benchmark sets 
@@ -98,6 +98,7 @@ Euser et al. (2013) use 8 signatures (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_c
 that represent different aspects of hydrological behaviour. 
 The signatures are used to test the consistency of model performance, 
 within the FARM model evaluation framework.
+Some signatures are the same but applied to different parts of the time series, e.g. the low flow period (May to September) or the high flow period (November to April).
 
 | Signature | Function (click for code) | Unit | Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
 | ----------- | ----------- | ----------- | ----------- | 
@@ -117,8 +118,8 @@ within the FARM model evaluation framework.
 Calculates 15 signatures (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_Groundwater.html" target="_blank">calc_McMillan_Groundwater.m</a>)
 from McMillan (2020), related to groundwater 
 storage, groundwater dynamics and baseflow. These signatures come from 
-previous experimental studies that link watershed or hillslope 
-processes to streamflow reponse dynamics. Some signatures are 
+previous experimental studies that link catchment or hillslope 
+processes to streamflow response dynamics. Some signatures are 
 implemented direct from the original papers, others are interpreted
 from a qualitative description in the paper.
 
@@ -127,30 +128,32 @@ from a qualitative description in the paper.
 | TotalRR | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html" target="_blank">sig_TotalRR.m</a> | - | Total runoff ratio |
 | RR_Seasonality | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RR_Seasonality.html" target="_blank">sig_RR_Seasonality.m</a> | - | Runoff ratio seasonality |
 | EventRR | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html" target="_blank">sig_EventRR.m</a> | - | Event runoff ratio |
-| StorageFraction | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html" target="_blank">sig_StorageFraction.m</a> | - | Ratio between active and total storage |
-| Recession_a_Seasonality | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalVarRecessions.html" target="_blank">sig_SeasonalVarRecessions.m</a> | - | Seasonal variations in recession rate |
+| StorageFraction<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html" target="_blank">sig_StorageFraction.m</a> | - | Ratio between active and total storage |
+| Recession_a_Seasonality | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalVarRecessions.html" target="_blank">sig_SeasonalVarRecessions.m</a> | - | Seasonal variations in recession parameters |
 | AverageStorage | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFromBaseflow.html" target="_blank">sig_StorageFromBaseflow.m</a> | - | Average storage from average baseflow and storage-discharge relationship|
-| RecessionParameters | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html" target="_blank">sig_RecessionAnalysis.m</a> | - | Recession analysis parameters approximate storage-discharge relationship |
-| MRC_num_segments | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | - | Number of different segments in MRC |
-| First_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Steep section of the master recession curve = storage that is quickly depleted |
-| Mid_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Mid section of the master recession curve = water retention capacity of the watershed |
-| Spearmans_rho | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionUniqueness.html" target="_blank">sig_RecessionUniqueness.m</a> | - | Non-uniqueness in the recession relationship |
-| EventRR_TotalRR_ratio<sup>1</sup> | EventRR/TotalRR | - | Ratio between event and total runoff ratio |
+| RecessionParameters<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html" target="_blank">sig_RecessionAnalysis.m</a> | - | Recession analysis parameters approximate storage-discharge relationship |
+| MRC_num_segments | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | - | Number of different segments in master recession curve (MRC) |
+| First_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Steep section of MRC = storage that is quickly depleted |
+| Mid_Recession_Slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html" target="_blank">sig_MRC_SlopeChanges.m</a> | mm/timestep<sup>2</sup> | Mid section of MRC = water retention capacity of the catchment |
+| Spearmans_rho | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionUniqueness.html" target="_blank">sig_RecessionUniqueness.m</a> | - | Non-uniqueness in the storage-discharge relationship |
+| EventRR_TotalRR_ratio<sup>2</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html" target="_blank">sig_EventRR.m</a>/<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html" target="_blank">sig_TotalRR.m</a> | - | Ratio between event and total runoff ratio |
 | VariabilityIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_VariabilityIndex.html" target="_blank">sig_VariabilityIndex.m</a> | - | Variability index of flow |
 | BFI | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html" target="_blank">sig_BFI.m</a> | - | Baseflow index |
-| BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Recession constant |
+| BaseflowRecessionK | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html" target="_blank">sig_BaseflowRecessionK.m</a> | 1/d | Exponential recession constant |
 
-<sup>1</sup>Note that this signature is a combination of two other signatures.
+<sup>1</sup>Note that these signature functions return multiple signatures.
+<sup>2</sup>Note that this signature is a combination of two other signatures.
 
 
 #### McMillan (2020) overland flow set
 Calculates 10 overland flow (infiltration excess and saturation excess)
 signatures (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_OverlandFlow.html" target="_blank">calc_McMillan_OverlandFlow.m</a>)
 from McMillan (2020). These signatures come from previous
-experimental studies that link watershed or hillslope processes to
-streamflow reponse dynamics. Some signatures are implemented direct
+experimental studies that link catchment or hillslope processes to
+streamflow response dynamics. Some signatures are implemented direct
 from the original papers, others are interpreted from a qualitative
 description in the paper. 
+Note that these signatures are all calculated with the same function.
 
 | Signature | Function (click for code) | Unit | Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
 | ----------- | ----------- | ----------- | ----------- | 
@@ -162,22 +165,20 @@ description in the paper.
 | SE_thresh | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | mm | Saturation excess threshold location (in a plot of quickflow volume vs. total precipitation) |
 | SE_slope | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | mm/mm | Saturation excess threshold above-threshold slope (in a plot of quickflow volume vs. total precipitation) |
 | Storage_thresh_signif | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | - | Storage/saturation excess threshold significance (in a plot of quickflow volume vs. antecedent precipitation index + total precipitation) | 
-| Storage_thresh | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | mm | storage/saturation excess threshold location (in a plot of quickflow volume vs. antecedent precipitation index + total precipitation) |
+| Storage_thresh | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | mm | Storage/saturation excess threshold location (in a plot of quickflow volume vs. antecedent precipitation index + total precipitation) |
 | min_Qf_perc | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html" target="_blank">sig_EventGraphThresholds.m</a> | % | Minimum quickflow as a percentage of precipitation | 
 
 
 ### TOSSH: all remaining signatures 
 
-This is a list of all remaining signatures 
-(<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html" target="_blank">calc_All.m</a>)
-currently contained in TOSSH. 
+This is a list of all remaining signatures currently contained in TOSSH.
+[comment]: <> (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html" target="_blank">calc_All.m</a>). 
 
 | Signature | Function (click for code) | Unit | Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 
 | ----------- | ----------- | ----------- | ----------- |
 | BaseflowMagnitude | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowMagnitude.html" target="_blank">sig_BaseflowMagnitude.m</a> | mm | Difference between maximum and minimum of annual baseflow regime |
 | ResponseTime | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_ResponseTime.html" target="_blank">sig_ResponseTime.m</a> | timestep | Catchment response time |
-| FlashinessIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html" target="_blank">sig_FlashinessIndex.m</a> | - | Richards-Baker flashiness idex |
-| HFI_mean | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFI_mean.html" target="_blank">sig_HFI_mean.m</a> | timestep | Half flow interval |
+| FlashinessIndex | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html" target="_blank">sig_FlashinessIndex.m</a> | - | Richards-Baker flashiness idex || HFI_mean | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFI_mean.html" target="_blank">sig_HFI_mean.m</a> | timestep | Half flow interval |
 | PQ_Curve<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PQ_Curve.html" target="_blank">sig_PQ_Curve.m</a> | - | Slopes and breakpoints in cumulative P-Q regime curve |
 | Q_n_day_max | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_max.html" target="_blank">sig_Q_n_day_max.m</a> | mm/timestep | n-day maximum streamflow |
 | Q_skew | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_skew.html" target="_blank">sig_Q_skew.m</a> | mm<sup>3</sup>/timestep<sup>3</sup> | Skewness of streamflow|
@@ -185,7 +186,6 @@ currently contained in TOSSH.
 | RecessionK_part | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionParts.html" target="_blank">sig_RecessionParts.m</a> | 1/timestep | Recession constant of early/late (exponential) recessions |
 | SeasonalTranslation<sup>1</sup>| <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalTranslation.html" target="_blank">sig_SeasonalTranslation.m</a> | - | Amplitude ratio and phase shift between seasonal forcing and flow cycles  |
 | SnowStorage | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowStorage.html" target="_blank">sig_SnowStorage.m</a> | mm | Snow storage derived from cumulative P-Q regime curve |
-| StorageFraction<sup>1</sup> | <a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html" target="_blank">sig_StorageFraction.m</a> | - | Ratio of active to total storage |
 
 <sup>1</sup>Note that these signature functions return multiple signatures.
 
@@ -199,7 +199,7 @@ Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and Clark, M.P., 2
 
 Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G., 2011. Catchment classification: empirical analysis of hydrologic similarity based on catchment function in the eastern USA. Hydrology & Earth System Sciences Discussions, 8(3).
 
-Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of constraints on expected watershed response behavior for improved predictions in ungauged basins. Advances in water resources, 30(8), pp.1756-1774.
+Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of constraints on expected catchment response behavior for improved predictions in ungauged basins. Advances in water resources, 30(8), pp.1756-1774.
 
 Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S. and Savenije, H.H.G., 2013. A framework to assess the realism of model structures using hydrological signatures. Hydrology and Earth System Sciences, 17 (5), 2013.
 

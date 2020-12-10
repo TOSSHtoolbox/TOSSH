@@ -2,8 +2,8 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, va
 %calc_McMillan_OverlandFlow calculates various overland flow signatures.
 %   Calculates 10 overland flow (infiltration excess and saturation excess)
 %   signatures from McMillan (2020). These signatures come from previous
-%   experimental studies that link watershed or hillslope processes to
-%   streamflow reponse dynamics. Some signatures are implemented direct
+%   experimental studies that link catchment or hillslope processes to
+%   streamflow response dynamics. Some signatures are implemented direct
 %   from the original papers, others are interpreted from a qualitative
 %   description in the paper.
 %
@@ -71,7 +71,7 @@ SE_effect = NaN(size(Q_mat,1),1);
 
 % Significance (using likelihood ratio test) and location of a threshold in
 % a plot of quickflow volume vs. maximum intensity, signifying IE process
-% (Ali et al., 2013); IE is indicated when IE_thresh_sig < 0.05.
+% (Ali et al., 2013). IE is indicated when IE_thresh_sig < 0.05.
 IE_thresh_signif = NaN(size(Q_mat,1),1);
 IE_thresh = NaN(size(Q_mat,1),1);
 
@@ -87,7 +87,7 @@ SE_slope = NaN(size(Q_mat,1),1);
 
 % Significance and location of a threshold in a plot of quickflow volume
 % vs. antecedent precipitation index + total precipitation. SE is indicated
-% when storage_thresh_sig < 0.05 (Ali et al., 2013, McGrath et al., 2007).
+% when storage_thresh_sig < 0.05 (Ali et al., 2013; McGrath et al., 2007).
 Storage_thresh_signif = NaN(size(Q_mat,1),1);
 Storage_thresh = NaN(size(Q_mat,1),1);
 
@@ -98,7 +98,7 @@ min_Qf_perc = NaN(size(Q_mat,1),1);
 % variable to store error strings
 OF_error_str = strings(size(Q_mat,1),1);
 
-% calculate signatures for each watershed
+% loop over all catchments
 for i = 1:size(Q_mat,1)
     
     [IE_effect(i),SE_effect(i),IE_thresh_signif(i),IE_thresh(i), ...
