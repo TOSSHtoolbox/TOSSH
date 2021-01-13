@@ -32,7 +32,7 @@
    storage volume (extrapolation to find storage deficit at near-zero
    flow; see Pfister et al., 2017).
 
-   Notes: 
+   Notes:
    This is our own implementation of Pfister et al. (2017) and it has not
    been tested for a wide range of catchments. Please investigate the plot
    to see if the signatures are calculated reasonably.
@@ -152,7 +152,7 @@ This function is called by:
 0058 <span class="keyword">end</span>
 0059 
 0060 ip = inputParser;
-0061 ip.CaseSensitive = true; 
+0061 ip.CaseSensitive = true;
 0062 
 0063 <span class="comment">% required input arguments</span>
 0064 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
@@ -167,7 +167,7 @@ This function is called by:
 0073 <span class="comment">% optional input arguments</span>
 0074 addParameter(ip, <span class="string">'field_capacity'</span>, [], @isnumeric) <span class="comment">% field capacity</span>
 0075 addParameter(ip, <span class="string">'bin_size'</span>, 10, @isnumeric) <span class="comment">% bin size used to determine envelope</span>
-0076 addParameter(ip, <span class="string">'fit_range'</span>, [0.5 1.0], @isnumeric) <span class="comment">% range of envelope to which linear line should be fitted</span>
+0076 addParameter(ip, <span class="string">'fit_range'</span>, [0.5 0.99], @isnumeric) <span class="comment">% range of envelope to which linear line should be fitted</span>
 0077 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results</span>
 0078 
 0079 parse(ip, Q, t, P, PET, varargin{:})
@@ -225,51 +225,69 @@ This function is called by:
 0131     [Q_envelope(i),index] = min(Q_tmp); <span class="comment">% get min of bin to obtain envelope points</span>
 0132     D_envelope(i) = D_tmp(index); <span class="comment">% get corresponding deficits</span>
 0133 <span class="keyword">end</span>
-0134 <span class="comment">% fit line to envelope (default: use 50th to 100th percentile (upper limit))</span>
-0135 low = round(length(Q_envelope)*fit_range(1));
-0136 upp = round(length(Q_envelope)*fit_range(2));
-0137 [m, c, ~] = util_FitLinear(Q_envelope(low:upp),D_envelope(low:upp));
-0138 S_total = m + c.*0.001;
-0139 <span class="comment">% todo: add uncertainty</span>
-0140 
-0141 <span class="comment">% ephemeral catchments need special treatment</span>
-0142 <span class="keyword">if</span> min(Q) &lt; 0.001
-0143     S_total = max(D);
-0144     S_active = S_total;
-0145 <span class="keyword">end</span>
-0146 
-0147 <span class="keyword">if</span> isempty(S_active) || isempty(S_total)
-0148     S_total = NaN;
-0149     S_active = NaN;
-0150     error_flag = 3;
-0151     error_str = [<span class="string">'Error: Active or total storage could not be calculated. '</span>, error_str];
-0152 <span class="keyword">end</span>
-0153     
-0154 S_fraction = S_active/S_total; <span class="comment">% calculate storage fraction</span>
-0155 
-0156 <span class="comment">% optional plotting</span>
-0157 <span class="keyword">if</span> plot_results
-0158     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
-0159     p1 = plot(Q,D,<span class="string">'-'</span>,<span class="string">'color'</span>,[.9 .9 .9]);
-0160     p2 = plot(Q,D,<span class="string">'.'</span>,<span class="string">'color'</span>,[.5 .5 .5]);
-0161     p3 = plot(Q_envelope,D_envelope,<span class="string">'k o'</span>,<span class="string">'linewidth'</span>,2);
-0162     <span class="keyword">if</span> min(Q) &lt; 0.001
-0163         p4 = plot(NaN,NaN);
-0164     <span class="keyword">else</span>
-0165         p4 = plot([median(Q_envelope):-0.001:0.001],<span class="keyword">...</span>
-0166             m+[median(Q_envelope):-0.001:0.001].*c,<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,1.5);
-0167     <span class="keyword">end</span>
-0168     p5 = plot(0.001,S_total,<span class="string">'g x'</span>,<span class="string">'linewidth'</span>,1.5);
-0169     p6 = plot(Q_sorted(ind99),S_active,<span class="string">'r o'</span>,<span class="string">'linewidth'</span>,2);
-0170     xlabel(<span class="string">'Flow [mm/d]'</span>)
-0171     ylabel(<span class="string">'Storage deficit [mm]'</span>)
-0172     legend([p2 p3 p5 p6 p4],<span class="keyword">...</span>
-0173         {<span class="string">'All points'</span>,<span class="string">'Envelope'</span>,<span class="string">'S_{total}'</span>,<span class="string">'S_{active}'</span>,<span class="string">'Fitted Line'</span>})
-0174     <span class="comment">%set(gca,'xScale','log');</span>
-0175     fig_handles.StorageFraction = fig;
-0176 <span class="keyword">end</span>
-0177 
-0178 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0134 
+0135 <span class="comment">% fit line to envelope (default: use 50th to 100th percentile (upper limit))</span>
+0136 low = round(length(Q_envelope)*fit_range(1));
+0137 upp = round(length(Q_envelope)*fit_range(2));
+0138 
+0139 <span class="comment">% ephemeral catchments need special treatment</span>
+0140 <span class="keyword">if</span> min(Q) &lt; 0.001
+0141     S_total = max(D);
+0142     S_active = S_total;
+0143     error_flag = 1;
+0144     error_str = [<span class="string">'Warning: Storage ratio calculation unreliable for ephemeral catchments. '</span>, error_str];
+0145 <span class="keyword">else</span>
+0146     [m, c, ~] = util_FitLinear(Q_envelope(low:upp),D_envelope(low:upp));
+0147     <span class="comment">% todo: add uncertainty</span>
+0148     S_total = m + c.*0.001;
+0149     <span class="keyword">if</span> c &gt;= 0 <span class="comment">% slope of fitted line has to be negative</span>
+0150         c = NaN;
+0151         S_total = NaN;
+0152         error_flag = 1;
+0153         error_str = [<span class="string">'Warning: Total storage could not be estimated properly. '</span>, error_str];
+0154     <span class="keyword">end</span>
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="comment">% check results</span>
+0158 <span class="keyword">if</span> isempty(S_active) || isempty(S_total)
+0159     S_fraction = NaN;
+0160     S_total = NaN;
+0161     S_active = NaN;
+0162     error_flag = 3;
+0163     error_str = [<span class="string">'Error: Active or total storage could not be calculated. '</span>, error_str];
+0164     <span class="keyword">return</span>
+0165 <span class="keyword">end</span>
+0166     
+0167 <span class="keyword">if</span> S_active &gt; S_total
+0168     error_flag = 1;
+0169     error_str = [<span class="string">'Warning: Estimated active storage is larger than total storage. '</span>, error_str];
+0170 <span class="keyword">end</span>
+0171 
+0172 S_fraction = S_active/S_total; <span class="comment">% calculate storage fraction</span>
+0173 
+0174 <span class="comment">% optional plotting</span>
+0175 <span class="keyword">if</span> plot_results
+0176     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
+0177     p1 = plot(Q,D,<span class="string">'-'</span>,<span class="string">'color'</span>,[.9 .9 .9]);
+0178     p2 = plot(Q,D,<span class="string">'.'</span>,<span class="string">'color'</span>,[.5 .5 .5]);
+0179     p3 = plot(Q_envelope,D_envelope,<span class="string">'k o'</span>,<span class="string">'linewidth'</span>,2);
+0180     <span class="keyword">if</span> min(Q) &lt; 0.001
+0181         p4 = plot(NaN,NaN);
+0182     <span class="keyword">else</span>
+0183         p4 = plot([median(Q_envelope):-0.001:0.001],<span class="keyword">...</span>
+0184             m+[median(Q_envelope):-0.001:0.001].*c,<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,1.5);
+0185     <span class="keyword">end</span>
+0186     p5 = plot(0.001,S_total,<span class="string">'g x'</span>,<span class="string">'linewidth'</span>,1.5);
+0187     p6 = plot(Q_sorted(ind99),S_active,<span class="string">'r o'</span>,<span class="string">'linewidth'</span>,2);
+0188     xlabel(<span class="string">'Flow [mm/d]'</span>)
+0189     ylabel(<span class="string">'Storage deficit [mm]'</span>)
+0190     legend([p2 p3 p5 p6 p4],<span class="keyword">...</span>
+0191         {<span class="string">'All points'</span>,<span class="string">'Envelope'</span>,<span class="string">'S_{total}'</span>,<span class="string">'S_{active}'</span>,<span class="string">'Fitted Line'</span>})
+0192     <span class="comment">%set(gca,'xScale','log');</span>
+0193     fig_handles.StorageFraction = fig;
+0194 <span class="keyword">end</span>
+0195 
+0196 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

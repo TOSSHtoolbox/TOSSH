@@ -5,7 +5,7 @@ function [S_fraction, S_active, S_total, error_flag, error_str, fig_handles] = .
 %   storage volume (extrapolation to find storage deficit at near-zero
 %   flow; see Pfister et al., 2017).
 %
-%   Notes: 
+%   Notes:
 %   This is our own implementation of Pfister et al. (2017) and it has not
 %   been tested for a wide range of catchments. Please investigate the plot
 %   to see if the signatures are calculated reasonably.
@@ -58,7 +58,7 @@ if nargin < 4
 end
 
 ip = inputParser;
-ip.CaseSensitive = true; 
+ip.CaseSensitive = true;
 
 % required input arguments
 % time series have to be numeric and either a (n,1) or a (1,n) vector
@@ -73,8 +73,8 @@ addRequired(ip, 'PET', @(PET) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 % optional input arguments
 addParameter(ip, 'field_capacity', [], @isnumeric) % field capacity
 addParameter(ip, 'bin_size', 10, @isnumeric) % bin size used to determine envelope
-addParameter(ip, 'fit_range', [0.5 1.0], @isnumeric) % range of envelope to which linear line should be fitted
-addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
+addParameter(ip, 'fit_range', [0.5 0.99], @isnumeric) % range of envelope to which linear line should be fitted
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results
 
 parse(ip, Q, t, P, PET, varargin{:})
 field_capacity = ip.Results.field_capacity;
@@ -131,26 +131,44 @@ for i = 1:length(D_unique)
     [Q_envelope(i),index] = min(Q_tmp); % get min of bin to obtain envelope points
     D_envelope(i) = D_tmp(index); % get corresponding deficits
 end
+
 % fit line to envelope (default: use 50th to 100th percentile (upper limit))
 low = round(length(Q_envelope)*fit_range(1));
 upp = round(length(Q_envelope)*fit_range(2));
-[m, c, ~] = util_FitLinear(Q_envelope(low:upp),D_envelope(low:upp));
-S_total = m + c.*0.001;
-% todo: add uncertainty
 
 % ephemeral catchments need special treatment
 if min(Q) < 0.001
     S_total = max(D);
     S_active = S_total;
+    error_flag = 1;
+    error_str = ['Warning: Storage ratio calculation unreliable for ephemeral catchments. ', error_str];
+else
+    [m, c, ~] = util_FitLinear(Q_envelope(low:upp),D_envelope(low:upp));
+    % todo: add uncertainty
+    S_total = m + c.*0.001;
+    if c >= 0 % slope of fitted line has to be negative
+        c = NaN;
+        S_total = NaN;
+        error_flag = 1;
+        error_str = ['Warning: Total storage could not be estimated properly. ', error_str];
+    end
 end
 
+% check results
 if isempty(S_active) || isempty(S_total)
+    S_fraction = NaN;
     S_total = NaN;
     S_active = NaN;
     error_flag = 3;
     error_str = ['Error: Active or total storage could not be calculated. ', error_str];
+    return
 end
     
+if S_active > S_total
+    error_flag = 1;
+    error_str = ['Warning: Estimated active storage is larger than total storage. ', error_str];
+end
+
 S_fraction = S_active/S_total; % calculate storage fraction
 
 % optional plotting

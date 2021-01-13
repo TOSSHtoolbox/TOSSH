@@ -217,7 +217,7 @@ This function is called by:
 0144     
 0145     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i});
 0146     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
-0147         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,median(Q_mat{i},<span class="string">'omitnan'</span>));
+0147         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
 0148     [BaseflowMagnitude(i),~,BaseflowMagnitude_error_str(i)] = sig_BaseflowMagnitude(Q_mat{i},t_mat{i});
 0149     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i});
 0150     [EventGraphThresholds(i,1),EventGraphThresholds(i,2),<span class="keyword">...</span>
@@ -234,7 +234,7 @@ This function is called by:
 0161     [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i});
 0162     [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i});
 0163     [MRC_SlopeChanges{i,1},MRC_SlopeChanges{i,2},~,MRC_SlopeChanges_error_str(i)] = <span class="keyword">...</span>
-0164         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i});
+0164         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},<span class="string">'eps'</span>,0.001*median(Q_mat{i},<span class="string">'omitnan'</span>));
 0165     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
 0166     [PQ_Curve(i,1),PQ_Curve(i,2),PQ_Curve(i,3),PQ_Curve(i,4),~,PQ_Curve_error_str(i)] = <span class="keyword">...</span>
 0167         sig_PQ_Curve(Q_mat{i},t_mat{i},P_mat{i});
@@ -353,6 +353,6 @@ This function is called by:
 0280 results.high_Q_frequency_error_str = high_Q_frequency_error_str;
 0281 
 0282 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

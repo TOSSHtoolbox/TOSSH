@@ -131,156 +131,157 @@ This function is called by:
 0081 
 0082 tic
 0083 CAMELS_CL_TOSSH_signatures = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
-0084 toc
-0085 
-0086 <span class="comment">% x = 54;</span>
-0087 <span class="comment">% [a,b,c,d,e,f,g,h,i,j,k,l] = sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',false)</span>
-0088 
-0089 <span class="comment">% test plotting</span>
-0090 <span class="comment">% sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',true);</span>
-0091 
-0092 <span class="comment">%{</span>
-0093 n_CAMELS = size(CAMELS_data.gauge_id,1);
-0094 Q_mean = NaN(size(CAMELS_data.gauge_id,1),1);
-0095 P_mean = NaN(size(CAMELS_data.gauge_id,1),1);
-0096 Total_RR = NaN(size(CAMELS_data.gauge_id,1),1);
-0097 QP_elasticity = NaN(size(CAMELS_data.gauge_id,1),1);
-0098 FDC_slope = NaN(size(CAMELS_data.gauge_id,1),1);
-0099 BFI = NaN(size(CAMELS_data.gauge_id,1),1);
-0100 HFD_mean = NaN(size(CAMELS_data.gauge_id,1),1);
-0101 Q5 = NaN(size(CAMELS_data.gauge_id,1),1);
-0102 Q95 = NaN(size(CAMELS_data.gauge_id,1),1);
-0103 high_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
-0104 high_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
-0105 low_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
-0106 low_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
-0107 zero_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
-0108 BaseflowRecessionK = NaN(size(CAMELS_data.gauge_id,1),1);
-0109 HFI_mean = NaN(size(CAMELS_data.gauge_id,1),1);
-0110 Q_mean_monthly = NaN(size(CAMELS_data.gauge_id,1),12);
-0111 Q_7_day_min = NaN(size(CAMELS_data.gauge_id,1),1);
-0112 recession_parameters = NaN(size(CAMELS_data.gauge_id,1),2);
-0113 peak_distribution = NaN(size(CAMELS_data.gauge_id,1),1);
-0114 FDC = cell(size(CAMELS_data.gauge_id,1),1);
-0115 AC1 = NaN(size(CAMELS_data.gauge_id,1),1);
-0116 Q_var = NaN(size(CAMELS_data.gauge_id,1),1);
-0117 Q_cov = NaN(size(CAMELS_data.gauge_id,1),1);
-0118 Q_skew = NaN(size(CAMELS_data.gauge_id,1),1);
-0119 RLD = NaN(size(CAMELS_data.gauge_id,1),1);
-0120 amplitude_ratio = NaN(size(CAMELS_data.gauge_id,1),1);
-0121 phase_shift = NaN(size(CAMELS_data.gauge_id,1),1);
-0122 <span class="comment">% TODO: add remaining signatures</span>
-0123 
-0124 warning(<span class="string">'off'</span>,<span class="string">'all'</span>)
-0125 
-0126 <span class="keyword">for</span> i = 1:n_CAMELS <span class="comment">% loop over all catchments</span>
-0127     
-0128     <span class="keyword">if</span> mod(i,10) == 0 <span class="comment">% check progress</span>
-0129         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
-0130     <span class="keyword">end</span>
-0131     
-0132     <span class="comment">% extract data</span>
-0133     t = datetime(CAMELS_data.P{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
-0134     P = CAMELS_data.P{i}(:,2);
-0135     PET = CAMELS_data.PET{i}(:,2);
-0136     Q = CAMELS_data.Q{i}(:,2);
-0137     <span class="comment">% ID = CAMELS_data.gauge_id(i);</span>
-0138     
-0139     <span class="comment">% get subperiod</span>
-0140     indices = 1:length(t); 
-0141     start_ind = indices(t==datetime(1989,10,1));
-0142     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
-0143     end_ind = indices(t==datetime(2009,9,30));    
-0144     t = t(start_ind:end_ind);
-0145     P = P(start_ind:end_ind);
-0146     PET = PET(start_ind:end_ind);
-0147     Q = Q(start_ind:end_ind);
-0148     
-0149     <span class="comment">% calculate signatures</span>
-0150     Q_mean(i) = sig_Q_mean(Q,t);
-0151     P_mean(i) = sig_Q_mean(P,t);
-0152     Total_RR(i) = sig_TotalRR(Q,t,P);
-0153     QP_elasticity(i) = sig_QP_elasticity(Q,t,P);
-0154     FDC_slope(i) = sig_FDC_slope(Q,t);
-0155     BFI(i) = sig_BFI(Q,t);
-0156     HFD_mean(i) = sig_HFD_mean(Q,t);
-0157     Q5(i) = sig_x_percentile(Q,t,5);
-0158     Q95(i) = sig_x_percentile(Q,t,95);
-0159     high_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'high'</span>);
-0160     high_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'high'</span>);
-0161     low_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'low'</span>);
-0162     low_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'low'</span>);
-0163     zero_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'no'</span>);
-0164     <span class="keyword">try</span>
-0165         BaseflowRecessionK(i) = sig_BaseflowRecessionK(Q,t);
-0166 <span class="comment">%         sig_BaseflowRecessionK(Q,t,'plot_results',true,'eps',0.001*nanmedian(Q));</span>
-0167     <span class="keyword">catch</span>
-0168         disp(strcat(<span class="string">'Problem with catchment nr: '</span>,num2str(i)))
-0169     <span class="keyword">end</span>
-0170     HFI_mean(i) = sig_HFI_mean(Q,t);
-0171     Q_mean_monthly(i,:) = sig_Q_mean_monthly(Q,t,[1:12]);
-0172     Q_7_day_min(i) = sig_Q_n_day_min(Q,t,7);
-0173     para_mat = sig_RecessionAnalysis(Q,t);
-0174     [~, ind] = min(abs(para_mat(:,2) - median(para_mat(:,2))));
-0175     recession_parameters(i,:) = para_mat(ind,:);
-0176     peak_distribution(i) = sig_PeakDistribution(Q,t);
-0177     FDC{i} = sig_FDC(Q,t);
-0178     AC1(i) = sig_Autocorrelation(Q,t);
-0179     Q_var(i) = sig_Q_var(Q,t);
-0180     Q_cov(i) = sig_Q_CoV(Q,t);
-0181     Q_skew(i) = sig_Q_skew(Q,t);
-0182     RLD(i) = sig_RisingLimbDensity(Q,t);
-0183     [amplitude_ratio(i),phase_shift(i)] = sig_SeasonalTranslation(Q,t,P,PET);
-0184 
-0185 <span class="keyword">end</span>
-0186 
-0187 warning(<span class="string">'on'</span>,<span class="string">'all'</span>)
-0188 
-0189 results.Q_mean = Q_mean;
-0190 results.P_mean = P_mean;
-0191 results.Total_RR = Total_RR;
-0192 results.QP_elasticity = QP_elasticity;
-0193 results.FDC_slope = FDC_slope;
-0194 results.BFI = BFI;
-0195 results.HFD_mean = HFD_mean;
-0196 results.Q5 = Q5;
-0197 results.Q95 = Q95;
-0198 results.high_Q_freq = high_Q_freq;
-0199 results.high_Q_dur = high_Q_dur;
-0200 results.low_Q_freq = low_Q_freq;
-0201 results.low_Q_dur = low_Q_dur;
-0202 results.zero_Q_freq = zero_Q_freq;
-0203 results.BaseflowRecessionK = BaseflowRecessionK;
-0204 results.HFI_mean = HFI_mean;
-0205 results.Q_mean_monthly = Q_mean_monthly;
-0206 results.Q_7_day_min = Q_7_day_min;
-0207 results.recession_parameters = recession_parameters;
-0208 results.peak_distribution = peak_distribution;
-0209 results.FDC = FDC;
-0210 results.AC1 = AC1;
-0211 results.Q_var = Q_var;
-0212 results.Q_cov = Q_cov;
-0213 results.Q_skew = Q_skew;
-0214 results.RLD = RLD;
-0215 results.phase_shift = phase_shift;
-0216 <span class="comment">%}</span>
-0217 
-0218 <span class="comment">% save('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat','-struct','CAMELS_CL_TOSSH_signatures')</span>
-0219 
-0220 <span class="comment">%% compare the signatures contained in CAMELS with the signatures calculated here</span>
-0221 
-0222 <span class="comment">% results = load('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat');</span>
-0223 <span class="comment">% makeScatterPlotCL(CAMELS_CL_TOSSH_signatures,CAMELS_CL_data,70)</span>
-0224 <span class="comment">% saveFig(gcf,strcat('TOSSH_scatter_plot_CL'),fig_path,'-dpng')</span>
-0225 
-0226 <span class="comment">% maps</span>
-0227 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.AC1,...</span>
-0228 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_data.gauge_id,...</span>
-0229 <span class="comment">%     'colour_scheme','Spectral','flip_colour_scheme',true,...</span>
-0230 <span class="comment">%      'c_limits',[.2 1],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
-0231 <span class="comment">%     'figure_title','','figure_name','xxx','save_figure',false,'figure_path',fig_path)</span>
-0232 <span class="comment">% set(gca,'ColorScale','log');</span>
-0233</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0084 <span class="comment">% CAMELS_CL_TOSSH_signatures = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat);</span>
+0085 toc
+0086 
+0087 <span class="comment">% x = 54;</span>
+0088 <span class="comment">% [a,b,c,d,e,f,g,h,i,j,k,l] = sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',false)</span>
+0089 
+0090 <span class="comment">% test plotting</span>
+0091 <span class="comment">% sig_EventGraphThresholds(Q_mat{x},t_mat{x},P_mat{x},'plot_results',true);</span>
+0092 
+0093 <span class="comment">%{</span>
+0094 n_CAMELS = size(CAMELS_data.gauge_id,1);
+0095 Q_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0096 P_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0097 Total_RR = NaN(size(CAMELS_data.gauge_id,1),1);
+0098 QP_elasticity = NaN(size(CAMELS_data.gauge_id,1),1);
+0099 FDC_slope = NaN(size(CAMELS_data.gauge_id,1),1);
+0100 BFI = NaN(size(CAMELS_data.gauge_id,1),1);
+0101 HFD_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0102 Q5 = NaN(size(CAMELS_data.gauge_id,1),1);
+0103 Q95 = NaN(size(CAMELS_data.gauge_id,1),1);
+0104 high_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0105 high_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
+0106 low_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0107 low_Q_dur = NaN(size(CAMELS_data.gauge_id,1),1);
+0108 zero_Q_freq = NaN(size(CAMELS_data.gauge_id,1),1);
+0109 BaseflowRecessionK = NaN(size(CAMELS_data.gauge_id,1),1);
+0110 HFI_mean = NaN(size(CAMELS_data.gauge_id,1),1);
+0111 Q_mean_monthly = NaN(size(CAMELS_data.gauge_id,1),12);
+0112 Q_7_day_min = NaN(size(CAMELS_data.gauge_id,1),1);
+0113 recession_parameters = NaN(size(CAMELS_data.gauge_id,1),2);
+0114 peak_distribution = NaN(size(CAMELS_data.gauge_id,1),1);
+0115 FDC = cell(size(CAMELS_data.gauge_id,1),1);
+0116 AC1 = NaN(size(CAMELS_data.gauge_id,1),1);
+0117 Q_var = NaN(size(CAMELS_data.gauge_id,1),1);
+0118 Q_cov = NaN(size(CAMELS_data.gauge_id,1),1);
+0119 Q_skew = NaN(size(CAMELS_data.gauge_id,1),1);
+0120 RLD = NaN(size(CAMELS_data.gauge_id,1),1);
+0121 amplitude_ratio = NaN(size(CAMELS_data.gauge_id,1),1);
+0122 phase_shift = NaN(size(CAMELS_data.gauge_id,1),1);
+0123 <span class="comment">% TODO: add remaining signatures</span>
+0124 
+0125 warning(<span class="string">'off'</span>,<span class="string">'all'</span>)
+0126 
+0127 <span class="keyword">for</span> i = 1:n_CAMELS <span class="comment">% loop over all catchments</span>
+0128     
+0129     <span class="keyword">if</span> mod(i,10) == 0 <span class="comment">% check progress</span>
+0130         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
+0131     <span class="keyword">end</span>
+0132     
+0133     <span class="comment">% extract data</span>
+0134     t = datetime(CAMELS_data.P{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0135     P = CAMELS_data.P{i}(:,2);
+0136     PET = CAMELS_data.PET{i}(:,2);
+0137     Q = CAMELS_data.Q{i}(:,2);
+0138     <span class="comment">% ID = CAMELS_data.gauge_id(i);</span>
+0139     
+0140     <span class="comment">% get subperiod</span>
+0141     indices = 1:length(t); 
+0142     start_ind = indices(t==datetime(1989,10,1));
+0143     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
+0144     end_ind = indices(t==datetime(2009,9,30));    
+0145     t = t(start_ind:end_ind);
+0146     P = P(start_ind:end_ind);
+0147     PET = PET(start_ind:end_ind);
+0148     Q = Q(start_ind:end_ind);
+0149     
+0150     <span class="comment">% calculate signatures</span>
+0151     Q_mean(i) = sig_Q_mean(Q,t);
+0152     P_mean(i) = sig_Q_mean(P,t);
+0153     Total_RR(i) = sig_TotalRR(Q,t,P);
+0154     QP_elasticity(i) = sig_QP_elasticity(Q,t,P);
+0155     FDC_slope(i) = sig_FDC_slope(Q,t);
+0156     BFI(i) = sig_BFI(Q,t);
+0157     HFD_mean(i) = sig_HFD_mean(Q,t);
+0158     Q5(i) = sig_x_percentile(Q,t,5);
+0159     Q95(i) = sig_x_percentile(Q,t,95);
+0160     high_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'high'</span>);
+0161     high_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'high'</span>);
+0162     low_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'low'</span>);
+0163     low_Q_dur(i) = sig_x_Q_duration(Q,t,<span class="string">'low'</span>);
+0164     zero_Q_freq(i) = sig_x_Q_frequency(Q,t,<span class="string">'no'</span>);
+0165     <span class="keyword">try</span>
+0166         BaseflowRecessionK(i) = sig_BaseflowRecessionK(Q,t);
+0167 <span class="comment">%         sig_BaseflowRecessionK(Q,t,'plot_results',true,'eps',0.001*nanmedian(Q));</span>
+0168     <span class="keyword">catch</span>
+0169         disp(strcat(<span class="string">'Problem with catchment nr: '</span>,num2str(i)))
+0170     <span class="keyword">end</span>
+0171     HFI_mean(i) = sig_HFI_mean(Q,t);
+0172     Q_mean_monthly(i,:) = sig_Q_mean_monthly(Q,t,[1:12]);
+0173     Q_7_day_min(i) = sig_Q_n_day_min(Q,t,7);
+0174     para_mat = sig_RecessionAnalysis(Q,t);
+0175     [~, ind] = min(abs(para_mat(:,2) - median(para_mat(:,2))));
+0176     recession_parameters(i,:) = para_mat(ind,:);
+0177     peak_distribution(i) = sig_PeakDistribution(Q,t);
+0178     FDC{i} = sig_FDC(Q,t);
+0179     AC1(i) = sig_Autocorrelation(Q,t);
+0180     Q_var(i) = sig_Q_var(Q,t);
+0181     Q_cov(i) = sig_Q_CoV(Q,t);
+0182     Q_skew(i) = sig_Q_skew(Q,t);
+0183     RLD(i) = sig_RisingLimbDensity(Q,t);
+0184     [amplitude_ratio(i),phase_shift(i)] = sig_SeasonalTranslation(Q,t,P,PET);
+0185 
+0186 <span class="keyword">end</span>
+0187 
+0188 warning(<span class="string">'on'</span>,<span class="string">'all'</span>)
+0189 
+0190 results.Q_mean = Q_mean;
+0191 results.P_mean = P_mean;
+0192 results.Total_RR = Total_RR;
+0193 results.QP_elasticity = QP_elasticity;
+0194 results.FDC_slope = FDC_slope;
+0195 results.BFI = BFI;
+0196 results.HFD_mean = HFD_mean;
+0197 results.Q5 = Q5;
+0198 results.Q95 = Q95;
+0199 results.high_Q_freq = high_Q_freq;
+0200 results.high_Q_dur = high_Q_dur;
+0201 results.low_Q_freq = low_Q_freq;
+0202 results.low_Q_dur = low_Q_dur;
+0203 results.zero_Q_freq = zero_Q_freq;
+0204 results.BaseflowRecessionK = BaseflowRecessionK;
+0205 results.HFI_mean = HFI_mean;
+0206 results.Q_mean_monthly = Q_mean_monthly;
+0207 results.Q_7_day_min = Q_7_day_min;
+0208 results.recession_parameters = recession_parameters;
+0209 results.peak_distribution = peak_distribution;
+0210 results.FDC = FDC;
+0211 results.AC1 = AC1;
+0212 results.Q_var = Q_var;
+0213 results.Q_cov = Q_cov;
+0214 results.Q_skew = Q_skew;
+0215 results.RLD = RLD;
+0216 results.phase_shift = phase_shift;
+0217 <span class="comment">%}</span>
+0218 
+0219 <span class="comment">% save('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat','-struct','CAMELS_CL_TOSSH_signatures')</span>
+0220 
+0221 <span class="comment">%% compare the signatures contained in CAMELS with the signatures calculated here</span>
+0222 
+0223 <span class="comment">% results = load('./TOSSH_development/example/results/CAMELS_CL_TOSSH_signatures.mat');</span>
+0224 <span class="comment">% makeScatterPlotCL(CAMELS_CL_TOSSH_signatures,CAMELS_CL_data,70)</span>
+0225 <span class="comment">% saveFig(gcf,strcat('TOSSH_scatter_plot_CL'),fig_path,'-dpng')</span>
+0226 
+0227 <span class="comment">% maps</span>
+0228 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.AC1,...</span>
+0229 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_data.gauge_id,...</span>
+0230 <span class="comment">%     'colour_scheme','Spectral','flip_colour_scheme',true,...</span>
+0231 <span class="comment">%      'c_limits',[.2 1],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0232 <span class="comment">%     'figure_title','','figure_name','xxx','save_figure',false,'figure_path',fig_path)</span>
+0233 <span class="comment">% set(gca,'ColorScale','log');</span>
+0234</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

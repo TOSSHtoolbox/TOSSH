@@ -137,23 +137,25 @@ This function is called by:
 0067     m = months(i);
 0068     <span class="comment">% loop over days</span>
 0069     <span class="keyword">for</span> d = 1:n_days(m)
-0070         X_avg(index) = mean(X(day_vec == d &amp; month_vec == m),<span class="string">'omitnan'</span>);
-0071         t_avg(index,:) = [0,m,d]; <span class="comment">% dummy year</span>
-0072         index = index + 1;
-0073     <span class="keyword">end</span>
-0074 <span class="keyword">end</span>
-0075 t_avg = datetime(t_avg); <span class="comment">% dummy year</span>
-0076 
-0077 <span class="comment">% optional plotting</span>
-0078 <span class="keyword">if</span> plot_results
-0079     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
-0080     plot(t_avg,X_avg,<span class="string">'.'</span>)
-0081     xlabel(<span class="string">'Day'</span>)
-0082     ylabel(<span class="string">'Mean on that day [mm/timestep]'</span>)
-0083     fig_handles.AverageYear = fig;
-0084 <span class="keyword">end</span>
-0085 
-0086 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0070         <span class="comment">% X_avg(index) = mean(X(day_vec == d &amp; month_vec == m),'omitnan');</span>
+0071         X_tmp = X(day_vec == d &amp; month_vec == m);
+0072         X_avg(index) = sum(X_tmp,<span class="string">'omitnan'</span>)/length(X_tmp);
+0073         t_avg(index,:) = [0,m,d]; <span class="comment">% dummy year</span>
+0074         index = index + 1;
+0075     <span class="keyword">end</span>
+0076 <span class="keyword">end</span>
+0077 t_avg = datetime(t_avg); <span class="comment">% dummy year</span>
+0078 
+0079 <span class="comment">% optional plotting</span>
+0080 <span class="keyword">if</span> plot_results
+0081     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
+0082     plot(t_avg,X_avg,<span class="string">'.'</span>)
+0083     xlabel(<span class="string">'Day'</span>)
+0084     ylabel(<span class="string">'Mean on that day [mm/timestep]'</span>)
+0085     fig_handles.AverageYear = fig;
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

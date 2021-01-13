@@ -2,7 +2,7 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
     SE_thresh_signif, SE_thresh, SE_slope, ...
     Storage_thresh, Storage_thresh_signif, min_Qf_perc, ...
     error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin)
-%sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
+%%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
 %   Calculates a variety of signatures related to saturation excess (SE)
 %   and infiltration excess (IE) flow, based on the relationship between
 %   precipitation or antecedent conditions and flow response (volume or
@@ -219,28 +219,28 @@ B = util_LyneHollickFilter(Q, 'filter_parameter', 0.925, 'nr_passes', 3);
 event_array = zeros(size(stormarray,1),9);
 for i = 1:size(stormarray,1)
     % total event precipitation [mm] (Estrany names this as X3 coefficient)
-    event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)));
+    event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)),'omitnan');
     
     % event average precipitation intensity [mm/timestep] (Estrany X4)
-    event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)));
+    event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)),'omitnan');
     
     % event maximum precipitation intensity [mm/timestep] (Estrany X5; but they used 5 min data)
     event_array(i,3) = max(P(stormarray(i,1):stormarray(i,3)));
     
     % antecedent precipitation 3 days before [mm] (Estrany X1)
     time_antecedent = max(stormarray(i,1) - 3*24/timestep,1);
-    event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)));
+    event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)),'omitnan');
     
     % antecedent precipitation 7 days before [mm] (Estrany X2)
     time_antecedent = max(stormarray(i,1) - 7*24/timestep,1);
-    event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)));
+    event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)),'omitnan');
     
     % total event flow volume [mm]
-    event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)));
+    event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)),'omitnan');
     
     % total event quickflow volume [mm]
-    event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)))-...
-        sum(B(stormarray(i,1):stormarray(i,3)));
+    event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)),'omitnan')-...
+        sum(B(stormarray(i,1):stormarray(i,3)),'omitnan');
     
     % maximum event runoff [mm/timestep]
     event_array(i,8) = max(Q(stormarray(i,1):stormarray(i,3)));
@@ -253,7 +253,7 @@ for i = 1:size(stormarray,1)
     numdays = floor((stormarray(i,1) - time_antecedent)/(24/timestep));
     time_array = reshape(P(stormarray(i,1)-[1:1:(numdays*24/timestep)]),24/timestep,[]);
     time_array = sum(time_array,1);
-    event_array(i,9) = sum(time_array./[1:length(time_array)]).';
+    event_array(i,9) = sum(time_array./[1:length(time_array)],'omitnan').';
 end
 
 % calculate Becker and McDonnell (1998) signatures, minimum value of

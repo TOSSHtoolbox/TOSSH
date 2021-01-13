@@ -253,32 +253,33 @@ This function is called by:
 0161 k = NaN(size(flow_section,1),1);
 0162 <span class="keyword">for</span> i = 1:size(flow_section,1)
 0163     rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
-0164     k(i) = util_FitExponential(Q(rec),t(rec),<span class="string">'b'</span>);
-0165 <span class="keyword">end</span>
-0166 
-0167 <span class="comment">% get median recession constant</span>
-0168 RecessionK_part = median(k,<span class="string">'omitnan'</span>);
-0169 
-0170 <span class="comment">% optional plotting</span>
-0171 <span class="keyword">if</span> plot_results
-0172     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on
-0173     p1 = plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1.5);
-0174     <span class="keyword">for</span> i = 1:size(flow_section,1)
-0175         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
-0176         t_rec = [0:length(rec)-1]';
-0177         Q_est = Q(rec(1))*exp(t_rec.*-k(i));
-0178         p2 = plot(t(rec),Q_est,<span class="string">'g'</span>,<span class="string">'linewidth'</span>,1.5);
-0179     <span class="keyword">end</span>
-0180     xlabel(<span class="string">'Date'</span>)
-0181     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
-0182     title(<span class="string">'Exponential recessions fitted to certain recession parts'</span>)
-0183     legend([p1 p2],{<span class="string">'Streamflow'</span>,<span class="string">'Fitted recessions'</span>},<span class="string">'Location'</span>,<span class="string">'best'</span>)
-0184     <span class="comment">% set(gca,'yscale','log');</span>
-0185     fig_handles.RecessionParts = fig;
-0186 <span class="keyword">end</span>
-0187 
-0188 <span class="keyword">end</span>
-0189</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0164     <span class="comment">% default: linear fit in log log space for fast calculation</span>
+0165     k(i) = util_FitExponential(Q(rec),t(rec),<span class="string">'semilog'</span>); 
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% get median recession constant</span>
+0169 RecessionK_part = median(k,<span class="string">'omitnan'</span>);
+0170 
+0171 <span class="comment">% optional plotting</span>
+0172 <span class="keyword">if</span> plot_results
+0173     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on
+0174     p1 = plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1.5);
+0175     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0176         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0177         t_rec = [0:length(rec)-1]';
+0178         Q_est = Q(rec(1))*exp(t_rec.*-k(i));
+0179         p2 = plot(t(rec),Q_est,<span class="string">'g'</span>,<span class="string">'linewidth'</span>,1.5);
+0180     <span class="keyword">end</span>
+0181     xlabel(<span class="string">'Date'</span>)
+0182     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0183     title(<span class="string">'Exponential recessions fitted to certain recession parts'</span>)
+0184     legend([p1 p2],{<span class="string">'Streamflow'</span>,<span class="string">'Fitted recessions'</span>},<span class="string">'Location'</span>,<span class="string">'best'</span>)
+0185     <span class="comment">% set(gca,'yscale','log');</span>
+0186     fig_handles.RecessionParts = fig;
+0187 <span class="keyword">end</span>
+0188 
+0189 <span class="keyword">end</span>
+0190</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

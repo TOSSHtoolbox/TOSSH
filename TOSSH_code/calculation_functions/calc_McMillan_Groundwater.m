@@ -75,7 +75,7 @@ TotalRR_error_str = strings(size(Q_mat,1),1);
 RR_Seasonality = NaN(size(Q_mat,1),1);
 RR_Seasonality_error_str = strings(size(Q_mat,1),1);
 % Low event runoff ratios show rapid vertical drainage of water to
-% groundwater (McMillan et al., 2011, Noguchi et al., 1997).
+% groundwater (McMillan et al., 2011; Noguchi et al., 1997).
 EventRR = NaN(size(Q_mat,1),1);
 EventRR_error_str = strings(size(Q_mat,1),1);
 % Ratio of active to total storage volumes, low ratios show permeable
@@ -102,11 +102,11 @@ MRC_num_segments_error_str = strings(size(Q_mat,1),1);
 % First: steep section of the master recession curve = storage that is
 % quickly depleted (Estrany et al., 2010).
 First_Recession_Slope = NaN(size(Q_mat,1),1);
-% Second: mid section of the master recession curve = water retention 
-% capacity of  the catchment (Estrany et al., 2010).
+% Second: mid section of the master recession curve = water retention  
+% capacity of the catchment (Estrany et al., 2010).
 Mid_Recession_Slope = NaN(size(Q_mat,1),1);
-% Non-uniqueness in the storage-discharge relationship (McMillan et al., 
-% 2011; Harman et al., 2009). Tested using Spearman's rank correlation on Q 
+% Non-uniqueness in the storage-discharge relationship (McMillan et al.,
+% 2011; Harman et al., 2009). Tested using Spearman rank correlation on Q 
 % vs. dQ/dt.
 Spearmans_rho = NaN(size(Q_mat,1),1);
 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
@@ -124,7 +124,7 @@ VariabilityIndex_error_str = strings(size(Q_mat,1),1);
 % (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).
 BFI = NaN(size(Q_mat,1),1);
 BFI_error_str = strings(size(Q_mat,1),1);
-% Baseflow recession constant K (assuming exponential recession behaviour), 
+% Baseflow recession constant K (assuming exponential recession behaviour),
 % slower recessions show greater groundwater influence and longer 
 % subsurface flow paths (Safeeq et al., 2013).
 BaseflowRecessionK = NaN(size(Q_mat,1),1);
@@ -132,6 +132,10 @@ BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
 
 % loop over all catchments
 for i = 1:size(Q_mat,1)
+
+        if mod(i,1) == 0 % check progress
+        fprintf('%.0f/%.0f\n',i,size(Q_mat,1))
+        end
     
     % Section: Groundwater
     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});

@@ -37,7 +37,7 @@
    According to Safeeq et al. (2013), K&lt;0.065 represent groundwater
    dominated slow-draining systems, K&gt;=0.065 represent shallow subsurface
    flow dominated fast draining systems.
-   (to do: remove snow-affected sections of the timeseries)
+   (to do: remove snow-affected sections of the time series)
 
    INPUT
    Q: streamflow [mm/timestep]
@@ -106,7 +106,7 @@ This function is called by:
 0010 <span class="comment">%   According to Safeeq et al. (2013), K&lt;0.065 represent groundwater</span>
 0011 <span class="comment">%   dominated slow-draining systems, K&gt;=0.065 represent shallow subsurface</span>
 0012 <span class="comment">%   flow dominated fast draining systems.</span>
-0013 <span class="comment">%   (to do: remove snow-affected sections of the timeseries)</span>
+0013 <span class="comment">%   (to do: remove snow-affected sections of the time series)</span>
 0014 <span class="comment">%</span>
 0015 <span class="comment">%   INPUT</span>
 0016 <span class="comment">%   Q: streamflow [mm/timestep]</span>
@@ -222,7 +222,7 @@ This function is called by:
 0126 <span class="comment">% to consist of complete years only.</span>
 0127 
 0128 <span class="comment">% MRC constucted using the adapted matching strip method (Posavec et al., 2006)</span>
-0129 [MRC] = util_MasterRecessionCurve(Q, flow_section,<span class="string">'fit_method'</span>,fit_method,<span class="string">'plot_results'</span>,false);
+0129 [MRC] = util_MasterRecessionCurve(Q, flow_section,<span class="string">'fit_method'</span>,fit_method,<span class="string">'match_method'</span>,<span class="string">'log'</span>,<span class="string">'plot_results'</span>,false);
 0130 
 0131 <span class="comment">% k = slope of the linear regression between log-transformed discharge and recession length</span>
 0132 mdl = [(MRC(:,1).^0) (MRC(:,1))]\log(MRC(:,2));
@@ -260,6 +260,6 @@ This function is called by:
 0164 
 0165 <span class="keyword">end</span>
 0166</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

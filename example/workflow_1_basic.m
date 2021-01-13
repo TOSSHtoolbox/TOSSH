@@ -18,8 +18,7 @@ clc
 
 %% Check if required MATLAB toolboxes are installed
 % Required are:
-%   - MATLAB
-%   - Signal Processing Toolbox
+%   - MATLAB (TOSSH was developed using Matlab R2020a)
 %   - Statistics and Machine Learning Toolbox
 %   - Optimization Toolbox
 % We can check which toolboxes we have installed using "ver".
@@ -45,7 +44,7 @@ t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
 % Typically, users will have their own data which they want to analyse. 
 % We provide an example file to get a more realistic time series.
 % The example file also contains precipitation (P), potential
-% evapotranspiration (PET), and temperature (T) data which are required 
+% evapotranspiration (PET), and temperature (T) data, which are required 
 % for some signatures. The paths are relative and assume that we are in 
 % the TOSSH directory.
 path = './example/example_data/'; % specify path

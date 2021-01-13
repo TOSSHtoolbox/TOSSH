@@ -8,7 +8,9 @@ function [flow_section, error_flag, error_str, fig_handles] = ...
 %   OPTIONAL
 %   recession_length: min. length of recessions (days), default = 5
 %   n_start: days to be removed after start of recession
-%   eps: allowed increase in flow during recession period, default=0
+%   eps: allowed increase in flow during recession period, default = 0
+%       (note that large eps values can lead to problematic recession
+%       selection)
 %   start_of_recession: define start of recession when baseflow filter
 %       rejoins the curve "baseflow" or after peak "peak"
 %   filter_par: smoothing parameter of Lyne-Hollick filter to determine
@@ -59,7 +61,7 @@ addParameter(ip, 'n_start', 1, @isnumeric) % days to be removed at beginning of 
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 addParameter(ip, 'start_of_recession', 'peak', @ischar) % defines start of a recession
 addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of
-% Lyne-Hollick Filter to determine start of recession (higher = later recession start)
+% Lyne-Hollick filter to determine start of recession (higher = later recession start)
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q, t, varargin{:})
@@ -84,6 +86,9 @@ if eps > median(Q,'omitnan')/100
     error_str = ['Warning: eps set to a value larger than 1 percent of median(Q). High eps values can lead to problematic recession selection. ', error_str];
 end
 
+iszero = (Q==0);
+Q(iszero) = NaN; % do not use days with zero flow
+
 % identify all individual recession segments with length > recession_length days
 % how many decreasing timesteps depends on length of timestep
 len_decrease = recession_length/days(t(2)-t(1));
@@ -101,14 +106,60 @@ flow_change = reshape(flow_change,2,[]).';
 flow_section = flow_change((flow_change(:,2)-flow_change(:,1))>=len_decrease+n_start,:);
 flow_section = flow_section+start_point;
 flow_section(:,1) = flow_section(:,1)+n_start; % move start point n days
-if size(flow_section,1)==0
-    error_flag = 3;
-    error_str = ['Error: No long enough recession periods, consider setting eps parameter > 0. ', error_str];
-    return
-elseif size(flow_section,1) < 10
-    error_flag = 1;
-    error_str = ['Warning: Fewer than 10 recession segments extracted, results might not be robust. ', error_str];
-end
+
+% constantQ = false(length(flow_section),1);
+% for i = 1:size(flow_section,1)
+%     if length(unique(Q(flow_section(i,1):flow_section(i,2)))) == 1
+%         constantQ(i) = true;
+%     end
+% end
+% flow_section(constantQ,:) = [];
+
+% % if eps > 0 it can happen that recessions have consecutive timesteps with
+% % the same flow or 0 flow - these are removed
+% if eps == 0
+% else
+%     rmv = false(length(flow_section),1);
+%     for i = 1:size(flow_section,1)
+%         Q_tmp = Q(flow_section(i,1):flow_section(i,2));
+%         if any(diff(Q_tmp) == 0) || any(Q_tmp == 0) % diff diff
+%             rmv(i) = true;
+%         end
+%     end
+%     flow_section(rmv,:) = [];
+% end
+
+% remove recession segments that are just flat lines
+% rmv = false(length(flow_section),1);
+% for i = 1:size(flow_section,1)
+%     Q_tmp = Q(flow_section(i,1):flow_section(i,2));
+%     if max(Q_tmp)-min(Q_tmp) < 10^-8
+%         rmv(i) = true;
+%     end
+% end
+% flow_section(rmv,:) = [];
+
+% % remove recession segments that contain flat lines of certain length
+% rmv = false(length(flow_section),1);
+% for i = 1:size(flow_section,1)
+%     Q_tmp = Q(flow_section(i,1):flow_section(i,2));
+%     k = 5;
+%     if length(Q_tmp)>k
+%         for j = 1:length(Q_tmp)-k
+%             Q_tmp_sub = Q_tmp(j:j+k);
+%             if max(Q_tmp_sub)-min(Q_tmp_sub) < 10^-6
+%                 rmv(i) = true;
+%             end
+%         end
+%     else
+%         if max(Q_tmp)-min(Q_tmp) < 10^-6
+%             rmv(i) = true;
+%         end
+%     end
+% end
+% flow_section(rmv,:) = [];
+
+Q(iszero) = 0;
 
 % optional plotting
 if plot_results
@@ -129,7 +180,15 @@ end
 
 switch start_of_recession
     
-    case 'peak'
+    case 'peak'        
+        if size(flow_section,1)==0
+            error_flag = 3;
+            error_str = ['Error: No long enough recession periods, consider setting eps parameter > 0. ', error_str];
+            return
+        elseif size(flow_section,1) < 10
+            error_flag = 1;
+            error_str = ['Warning: Fewer than 10 recession segments extracted, results might not be robust. ', error_str];
+        end
         
     case 'baseflow'
         % beginning of recession = point where baseflow filter rejoins the curve
@@ -155,9 +214,12 @@ switch start_of_recession
         % if flow_section less than 4 points, remove
         flow_section = flow_section(~isnan(flow_section(:,1)),:);
         flow_section = flow_section(flow_section(:,2)>=flow_section(:,1)+3,:);
-        if numel(flow_section)==0
+        if size(flow_section,1)==0
             error_flag = 3;
             error_str = ['Error: No long enough baseflow recession periods, consider increasing filter_par parameter. ', error_str];
+        elseif size(flow_section,1) < 10
+            error_flag = 1;
+            error_str = ['Warning: Fewer than 10 recession segments extracted, results might not be robust. ', error_str];
         end
         
         % add the baseflow recession sections to the plot

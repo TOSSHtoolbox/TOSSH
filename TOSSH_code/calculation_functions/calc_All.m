@@ -144,7 +144,7 @@ for i = 1:size(Q_mat,1)
     
     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i});
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...
-        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',median(Q_mat{i},'omitnan'));
+        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan'));
     [BaseflowMagnitude(i),~,BaseflowMagnitude_error_str(i)] = sig_BaseflowMagnitude(Q_mat{i},t_mat{i});
     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i});
     [EventGraphThresholds(i,1),EventGraphThresholds(i,2),...
@@ -161,7 +161,7 @@ for i = 1:size(Q_mat,1)
     [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i});
     [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i});
     [MRC_SlopeChanges{i,1},MRC_SlopeChanges{i,2},~,MRC_SlopeChanges_error_str(i)] = ...
-        sig_MRC_SlopeChanges(Q_mat{i},t_mat{i});
+        sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan'));
     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
     [PQ_Curve(i,1),PQ_Curve(i,2),PQ_Curve(i,3),PQ_Curve(i,4),~,PQ_Curve_error_str(i)] = ...
         sig_PQ_Curve(Q_mat{i},t_mat{i},P_mat{i});

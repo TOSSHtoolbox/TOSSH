@@ -38,27 +38,35 @@ if nargin < 4
 end
 
 breakpoints = breakpoints(:).'; % make breakpoints into row vector
+
 breaks = [min(x),sort(breakpoints),max(x)];
 nx = length(x);
 % which points lie in which interval?
 xbins = discretize(x,breaks);
+% breakpoints cannot be in the same interval
+if numel(unique(xbins)) < numel(breakpoints) + 1
+    err = 10^6;
+    fittedlines = NaN(length(breakpoints)+2,2);
+    slopes = NaN(length(breakpoints)+2,1);
+    return
+end
 
 % write the problem in matrix form
 if zero_intercept % intercept is zero
-    if numel (breakpoints)==1
+    if numel(breakpoints)==1
         A = [x - breaks(1),(x - breaks(2)).*(xbins == 2)];
     elseif   numel (breakpoints)==2
         A = [x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
     else
-        error('Function brokenstick only works for 1 or 2 breakpoints')
+        error('Function brokenstick only works for 1 or 2 breakpoints.')
     end
 else % intercept will be optimised as well
-    if numel (breakpoints)==1
+    if numel(breakpoints)==1
         A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(xbins == 2)];
     elseif   numel (breakpoints)==2
         A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
     else
-        error('Function brokenstick only works for 1 or 2 breakpoints')
+        error('Function brokenstick only works for 1 or 2 breakpoints.')
     end
 end
 

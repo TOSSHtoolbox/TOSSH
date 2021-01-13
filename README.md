@@ -1,4 +1,4 @@
-<span style="color:red">**IN DEVELOPMENT - please be aware that this toolbox is in development and has not been reviewed yet.**</span>
+<span style="color:red">**IN DEVELOPMENT - please be aware that this toolbox is currently under review and not finalised yet.**</span>
 
 
 <img src="docs/images/TOSSH_logo.svg" alt="TOSSH logo" style="width:70%;" >
@@ -23,7 +23,7 @@ Alternatively, email Hilary McMillan (<hmcmillan@sdsu.edu>) or Sebastian Gnann (
  
  
 ## Credits
-Gnann, S. J. , Coxon, G., Woods, R.A., Howden, N.J.K., McMillan H. K., submitted. TOSSH: A Toolbox for Streamflow Signatures in Hydrology.
+Gnann, S.J., Coxon, G., Woods, R.A., Howden, N.J.K., McMillan H.K., submitted. TOSSH: A Toolbox for Streamflow Signatures in Hydrology.
 
 
 ## License

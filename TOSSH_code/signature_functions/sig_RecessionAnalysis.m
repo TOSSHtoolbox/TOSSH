@@ -1,7 +1,7 @@
 function [Recession_Parameters, recession_month, error_flag, error_str, fig_handles] = ...
     sig_RecessionAnalysis(Q, t, varargin)
 %sig_RecessionAnalysis calculates recession parameters.
-%   dQ/dt = - a Q ^ b
+%   dQ/dt = -a*Q^b
 %   Fits power law function to recession segments and returns recession
 %   parameters (see Brutsaert and Nieber, 1977; Roques et al., 2017; and
 %   Jachens et al., 2020).
@@ -20,7 +20,7 @@ function [Recession_Parameters, recession_month, error_flag, error_str, fig_hand
 %   fit_individual: fit each individual recession segment
 %   fitting_type: fit non-linear or linear curve ('nonlinear','linear')
 %       reservoir), etc.
-%   dQdt_method: method for dQ/dt calculation
+%   dQdt_method: method for dQ/dt calculation, default = 'ETS'
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
@@ -81,7 +81,7 @@ addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of
 % Lyne-Hollick Filter to determine start of recession (higher = later recession start)
 addParameter(ip, 'fit_individual', true, @islogical) % fit individual recessions or point cloud
 addParameter(ip, 'fitting_type', 'linear', @ischar) % nonlinear or linear fit
-addParameter(ip, 'dQdt_method', 'BN', @ischar) % how to calculate dQ/dt
+addParameter(ip, 'dQdt_method', 'ETS', @ischar) % how to calculate dQ/dt
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q, t, varargin{:})
@@ -136,8 +136,7 @@ recession_month = date_tmp(:,2);
 if ~fit_individual
     rec = ~isnan(Qm);
     [Recession_Parameters(1), Recession_Parameters(2),error_flag,error_str] = ...
-        util_FitPowerLaw(Qm(rec), dQdt(rec),...
-        'fitting_type', fitting_type, 'weights', R2(rec));
+        util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
     recession_month = NaN; % no recession month since we only fit a single curve
     
 else
@@ -145,8 +144,7 @@ else
     for i = 1:size(flow_section,1)
         rec = [flow_section(i,1):flow_section(i,2)]'; % get recession
         [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = ...
-            util_FitPowerLaw(Qm(rec), dQdt(rec), ...
-            'fitting_type', fitting_type, 'weights', R2(rec));
+            util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
     end
 end
 
@@ -192,8 +190,8 @@ if plot_results
         str = (sprintf('median: -dQ/dt = %.3f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
         title(str);
     end
-    xlabel('Q [mm/timestep]') 
-    ylabel('-dQ/dt [mm/timestep^2]')
+    xlabel('Q [mm/timestep]')
+    ylabel('-dQ/dt [mm/timestep^2]') 
     set(gca,'XScale','log')
     set(gca,'YScale','log')
     fig_handles.RecessionAnalysis = fig;

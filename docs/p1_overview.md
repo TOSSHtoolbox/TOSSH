@@ -48,7 +48,7 @@ Signature functions with plotting functionality optionally return a figure handl
 Every signature function optionally returns an error flag and an error string, which contain information about problems that occurred during signature calculation. 
 
 We provide two templates which should be used to implement new signatures in a consistent way:
-a basic template *sig_TemplateBasic.m* which only contains Q, t, and optional parameters inputs 
+a basic template *sig_TemplateBasic.m* which only contains Q, t, and optional parameters as inputs 
 and an advanced template *sig_TemplateAdvanced.m* which contains all possible inputs (Q, t, P, PET, T, required parameters, and optional parameters).
 
 
@@ -125,10 +125,13 @@ The toolbox was developed using Matlab R2020a.
 Some functions require MATLAB toolboxes, which are listed below:
 
 [comment]: <>  - 'MATLAB'	'9.4'
-
 [comment]: <> - Signal Processing Toolbox	v8.0 (xcorr)
-- Statistics and Machine Learning Toolbox v11.3 (skewness, fitnlm)
-- Optimization Toolbox v8.1 (nsqnonlin, fminbnd)
+
+- Statistics and Machine Learning Toolbox v11.3 
+- Optimization Toolbox v8.1 
+
+[comment]: <> - Statistics and Machine Learning Toolbox v11.3  (skewness, fitnlm)
+[comment]: <> - Optimization Toolbox v8.1 (nsqnonlin, fminbnd)
 
 [comment]: <> - (tiedrank: Statistics and Machine Learning Toolbox)
 [comment]: <> - (findpeaks: Signal Processing Toolbox)

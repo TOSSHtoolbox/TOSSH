@@ -161,7 +161,8 @@ end
 k = NaN(size(flow_section,1),1);
 for i = 1:size(flow_section,1)
     rec = [flow_section(i,1):flow_section(i,2)]'; % get recession
-    k(i) = util_FitExponential(Q(rec),t(rec),'b');
+    % default: linear fit in log log space for fast calculation
+    k(i) = util_FitExponential(Q(rec),t(rec),'semilog'); 
 end
 
 % get median recession constant

@@ -42,7 +42,7 @@
        rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)
    filter_par: smoothing parameter of Lyne-Hollick filter to determine
       start of recession (higher = later recession start), default = 0.925
-   dQdt_method: method for dQ/dt calculation
+   dQdt_method: method for dQ/dt calculation, default = 'ETS'
    plot_results: whether to plot results, default = false
 
    OUTPUT
@@ -94,7 +94,7 @@ This function is called by:
 0015 <span class="comment">%       rejoins the curve (&quot;baseflow&quot;), or after hydrograph peak (&quot;peak&quot;)</span>
 0016 <span class="comment">%   filter_par: smoothing parameter of Lyne-Hollick filter to determine</span>
 0017 <span class="comment">%      start of recession (higher = later recession start), default = 0.925</span>
-0018 <span class="comment">%   dQdt_method: method for dQ/dt calculation</span>
+0018 <span class="comment">%   dQdt_method: method for dQ/dt calculation, default = 'ETS'</span>
 0019 <span class="comment">%   plot_results: whether to plot results, default = false</span>
 0020 <span class="comment">%</span>
 0021 <span class="comment">%   OUTPUT</span>
@@ -139,7 +139,7 @@ This function is called by:
 0060 addParameter(ip, <span class="string">'start_of_recession'</span>, <span class="string">'peak'</span>, @ischar) <span class="comment">% defines start of a recession</span>
 0061 addParameter(ip, <span class="string">'filter_par'</span>, 0.925, @isnumeric) <span class="comment">% smoothing parameter of</span>
 0062 <span class="comment">% Lyne-Hollick Filter to determine start of recession (higher = later recession start)</span>
-0063 addParameter(ip, <span class="string">'dQdt_method'</span>, <span class="string">'BN'</span>, @ischar) <span class="comment">% how to calculate dQ/dt</span>
+0063 addParameter(ip, <span class="string">'dQdt_method'</span>, <span class="string">'ETS'</span>, @ischar) <span class="comment">% how to calculate dQ/dt</span>
 0064 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
 0065 
 0066 parse(ip, Q, t, varargin{:})
@@ -199,6 +199,6 @@ This function is called by:
 0120 
 0121 <span class="keyword">end</span>
 0122</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

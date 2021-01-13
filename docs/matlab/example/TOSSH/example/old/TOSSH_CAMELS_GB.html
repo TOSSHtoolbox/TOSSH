@@ -398,15 +398,30 @@ This function is called by:
 0348     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
 0349 <span class="comment">% set(gca,'ColorScale','log');</span>
 0350 
-0351 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,results.TotalStorage,<span class="keyword">...</span>
-0352     <span class="string">'attribute_name'</span>,<span class="string">'xxx'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
-0353     <span class="string">'colour_scheme'</span>,<span class="string">'Spectral'</span>,<span class="string">'flip_colour_scheme'</span>,false,<span class="keyword">...</span>
-0354     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,false,<span class="keyword">...</span>
-0355     <span class="string">'figure_title'</span>,<span class="string">''</span>,<span class="string">'figure_name'</span>,<span class="string">'xxx'</span>,<span class="keyword">...</span>
-0356     <span class="string">'save_figure'</span>,false,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
-0357 <span class="comment">% set(gca,'ColorScale','log');</span>
-0358 
-0359</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0351 <span class="comment">% tmp = CAMELS_GB_TOSSH_signatures.StorageFraction(:,1);</span>
+0352 <span class="comment">% tmp(tmp&gt;1) = NaN;</span>
+0353 <span class="comment">% tmp(tmp&lt;0) = NaN;</span>
+0354 <span class="comment">% plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,tmp,...</span>
+0355 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_GB_data.gauge_id,...</span>
+0356 <span class="comment">%     'colour_scheme','Parula','flip_colour_scheme',false,...</span>
+0357 <span class="comment">%     'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
+0358 <span class="comment">%     'figure_title','','figure_name','xxx',...</span>
+0359 <span class="comment">%     'save_figure',false,'figure_path',fig_path,'figure_type','-dpng')</span>
+0360 <span class="comment">% % set(gca,'ColorScale','log');</span>
+0361 <span class="comment">% caxis([0.5 1])</span>
+0362 <span class="comment">%</span>
+0363 <span class="comment">% figure; scatter(CAMELS_GB_TOSSH_signatures.RecessionParameters(:,1),...</span>
+0364 <span class="comment">%     CAMELS_GB_TOSSH_signatures.BaseflowRecessionK,25,...</span>
+0365 <span class="comment">%     CAMELS_GB_data.aridity,'filled'); colorbar; %caxis([.5 2])</span>
+0366 <span class="comment">% hold on;</span>
+0367 <span class="comment">% plot(0:1,0:1,'k')</span>
+0368 <span class="comment">%</span>
+0369 <span class="comment">% figure; scatter(CAMELS_GB_TOSSH_signatures.RecessionParameters(:,1),...</span>
+0370 <span class="comment">%     CAMELS_GB_TOSSH_signatures.BaseflowRecessionK,25,...</span>
+0371 <span class="comment">%     CAMELS_GB_TOSSH_signatures.RecessionParameters(:,2),'filled'); colorbar; %caxis([.5 2])</span>
+0372 <span class="comment">% hold on;</span>
+0373 <span class="comment">% plot(0:1,0:1,'k')</span>
+0374 <span class="comment">% caxis([0.5 2])</span></pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

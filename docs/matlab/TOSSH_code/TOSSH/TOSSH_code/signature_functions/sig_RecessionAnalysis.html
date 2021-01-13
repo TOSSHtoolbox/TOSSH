@@ -28,7 +28,7 @@
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment">sig_RecessionAnalysis calculates recession parameters.
-   dQ/dt = - a Q ^ b
+   dQ/dt = -a*Q^b
    Fits power law function to recession segments and returns recession
    parameters (see Brutsaert and Nieber, 1977; Roques et al., 2017; and
    Jachens et al., 2020).
@@ -47,7 +47,7 @@
    fit_individual: fit each individual recession segment
    fitting_type: fit non-linear or linear curve ('nonlinear','linear')
        reservoir), etc.
-   dQdt_method: method for dQ/dt calculation
+   dQdt_method: method for dQ/dt calculation, default = 'ETS'
    plot_results: whether to plot results, default = false
 
    OUTPUT
@@ -100,7 +100,7 @@ This function is called by:
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Recession_Parameters, recession_month, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
 0002     sig_RecessionAnalysis(Q, t, varargin)
 0003 <span class="comment">%sig_RecessionAnalysis calculates recession parameters.</span>
-0004 <span class="comment">%   dQ/dt = - a Q ^ b</span>
+0004 <span class="comment">%   dQ/dt = -a*Q^b</span>
 0005 <span class="comment">%   Fits power law function to recession segments and returns recession</span>
 0006 <span class="comment">%   parameters (see Brutsaert and Nieber, 1977; Roques et al., 2017; and</span>
 0007 <span class="comment">%   Jachens et al., 2020).</span>
@@ -119,7 +119,7 @@ This function is called by:
 0020 <span class="comment">%   fit_individual: fit each individual recession segment</span>
 0021 <span class="comment">%   fitting_type: fit non-linear or linear curve ('nonlinear','linear')</span>
 0022 <span class="comment">%       reservoir), etc.</span>
-0023 <span class="comment">%   dQdt_method: method for dQ/dt calculation</span>
+0023 <span class="comment">%   dQdt_method: method for dQ/dt calculation, default = 'ETS'</span>
 0024 <span class="comment">%   plot_results: whether to plot results, default = false</span>
 0025 <span class="comment">%</span>
 0026 <span class="comment">%   OUTPUT</span>
@@ -180,7 +180,7 @@ This function is called by:
 0081 <span class="comment">% Lyne-Hollick Filter to determine start of recession (higher = later recession start)</span>
 0082 addParameter(ip, <span class="string">'fit_individual'</span>, true, @islogical) <span class="comment">% fit individual recessions or point cloud</span>
 0083 addParameter(ip, <span class="string">'fitting_type'</span>, <span class="string">'linear'</span>, @ischar) <span class="comment">% nonlinear or linear fit</span>
-0084 addParameter(ip, <span class="string">'dQdt_method'</span>, <span class="string">'BN'</span>, @ischar) <span class="comment">% how to calculate dQ/dt</span>
+0084 addParameter(ip, <span class="string">'dQdt_method'</span>, <span class="string">'ETS'</span>, @ischar) <span class="comment">% how to calculate dQ/dt</span>
 0085 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
 0086 
 0087 parse(ip, Q, t, varargin{:})
@@ -235,71 +235,69 @@ This function is called by:
 0136 <span class="keyword">if</span> ~fit_individual
 0137     rec = ~isnan(Qm);
 0138     [Recession_Parameters(1), Recession_Parameters(2),error_flag,error_str] = <span class="keyword">...</span>
-0139         util_FitPowerLaw(Qm(rec), dQdt(rec),<span class="keyword">...</span>
-0140         <span class="string">'fitting_type'</span>, fitting_type, <span class="string">'weights'</span>, R2(rec));
-0141     recession_month = NaN; <span class="comment">% no recession month since we only fit a single curve</span>
-0142     
-0143 <span class="keyword">else</span>
-0144     Recession_Parameters = NaN(size(flow_section,1),2);
-0145     <span class="keyword">for</span> i = 1:size(flow_section,1)
-0146         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
-0147         [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = <span class="keyword">...</span>
-0148             util_FitPowerLaw(Qm(rec), dQdt(rec), <span class="keyword">...</span>
-0149             <span class="string">'fitting_type'</span>, fitting_type, <span class="string">'weights'</span>, R2(rec));
-0150     <span class="keyword">end</span>
-0151 <span class="keyword">end</span>
-0152 
-0153 <span class="comment">% optional plotting</span>
-0154 <span class="keyword">if</span> plot_results
-0155     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
-0156     colour_mat_seasons = [<span class="keyword">...</span>
-0157         0 0 1;  0 0 1;<span class="keyword">...</span>
-0158         0 1 0; 0 1 0; 0 1 0;<span class="keyword">...</span>
-0159         1 0 0; 1 0 0; 1 0 0;<span class="keyword">...</span>
-0160         1 1 0; 1 1 0; 1 1 0; <span class="keyword">...</span>
-0161         0 0 1];
-0162     p1=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[0 1 0]);
-0163     p2=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[1 0 0]);
-0164     p3=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[1 1 0]);
-0165     p4=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[0 0 1]);
-0166     <span class="keyword">for</span> i = 1:size(flow_section,1)
-0167         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
-0168         Q_tmp = Qm(rec);
-0169         dQdt_tmp = dQdt(rec);
-0170         <span class="keyword">if</span> fit_individual
-0171             <span class="comment">%         date_vec = datevec(t(rec));</span>
-0172             <span class="comment">%         ind = floor(mean(date_vec(:,2))); % get approx. month</span>
-0173             ind = recession_month(i);
-0174             plot(Q_tmp,-dQdt_tmp,<span class="string">'.'</span>,<span class="string">'color'</span>,colour_mat_seasons(ind,:),<span class="string">'linewidth'</span>,2)
-0175             plot(Q_tmp,Recession_Parameters(i,1).*Q_tmp.^Recession_Parameters(i,2),<span class="string">'color'</span>,colour_mat_seasons(ind,:))
-0176         <span class="keyword">else</span>
-0177             plot(Q_tmp,-dQdt_tmp,<span class="string">'b.'</span>,<span class="string">'linewidth'</span>,2)
-0178         <span class="keyword">end</span>
-0179     <span class="keyword">end</span>
-0180     <span class="keyword">if</span> fit_individual
-0181         legend([p1 p2 p3 p4],{<span class="string">'MAM'</span>,<span class="string">'JJA'</span>,<span class="string">'SON'</span>,<span class="string">'DJF'</span>},<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
-0182     <span class="keyword">end</span>
-0183     
-0184     <span class="keyword">if</span> ~fit_individual
-0185         rec = ~isnan(Qm);
-0186         plot(sort(Qm(rec)),Recession_Parameters(1).*sort(Qm(rec)).^Recession_Parameters(2),<span class="keyword">...</span>
-0187             <span class="string">'-'</span>,<span class="string">'color'</span>,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1) <span class="comment">%,'DisplayName','Fit'</span>
-0188         str = (sprintf(<span class="string">'-dQ/dt = %.2f Q^{%.1f} \n'</span>,Recession_Parameters(1),Recession_Parameters(2)));
-0189         title(str);
-0190     <span class="keyword">else</span>
-0191         [~, ind] = min(abs(Recession_Parameters(:,2) - median(Recession_Parameters(:,2)))); <span class="comment">% find recession according to median exponent</span>
-0192         str = (sprintf(<span class="string">'median: -dQ/dt = %.3f Q^{%.1f}'</span>,Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
-0193         title(str);
-0194     <span class="keyword">end</span>
-0195     xlabel(<span class="string">'Q [mm/timestep]'</span>) 
-0196     ylabel(<span class="string">'-dQ/dt [mm/timestep^2]'</span>)
-0197     set(gca,<span class="string">'XScale'</span>,<span class="string">'log'</span>)
-0198     set(gca,<span class="string">'YScale'</span>,<span class="string">'log'</span>)
-0199     fig_handles.RecessionAnalysis = fig;
+0139         util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
+0140     recession_month = NaN; <span class="comment">% no recession month since we only fit a single curve</span>
+0141     
+0142 <span class="keyword">else</span>
+0143     Recession_Parameters = NaN(size(flow_section,1),2);
+0144     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0145         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0146         [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = <span class="keyword">...</span>
+0147             util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
+0148     <span class="keyword">end</span>
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% optional plotting</span>
+0152 <span class="keyword">if</span> plot_results
+0153     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
+0154     colour_mat_seasons = [<span class="keyword">...</span>
+0155         0 0 1;  0 0 1;<span class="keyword">...</span>
+0156         0 1 0; 0 1 0; 0 1 0;<span class="keyword">...</span>
+0157         1 0 0; 1 0 0; 1 0 0;<span class="keyword">...</span>
+0158         1 1 0; 1 1 0; 1 1 0; <span class="keyword">...</span>
+0159         0 0 1];
+0160     p1=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[0 1 0]);
+0161     p2=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[1 0 0]);
+0162     p3=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[1 1 0]);
+0163     p4=plot(0,0,<span class="string">'.'</span>,<span class="string">'Color'</span>,[0 0 1]);
+0164     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0165         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0166         Q_tmp = Qm(rec);
+0167         dQdt_tmp = dQdt(rec);
+0168         <span class="keyword">if</span> fit_individual
+0169             <span class="comment">%         date_vec = datevec(t(rec));</span>
+0170             <span class="comment">%         ind = floor(mean(date_vec(:,2))); % get approx. month</span>
+0171             ind = recession_month(i);
+0172             plot(Q_tmp,-dQdt_tmp,<span class="string">'.'</span>,<span class="string">'color'</span>,colour_mat_seasons(ind,:),<span class="string">'linewidth'</span>,2)
+0173             plot(Q_tmp,Recession_Parameters(i,1).*Q_tmp.^Recession_Parameters(i,2),<span class="string">'color'</span>,colour_mat_seasons(ind,:))
+0174         <span class="keyword">else</span>
+0175             plot(Q_tmp,-dQdt_tmp,<span class="string">'b.'</span>,<span class="string">'linewidth'</span>,2)
+0176         <span class="keyword">end</span>
+0177     <span class="keyword">end</span>
+0178     <span class="keyword">if</span> fit_individual
+0179         legend([p1 p2 p3 p4],{<span class="string">'MAM'</span>,<span class="string">'JJA'</span>,<span class="string">'SON'</span>,<span class="string">'DJF'</span>},<span class="string">'box'</span>,<span class="string">'off'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+0180     <span class="keyword">end</span>
+0181     
+0182     <span class="keyword">if</span> ~fit_individual
+0183         rec = ~isnan(Qm);
+0184         plot(sort(Qm(rec)),Recession_Parameters(1).*sort(Qm(rec)).^Recession_Parameters(2),<span class="keyword">...</span>
+0185             <span class="string">'-'</span>,<span class="string">'color'</span>,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1) <span class="comment">%,'DisplayName','Fit'</span>
+0186         str = (sprintf(<span class="string">'-dQ/dt = %.2f Q^{%.1f} \n'</span>,Recession_Parameters(1),Recession_Parameters(2)));
+0187         title(str);
+0188     <span class="keyword">else</span>
+0189         [~, ind] = min(abs(Recession_Parameters(:,2) - median(Recession_Parameters(:,2)))); <span class="comment">% find recession according to median exponent</span>
+0190         str = (sprintf(<span class="string">'median: -dQ/dt = %.3f Q^{%.1f}'</span>,Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
+0191         title(str);
+0192     <span class="keyword">end</span>
+0193     xlabel(<span class="string">'Q [mm/timestep]'</span>)
+0194     ylabel(<span class="string">'-dQ/dt [mm/timestep^2]'</span>) 
+0195     set(gca,<span class="string">'XScale'</span>,<span class="string">'log'</span>)
+0196     set(gca,<span class="string">'YScale'</span>,<span class="string">'log'</span>)
+0197     fig_handles.RecessionAnalysis = fig;
+0198 <span class="keyword">end</span>
+0199 
 0200 <span class="keyword">end</span>
-0201 
-0202 <span class="keyword">end</span>
-0203</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0201</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

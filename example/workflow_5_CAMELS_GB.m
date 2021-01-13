@@ -119,7 +119,7 @@ writetable(struct2table(CAMELS_GB_signatures),...
 %% Compare TOSSH signatures to CAMELS signatures
 % We can compare the signatures contained in CAMELS GB with the signatures
 % calculated here to see if we get the same results.
-makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,98)
+makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,90)
 saveFig(gcf,strcat('TOSSH_scatter_plot_GB'),fig_path,'-dpdf')
 % Overall the results are very similar, but for some signatures there are
 % huge differences. The differences can be explained by different treatment
@@ -142,10 +142,6 @@ RecessionParameters_error_str = strings(n_CAMELS_GB,1);
 EventRR = NaN(n_CAMELS_GB,1);
 EventRR_error_flag= NaN(n_CAMELS_GB,1);
 EventRR_error_str = strings(n_CAMELS_GB,1);
-
-% We can turn off all Matlab warnings using: warning('off','all'). The
-% TOSSH warnings are still returned as described above.
-warning('off','all');
 
 fprintf('Calculating new signatures...\n')
 for i = 1:n_CAMELS_GB
@@ -180,8 +176,6 @@ for i = 1:n_CAMELS_GB
     [EventRR(i),EventRR_error_flag(i),EventRR_error_str(i)] = sig_EventRR(Q,t,P);
     
 end
-
-warning('on','all');
  
 %% Plot maps
 % We can plot the resulting signatures on a map using a plotting function

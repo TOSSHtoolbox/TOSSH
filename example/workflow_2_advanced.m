@@ -208,6 +208,8 @@ fprintf(error_str+"\n")
 % are specified incorrectly (wrong format, wrong range, etc.).
 [FDC_slope, error_flag, error_str] = sig_FDC_slope(Q_tmp,t_1,'slope_range',[0.33 1.1]);
 
+% Note that we can turn off all Matlab warnings using warning('off','all').
+
 %% Further information 
 % Further information can be found in the online documentation: 
 % https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.

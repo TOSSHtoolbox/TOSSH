@@ -28,16 +28,16 @@
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment">util_dQdt calculates flow rate gradient with various options.
-   Default method is the &quot;classical&quot; Brutsaert and Nieber (1977) method.
    The Roques et al. (2017) method (ETS) is suggested for a more robust
-   calculation of dQ/dt, but it is not the default as it is rather slow.
+   calculation of dQ/dt, but it is slower than the &quot;classical&quot; Brutsaert
+   and Nieber (1977) method.
 
    INPUT
    Q: streamflow [mm/timestep]
    t: time [Matlab datenum]
    flow_section: n-by-2 array where n is the number of recession segments
    OPTIONAL
-   method: method for dQdt calculation
+   method: method for dQdt calculation, default = 'ETS'
 
    OUTPUT
    dQdt: flow rate gradient [mm/timestep^2]
@@ -47,22 +47,22 @@
    R2: R^2 from exponential time stepping method
 
    EXAMPLE
-   % load example data 
-   data = load('example/example_data/33029_daily.mat'); 
-   Q = data.Q; 
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
    t = data.t;
    flow_section = util_RecessionSegments(Q,t); % get recession segments
    [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section);
    [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section, 'method', 'ETS');
 
    References
-    Brutsaert, W. and Nieber, J.L., 1977. Regionalized drought flow 
-   hydrographs from a mature glaciated plateau. Water Resources Research, 
+    Brutsaert, W. and Nieber, J.L., 1977. Regionalized drought flow
+   hydrographs from a mature glaciated plateau. Water Resources Research,
    13(3), pp.637-643.
-   Thomas, B.F., Vogel, R.M. and Famiglietti, J.S., 2015. Objective 
-   hydrograph baseflow recession analysis. Journal of hydrology, 525, 
+   Thomas, B.F., Vogel, R.M. and Famiglietti, J.S., 2015. Objective
+   hydrograph baseflow recession analysis. Journal of hydrology, 525,
    pp.102-112.
-   Roques, C., Rupp, D.E. and Selker, J.S., 2017. Improved streamflow 
+   Roques, C., Rupp, D.E. and Selker, J.S., 2017. Improved streamflow
    recession parameter estimation with attention to calculation of dQ/dt.
    Advances in Water Resources, 108, pp.29-43.
 
@@ -85,16 +85,16 @@ This function is called by:
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [dQdt, Qm, flow_section, R2] = util_dQdt(Q, t, flow_section, varargin)</a>
 0002 <span class="comment">%util_dQdt calculates flow rate gradient with various options.</span>
-0003 <span class="comment">%   Default method is the &quot;classical&quot; Brutsaert and Nieber (1977) method.</span>
-0004 <span class="comment">%   The Roques et al. (2017) method (ETS) is suggested for a more robust</span>
-0005 <span class="comment">%   calculation of dQ/dt, but it is not the default as it is rather slow.</span>
+0003 <span class="comment">%   The Roques et al. (2017) method (ETS) is suggested for a more robust</span>
+0004 <span class="comment">%   calculation of dQ/dt, but it is slower than the &quot;classical&quot; Brutsaert</span>
+0005 <span class="comment">%   and Nieber (1977) method.</span>
 0006 <span class="comment">%</span>
 0007 <span class="comment">%   INPUT</span>
 0008 <span class="comment">%   Q: streamflow [mm/timestep]</span>
 0009 <span class="comment">%   t: time [Matlab datenum]</span>
 0010 <span class="comment">%   flow_section: n-by-2 array where n is the number of recession segments</span>
 0011 <span class="comment">%   OPTIONAL</span>
-0012 <span class="comment">%   method: method for dQdt calculation</span>
+0012 <span class="comment">%   method: method for dQdt calculation, default = 'ETS'</span>
 0013 <span class="comment">%</span>
 0014 <span class="comment">%   OUTPUT</span>
 0015 <span class="comment">%   dQdt: flow rate gradient [mm/timestep^2]</span>
@@ -133,17 +133,17 @@ This function is called by:
 0048 <span class="keyword">end</span>
 0049 
 0050 ip = inputParser;
-0051 ip.CaseSensitive = true; 
+0051 ip.CaseSensitive = true;
 0052 
 0053 <span class="comment">% required input arguments</span>
 0054 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
-0055 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1)) 
+0055 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
 0056 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
-0057 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1)) 
+0057 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
 0058 addRequired(ip, <span class="string">'flow_section'</span>, @(flow_section) isnumeric(flow_section) &amp;&amp; size(flow_section,2)==2) <span class="comment">% recession segments</span>
 0059 
 0060 <span class="comment">% optional input arguments</span>
-0061 addParameter(ip, <span class="string">'method'</span>, <span class="string">'BN'</span>, @ischar) 
+0061 addParameter(ip, <span class="string">'method'</span>, <span class="string">'ETS'</span>, @ischar)
 0062 
 0063 parse(ip, Q, t, flow_section, varargin{:})
 0064 method = ip.Results.method;
@@ -153,54 +153,63 @@ This function is called by:
 0068 m = NaN(size(Q));
 0069 R2 = ones(size(Q)); <span class="comment">% weights</span>
 0070 
-0071 <span class="keyword">switch</span> method    
-0072         
-0073     <span class="keyword">case</span> <span class="string">'BN'</span> <span class="comment">% Brutsaert and Nieber (1979)</span>
-0074         <span class="keyword">for</span> j = 1:size(flow_section,1)
-0075             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
-0076             dQdt(rec(2:end)) = (Q(rec(2:end))-Q(rec(1:end-1)))./days(t(2)-t(1));
-0077             Qm(rec(2:end)) = (Q(rec(2:end)) + Q(rec(1:end-1)))./2;            
-0078             flow_section(j,1) = flow_section(j,1)+1; <span class="comment">% shorten recession</span>
-0079         <span class="keyword">end</span>
-0080        
-0081     <span class="keyword">case</span> <span class="string">'backwards'</span> <span class="comment">% similar to Brutsaert and Nieber (1979), but we keep measured Q, see also Thomas et al. (2015)</span>
-0082         <span class="keyword">for</span> j = 1:size(flow_section,1)
-0083             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
-0084             dQdt(rec(2:end)) = (Q(rec(2:end))-Q(rec(1:end-1)))./days(t(2)-t(1));
-0085             Qm(rec(2:end)) = Q(rec(2:end));
-0086             flow_section(j,1) = flow_section(j,1)+1; <span class="comment">% shorten recession</span>
-0087         <span class="keyword">end</span>
-0088         
-0089     <span class="keyword">case</span> <span class="string">'ETS'</span> <span class="comment">% exponential time stepping following Roques et al. (2017)</span>
-0090         <span class="keyword">for</span> j = 1:size(flow_section,1)
-0091             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
-0092             n = 0.1*(length(rec)); <span class="comment">% n = 10% of recession led to good results according to Roques et al. (2017)</span>
-0093             gamma = <a href="util_FitExponential.html" class="code" title="function [gamma] = util_FitExponential(Q, t, fitting_type)">util_FitExponential</a>(Q(rec), t(rec)); <span class="comment">% get gamma</span>
-0094             m(rec) = 1 + ceil(n.*exp(-1./(gamma.*[1:length(rec)]))); 
-0095             
-0096             i = rec(1);
-0097             <span class="keyword">while</span> i+m(i) &lt;= rec(end)
-0098                 Qm(i) = mean(Q(i:i+m(i)));
-0099                 [~, dQdt(i), R2(i)] = <a href="util_FitLinear.html" class="code" title="function [a, b, R2] = util_FitLinear(x,y)">util_FitLinear</a>(<span class="keyword">...</span>
-0100                     datenum(t(i:i+m(i))),Q(i:i+m(i)));
-0101                 i = i+1;
-0102             <span class="keyword">end</span> 
-0103             
-0104             flow_section(j,2) = flow_section(j,2) - m(i);<span class="comment">%(m(i)+1); % shorten recession</span>
-0105         <span class="keyword">end</span>
-0106         
-0107     <span class="keyword">otherwise</span>
-0108         error(<span class="string">'Differentiation method not available.'</span>)
-0109 <span class="keyword">end</span>
-0110 
-0111 <span class="comment">% dQdt has to be negative and weights have to be non-negative</span>
-0112 dQdt(dQdt&gt;=0 | isinf(dQdt)) = NaN;
-0113 Qm(isnan(dQdt)) = NaN;
-0114 R2(R2&lt;=0) = 1e-18; <span class="comment">% practically 0 weight</span>
-0115 R2(isnan(R2)) = 1e-18;
-0116 
-0117 <span class="keyword">end</span>
-0118</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0071 t = datenum(t); <span class="comment">% convert to datenum</span>
+0072 
+0073 <span class="keyword">switch</span> method
+0074     
+0075     <span class="keyword">case</span> <span class="string">'BN'</span> <span class="comment">% Brutsaert and Nieber (1979)</span>
+0076         <span class="keyword">for</span> j = 1:size(flow_section,1)
+0077             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
+0078             dQdt(rec(2:end)) = (Q(rec(2:end))-Q(rec(1:end-1)))./(t(2)-t(1));
+0079             Qm(rec(2:end)) = (Q(rec(2:end)) + Q(rec(1:end-1)))./2;
+0080             flow_section(j,1) = flow_section(j,1)+1; <span class="comment">% shorten recession</span>
+0081         <span class="keyword">end</span>
+0082         
+0083     <span class="keyword">case</span> <span class="string">'backwards'</span> <span class="comment">% similar to Brutsaert and Nieber (1979), but we keep measured Q, see also Thomas et al. (2015)</span>
+0084         <span class="keyword">for</span> j = 1:size(flow_section,1)
+0085             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
+0086             dQdt(rec(2:end)) = (Q(rec(2:end))-Q(rec(1:end-1)))./(t(2)-t(1));
+0087             Qm(rec(2:end)) = Q(rec(2:end));
+0088             flow_section(j,1) = flow_section(j,1)+1; <span class="comment">% shorten recession</span>
+0089         <span class="keyword">end</span>
+0090         
+0091     <span class="keyword">case</span> <span class="string">'ETS'</span> <span class="comment">% exponential time stepping following Roques et al. (2017)</span>
+0092         <span class="keyword">for</span> j = 1:size(flow_section,1)
+0093             rec = [flow_section(j,1):flow_section(j,2)]'; <span class="comment">% get recession</span>
+0094             n = 0.1*(length(rec)); <span class="comment">% n = 10% of recession length led to good results according to Roques et al. (2017)</span>
+0095             gamma = <a href="util_FitExponential.html" class="code" title="function [gamma] = util_FitExponential(Q, t, fitting_type)">util_FitExponential</a>(Q(rec), t(rec), <span class="string">'semilog'</span>); <span class="comment">% get gamma</span>
+0096             gamma(gamma&lt;0) = 0;
+0097 <span class="comment">%             if gamma &gt; 0</span>
+0098                 m(rec) = 1 + ceil(n.*exp(-1./(gamma.*[1:length(rec)])));
+0099                 i = rec(1);
+0100                 <span class="keyword">while</span> i+m(i) &lt;= rec(end)
+0101                     <span class="comment">% Qm(i) = mean(Q(i:i+m(i)));</span>
+0102                     Qm(i) = sum(Q(i:i+m(i)))/(1+m(i));
+0103                     [~, dQdt(i), R2(i)] = <a href="util_FitLinear.html" class="code" title="function [a, b, R2] = util_FitLinear(x,y)">util_FitLinear</a>(t(i:i+m(i)),Q(i:i+m(i)));
+0104                     i = i+1;
+0105                 <span class="keyword">end</span>
+0106                 flow_section(j,2) = flow_section(j,2) - m(i); <span class="comment">%(m(i)+1); % shorten recession</span>
+0107 <span class="comment">%             else</span>
+0108 <span class="comment">%                 flow_section(j,:) = NaN;</span>
+0109 <span class="comment">%             end</span>
+0110         <span class="keyword">end</span>
+0111         
+0112         <span class="comment">% remove flow sections with non-finite elements (e.g. due to</span>
+0113         <span class="comment">% fitting problems)</span>
+0114         flow_section(~all(isfinite(flow_section)')',:) = [];
+0115         
+0116     <span class="keyword">otherwise</span>
+0117         error(<span class="string">'Differentiation method not available.'</span>)
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">% dQdt has to be negative and weights have to be non-negative</span>
+0121 dQdt(dQdt&gt;=0 | isinf(dQdt)) = NaN;
+0122 Qm(isnan(dQdt)) = NaN;
+0123 R2(R2&lt;=0) = 1e-18; <span class="comment">% practically 0 weight</span>
+0124 R2(isnan(R2)) = 1e-18;
+0125 
+0126 <span class="keyword">end</span>
+0127</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

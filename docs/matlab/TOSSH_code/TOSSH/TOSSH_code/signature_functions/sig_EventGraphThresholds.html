@@ -4,7 +4,7 @@
 <head>
   <title>Description of sig_EventGraphThresholds</title>
   <meta name="keywords" content="sig_EventGraphThresholds">
-  <meta name="description" content="sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.">
+  <meta name="description" content="%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -21,13 +21,13 @@
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
-<div class="box"><strong>sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</strong></div>
+<div class="box"><strong>%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="box"><strong>function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh,SE_thresh_signif, SE_thresh, SE_slope,Storage_thresh, Storage_thresh_signif, min_Qf_perc,error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
-<div class="fragment"><pre class="comment">sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
+<div class="fragment"><pre class="comment">%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
    Calculates a variety of signatures related to saturation excess (SE)
    and infiltration excess (IE) flow, based on the relationship between
    precipitation or antecedent conditions and flow response (volume or
@@ -158,7 +158,7 @@ This function is called by:
 0002     SE_thresh_signif, SE_thresh, SE_slope, <span class="keyword">...</span>
 0003     Storage_thresh, Storage_thresh_signif, min_Qf_perc, <span class="keyword">...</span>
 0004     error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin)
-0005 <span class="comment">%sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</span>
+0005 <span class="comment">%%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.</span>
 0006 <span class="comment">%   Calculates a variety of signatures related to saturation excess (SE)</span>
 0007 <span class="comment">%   and infiltration excess (IE) flow, based on the relationship between</span>
 0008 <span class="comment">%   precipitation or antecedent conditions and flow response (volume or</span>
@@ -375,28 +375,28 @@ This function is called by:
 0219 event_array = zeros(size(stormarray,1),9);
 0220 <span class="keyword">for</span> i = 1:size(stormarray,1)
 0221     <span class="comment">% total event precipitation [mm] (Estrany names this as X3 coefficient)</span>
-0222     event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)));
+0222     event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)),<span class="string">'omitnan'</span>);
 0223     
 0224     <span class="comment">% event average precipitation intensity [mm/timestep] (Estrany X4)</span>
-0225     event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)));
+0225     event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)),<span class="string">'omitnan'</span>);
 0226     
 0227     <span class="comment">% event maximum precipitation intensity [mm/timestep] (Estrany X5; but they used 5 min data)</span>
 0228     event_array(i,3) = max(P(stormarray(i,1):stormarray(i,3)));
 0229     
 0230     <span class="comment">% antecedent precipitation 3 days before [mm] (Estrany X1)</span>
 0231     time_antecedent = max(stormarray(i,1) - 3*24/timestep,1);
-0232     event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)));
+0232     event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)),<span class="string">'omitnan'</span>);
 0233     
 0234     <span class="comment">% antecedent precipitation 7 days before [mm] (Estrany X2)</span>
 0235     time_antecedent = max(stormarray(i,1) - 7*24/timestep,1);
-0236     event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)));
+0236     event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)),<span class="string">'omitnan'</span>);
 0237     
 0238     <span class="comment">% total event flow volume [mm]</span>
-0239     event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)));
+0239     event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)),<span class="string">'omitnan'</span>);
 0240     
 0241     <span class="comment">% total event quickflow volume [mm]</span>
-0242     event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)))-<span class="keyword">...</span>
-0243         sum(B(stormarray(i,1):stormarray(i,3)));
+0242     event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)),<span class="string">'omitnan'</span>)-<span class="keyword">...</span>
+0243         sum(B(stormarray(i,1):stormarray(i,3)),<span class="string">'omitnan'</span>);
 0244     
 0245     <span class="comment">% maximum event runoff [mm/timestep]</span>
 0246     event_array(i,8) = max(Q(stormarray(i,1):stormarray(i,3)));
@@ -409,7 +409,7 @@ This function is called by:
 0253     numdays = floor((stormarray(i,1) - time_antecedent)/(24/timestep));
 0254     time_array = reshape(P(stormarray(i,1)-[1:1:(numdays*24/timestep)]),24/timestep,[]);
 0255     time_array = sum(time_array,1);
-0256     event_array(i,9) = sum(time_array./[1:length(time_array)]).';
+0256     event_array(i,9) = sum(time_array./[1:length(time_array)],<span class="string">'omitnan'</span>).';
 0257 <span class="keyword">end</span>
 0258 
 0259 <span class="comment">% calculate Becker and McDonnell (1998) signatures, minimum value of</span>
@@ -590,6 +590,6 @@ This function is called by:
 0434     fig_handles.EventGraphThresholdsSeasons = fig2;
 0435     
 0436 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

@@ -121,7 +121,7 @@ potential_storms_change = potential_storms(2:end)-potential_storms(1:end-1);
 % identify beginning and end of storm periods
 begin_storm = find(potential_storms_change == 1)+1;
 end_storm = find(potential_storms_change == -1);
-% remove last 'beginning of storm' if it does not complete within timeseries
+% remove last 'beginning of storm' if it does not complete within time series
 begin_storm = begin_storm(1:length(end_storm));
 
 valid_storm = zeros(length(begin_storm),3);

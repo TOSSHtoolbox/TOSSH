@@ -74,35 +74,35 @@ This function is called by:
 0018 
 0019 <span class="comment">%% Check if required MATLAB toolboxes are installed</span>
 0020 <span class="comment">% Required are:</span>
-0021 <span class="comment">%   - MATLAB</span>
-0022 <span class="comment">%   - Signal Processing Toolbox</span>
-0023 <span class="comment">%   - Statistics and Machine Learning Toolbox</span>
-0024 <span class="comment">%   - Optimization Toolbox</span>
-0025 <span class="comment">% We can check which toolboxes we have installed using &quot;ver&quot;.</span>
-0026 <span class="comment">% ver</span>
-0027 
-0028 <span class="comment">%% Add directories to path</span>
-0029 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path.</span>
-0030 <span class="comment">% If we already are in this directory, we can use the pwd command:</span>
-0031 mydir = pwd;
-0032 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
-0033 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
-0034 cd(mydir)
-0035 addpath(genpath(mydir));
-0036 
-0037 <span class="comment">%% Input data</span>
-0038 <span class="comment">% Every signature requires a streamflow (Q) time series and a corresponding</span>
-0039 <span class="comment">% date vector (t). The date vector should be in datetime format, but</span>
-0040 <span class="comment">% datenum format is also accepted and internally converted. Here is an</span>
-0041 <span class="comment">% example of Q and t vectors in the correct format:</span>
-0042 Q = [1.14;1.07;2.39;2.37;1.59;1.25;1.35;1.16;1.27;1.14]; 
-0043 t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
-0044 
-0045 <span class="comment">% Typically, users will have their own data which they want to analyse.</span>
-0046 <span class="comment">% We provide an example file to get a more realistic time series.</span>
-0047 <span class="comment">% The example file also contains precipitation (P) and potential</span>
-0048 <span class="comment">% evapotranspiration (PET) data which are required for some signatures.</span>
-0049 <span class="comment">% The paths are relative and assume that we are in the TOSSH directory.</span>
+0021 <span class="comment">%   - MATLAB (TOSSH was developed using Matlab R2020a)</span>
+0022 <span class="comment">%   - Statistics and Machine Learning Toolbox</span>
+0023 <span class="comment">%   - Optimization Toolbox</span>
+0024 <span class="comment">% We can check which toolboxes we have installed using &quot;ver&quot;.</span>
+0025 <span class="comment">% ver</span>
+0026 
+0027 <span class="comment">%% Add directories to path</span>
+0028 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path.</span>
+0029 <span class="comment">% If we already are in this directory, we can use the pwd command:</span>
+0030 mydir = pwd;
+0031 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0032 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0033 cd(mydir)
+0034 addpath(genpath(mydir));
+0035 
+0036 <span class="comment">%% Input data</span>
+0037 <span class="comment">% Every signature requires a streamflow (Q) time series and a corresponding</span>
+0038 <span class="comment">% date vector (t). The date vector should be in datetime format, but</span>
+0039 <span class="comment">% datenum format is also accepted and internally converted. Here is an</span>
+0040 <span class="comment">% example of Q and t vectors in the correct format:</span>
+0041 Q = [1.14;1.07;2.39;2.37;1.59;1.25;1.35;1.16;1.27;1.14]; 
+0042 t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
+0043 
+0044 <span class="comment">% Typically, users will have their own data which they want to analyse.</span>
+0045 <span class="comment">% We provide an example file to get a more realistic time series.</span>
+0046 <span class="comment">% The example file also contains precipitation (P), potential</span>
+0047 <span class="comment">% evapotranspiration (PET), and temperature (T) data, which are required</span>
+0048 <span class="comment">% for some signatures. The paths are relative and assume that we are in</span>
+0049 <span class="comment">% the TOSSH directory.</span>
 0050 path = <span class="string">'./example/example_data/'</span>; <span class="comment">% specify path</span>
 0051 data = load(strcat(path,<span class="string">'33029_daily.mat'</span>)); <span class="comment">% load data</span>
 0052 t = data.t;
@@ -110,7 +110,7 @@ This function is called by:
 0054 P = data.P; <span class="comment">% precipitation [mm/day]</span>
 0055 <span class="comment">% Note: PET and T example data are provided but not used here.</span>
 0056 <span class="comment">% PET = data.PET; % potential evapotranspiration [mm/day]</span>
-0057 <span class="comment">% T = data.T; % temperature [°C]</span>
+0057 <span class="comment">% T = data.T; % temperature [degC]</span>
 0058 
 0059 <span class="comment">%% Plot data</span>
 0060 <span class="comment">% We can plot the data to get a first idea of the hydrograph.</span>
@@ -131,7 +131,7 @@ This function is called by:
 0075 <span class="comment">% Some signatures can be calculated using different methods and/or</span>
 0076 <span class="comment">% parameter values. For example, there are different options to calculate</span>
 0077 <span class="comment">% the baseflow index (BFI). The default method is the UKIH smoothed minima</span>
-0078 <span class="comment">% method with a default parameter of 5 days.</span>
+0078 <span class="comment">% method with a parameter of 5 days.</span>
 0079 BFI_UKIH = sig_BFI(Q,t);
 0080 fprintf(<span class="string">'BFI_UKIH = %.2f \n'</span>,BFI_UKIH)
 0081 <span class="comment">% Alternatively, we can use the Lyne-Hollick filter with a filter parameter</span>
@@ -158,9 +158,9 @@ This function is called by:
 0102 
 0103 <span class="comment">% Some signatures are combinations of existing signatures, e.g. the</span>
 0104 <span class="comment">% baseflow fraction (K_b) defined as the ratio between mean baseflow Q_b</span>
-0105 <span class="comment">% and mean precipitation P (Gnann et al., 2019). This signature can also be</span>
-0106 <span class="comment">% calculated as K_b = BFI*TotalRR. We therefore do not provide an extra</span>
-0107 <span class="comment">% signature function, but suggest to use the two existing functions.</span>
+0105 <span class="comment">% and mean precipitation P. This signature can also be calculated as</span>
+0106 <span class="comment">% K_b = BFI*TotalRR. We therefore do not provide an extra signature</span>
+0107 <span class="comment">% function, but suggest to use the two existing functions.</span>
 0108 K_b = sig_BFI(Q,t)*sig_TotalRR(Q,t,P);
 0109 fprintf(<span class="string">'K_b = %.2f \n'</span>,K_b)
 0110 
@@ -210,6 +210,6 @@ This function is called by:
 0154 <span class="comment">% Further information can be found in the online documentation:</span>
 0155 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts</span>
 0156 <span class="comment">% (e.g. 'workflow_2_advanced.m').</span></pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

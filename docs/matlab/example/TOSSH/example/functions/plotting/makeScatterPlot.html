@@ -233,23 +233,24 @@ This function is called by:
 0177 x=[0.64 0.135 0.01 0.14];
 0178 set(c,<span class="string">'Position'</span>,x)
 0179 <span class="comment">% set(gca,'position',x1)</span>
-0180 
-0181 <span class="comment">% figure; hold on;</span>
-0182 <span class="comment">% colormap(colour_mat);</span>
-0183 <span class="comment">% scatter(round(100.*results.P_mean)./100,CAMELS_data.p_mean,25,CAMELS_data.flow_perc_complete,'filled')%,'k')</span>
-0184 <span class="comment">% xlabel('Pmean TOSSH'); ylabel('Pmean CAMELS')</span>
-0185 <span class="comment">% title(sprintf('\\rho_s = %.2f',corr(results.P_mean,CAMELS_data.p_mean,'Type','Spearman','rows','complete')))</span>
-0186 <span class="comment">% limits = [floor(min([min(results.P_mean) min(CAMELS_data.p_mean)])) ...</span>
-0187 <span class="comment">%     ceil(max([max(results.P_mean) max(CAMELS_data.p_mean)]))];</span>
-0188 <span class="comment">% xlim(limits); ylim(limits);</span>
-0189 <span class="comment">% caxis([lower_lim 100]); %colorbar;</span>
-0190 <span class="comment">% plot(limits(1):.1:limits(2),limits(1):.1:limits(2),'k--');</span>
-0191 <span class="comment">% % update cursor</span>
-0192 <span class="comment">% dcm_obj = datacursormode(figure(gcf));</span>
-0193 <span class="comment">% set(dcm_obj,'UpdateFcn',{@myupdatefcn,CAMELS_data.gauge_id,1:length(CAMELS_data.gauge_id)})</span>
-0194 
-0195 <span class="keyword">end</span>
-0196</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0180 c.TickLabels{1} = [<span class="string">'&lt;'</span> c.TickLabels{1}];
+0181 
+0182 <span class="comment">% figure; hold on;</span>
+0183 <span class="comment">% colormap(colour_mat);</span>
+0184 <span class="comment">% scatter(round(100.*results.P_mean)./100,CAMELS_data.p_mean,25,CAMELS_data.flow_perc_complete,'filled')%,'k')</span>
+0185 <span class="comment">% xlabel('Pmean TOSSH'); ylabel('Pmean CAMELS')</span>
+0186 <span class="comment">% title(sprintf('\\rho_s = %.2f',corr(results.P_mean,CAMELS_data.p_mean,'Type','Spearman','rows','complete')))</span>
+0187 <span class="comment">% limits = [floor(min([min(results.P_mean) min(CAMELS_data.p_mean)])) ...</span>
+0188 <span class="comment">%     ceil(max([max(results.P_mean) max(CAMELS_data.p_mean)]))];</span>
+0189 <span class="comment">% xlim(limits); ylim(limits);</span>
+0190 <span class="comment">% caxis([lower_lim 100]); %colorbar;</span>
+0191 <span class="comment">% plot(limits(1):.1:limits(2),limits(1):.1:limits(2),'k--');</span>
+0192 <span class="comment">% % update cursor</span>
+0193 <span class="comment">% dcm_obj = datacursormode(figure(gcf));</span>
+0194 <span class="comment">% set(dcm_obj,'UpdateFcn',{@myupdatefcn,CAMELS_data.gauge_id,1:length(CAMELS_data.gauge_id)})</span>
+0195 
+0196 <span class="keyword">end</span>
+0197</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

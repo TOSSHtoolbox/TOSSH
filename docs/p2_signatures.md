@@ -6,9 +6,9 @@ nav: true
 - 
 {:toc}
 
-Below you can find a list of signatures with a short description organised according to the signature sets. 
+Below we provide a list of signatures with a short description organised according to the signature sets. 
 A more detailed description of each signature can be found in the Matlab functions which can be opened by clicking on the function name.
-At the end of the page you can also find a list with all remaining signatures contained in TOSSH which are not (yet) part of any set.
+At the end of the page we also provide a list with all remaining signatures contained in TOSSH which are not (yet) part of any set.
 
 <a href="./matlab/TOSSH_code/index.html" target="_blank">Click here to browse through all Matlab functions contained in TOSSH.</a>
  
@@ -58,7 +58,7 @@ and specific hydrologic phenomena, such as floods or low flows, that are critica
 Addor et al. (2018) use 15 signatures (<a href="./matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Addor.html" target="_blank">calc_Addor.m</a>)
 that “characterize different parts of the hydrograph, 
 and [...] are sensitive to processes occurring over different time scales”. 
-The signatures were selected from those commonly used in the literature, 
+The signatures are selected from those commonly used in the literature, 
 and are used to explore the strength of relationships between signatures and catchment attributes.
 
 | Signature | Function (click for code) | Unit | Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 

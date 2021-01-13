@@ -52,22 +52,15 @@ addParameter(ip, 'P', [], @(P) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 addParameter(ip, 'PET', [], @(PET) isnumeric(PET) && (size(PET,1)==1 || size(PET,2)==1))
 % T has to be numeric and either a (n,1) or a (1,n) vector
 addParameter(ip, 'T', [], @(T) isnumeric(T) && (size(T,1)==1 || size(T,2)==1))
-% addParameter(ip, 'display_warning', true, @islogical) % whether to display warnings
 
 parse(ip, Q, t, varargin{:})
 P = ip.Results.P;
 PET = ip.Results.PET;
 T = ip.Results.T;
-% display_warning = ip.Results.display_warning;
 
 % default setting reads as good data
 error_flag = 0;
 error_str = '';
-
-% % temporarily turn off warnings
-% if ~display_warning
-%     warning('off','all')
-% end
 
 % timestep checks
 if isnumeric(t)
@@ -78,7 +71,7 @@ end
 
 timesteps = diff(t);
 timestep = median(timesteps);
-if any(diff(timesteps)~=0)
+if any(diff(timesteps)~=0) 
     error_flag = 1;
     error_str = ['Warning: Record is not continuous (some timesteps are missing). ', error_str];
 end
@@ -201,10 +194,5 @@ if ~isempty(T)
     end
     
 end
-
-% % turn on warnings in case they have been turned off
-% if ~display_warning
-%     warning('on','all')
-% end
 
 end

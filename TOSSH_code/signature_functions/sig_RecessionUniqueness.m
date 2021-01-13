@@ -15,7 +15,7 @@ function [Spearmans_rho, error_flag, error_str, fig_handles] ...
 %       rejoins the curve ("baseflow"), or after hydrograph peak ("peak")
 %   filter_par: smoothing parameter of Lyne-Hollick filter to determine
 %      start of recession (higher = later recession start), default = 0.925
-%   dQdt_method: method for dQ/dt calculation
+%   dQdt_method: method for dQ/dt calculation, default = 'ETS'
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
@@ -60,7 +60,7 @@ addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recessi
 addParameter(ip, 'start_of_recession', 'peak', @ischar) % defines start of a recession
 addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of 
 % Lyne-Hollick Filter to determine start of recession (higher = later recession start)
-addParameter(ip, 'dQdt_method', 'BN', @ischar) % how to calculate dQ/dt
+addParameter(ip, 'dQdt_method', 'ETS', @ischar) % how to calculate dQ/dt
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q, t, varargin{:})

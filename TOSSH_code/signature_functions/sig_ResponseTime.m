@@ -1,10 +1,11 @@
 function [ResponseTime, error_flag, error_str] = sig_ResponseTime(Q, t, P, varargin)
 %sig_ResponseTime calculates catchment response time.
 %   Calculates the catchment response time given a rainfall and a
-%   streamflow timeseries using the DCMA method from Giani et al. (2020).
+%   streamflow time series using the DCMA method from Giani et al. (2020).
 %
 %   Notes:
-%   Works best for sub-daily data.
+%   Works best for sub-daily data. 
+%   Can be slow if time series are long (e.g. long hourly time series).
 %
 %   INPUT
 %   Q: streamflow [mm/timestep]
@@ -80,15 +81,15 @@ end
 % calculate signature
 P = P';
 Q = Q';
-P_int = cumsum(P, 'omitnan'); % cumulating rainfall timeseries (Eq.1)
-Q_int = cumsum(Q, 'omitnan'); % cumulating streamflow timeseries (Eq.2)
-len = length(P); % length of the timeseries
+P_int = cumsum(P, 'omitnan'); % cumulating rainfall time series (Eq.1)
+Q_int = cumsum(Q, 'omitnan'); % cumulating streamflow time series (Eq.2)
+len = length(P); % length of the time series
 
 % todo: intialise arrays?
 
 for w=3:2:max_window
-    P_mean((w-1)/2,:) = movmean(P_int, w); % moving average on the integrated rainfall timeseries (Eq.5)
-    Q_mean((w-1)/2,:) = movmean(Q_int, w); % moving average on the integrated streamflow timeseries (Eq.6)
+    P_mean((w-1)/2,:) = movmean(P_int, w); % moving average on the integrated rainfall time series (Eq.5)
+    Q_mean((w-1)/2,:) = movmean(Q_int, w); % moving average on the integrated streamflow time series (Eq.6)
     
     flutt_P((w-1)/2,:) = P_int-P_mean((w-1)/2,:);
     F_P((w-1)/2) = (1/(len-w+1))*...

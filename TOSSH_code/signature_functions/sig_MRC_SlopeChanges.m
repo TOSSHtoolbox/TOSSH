@@ -16,11 +16,14 @@ function [MRC_num_segments, Segment_slopes, error_flag, error_str, fig_handles] 
 %       rejoins the curve ("baseflow"), or after hydrograph peak ("peak")
 %   filter_par: smoothing parameter of Lyne-Hollick filter to determine
 %      start of recession (higher = later recession start), default = 0.925
+%   seg_test: reduction in RMSE needed to recommend extra segment in MRC,
+%       default = 0.75
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   MRC_num_segments: number of different segments in MRC
-%   Segment_slopes: slopes of recession segments [mm/timestep^2]
+%   Segment_slopes: slopes of master recession curve segments in Q vs. 
+%       relative time plot [1/timestep]
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
@@ -38,7 +41,7 @@ function [MRC_num_segments, Segment_slopes, error_flag, error_str, fig_handles] 
 %   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response
 %   of a small mediterranean agricultural catchment. Journal of Hydrology,
 %   380(1-2), pp.180-190.
-%   Clark, M.P., Rupp, D.E., Woods, R.A., Trompâ€?van Meerveld, H.J., Peters,
+%   Clark, M.P., Rupp, D.E., Woods, R.A., Tromp-van Meerveld, H.J., Peters,
 %   N.E. and Freer, J.E., 2009. Consistency between hydrological models and
 %   field observations: linking processes at the hillslope scale to
 %   hydrological responses at the watershed scale. Hydrological Processes,
@@ -70,10 +73,10 @@ addParameter(ip, 'n_start', 0, @isnumeric) % days to be removed at beginning of 
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 addParameter(ip, 'start_of_recession', 'peak', @ischar) % defines start of a recession
 addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of
-% Lyne-Hollick Filter to determine start of recession (higher = later recession start)
-addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
+% Lyne-Hollick filter to determine start of recession (higher = later recession start)
 addParameter(ip, 'seg_test', 0.75, @isnumeric) % what reduction in RMSE
 % needed to recommend extra segment in MRC
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q, t, varargin{:})
 recession_length = ip.Results.recession_length;
@@ -127,13 +130,25 @@ xdata=mrc(:,1);
 ydata=log(mrc(:,2));
 
 dx = max(xdata) - min(xdata);
-[breaks] = fminbnd(@(b2) util_FitBrokenStick(b2,xdata,ydata),min(xdata) + dx/100,max(xdata) - dx/100);
+[breaks] = fminbnd(@(b2) util_FitBrokenStick(b2,xdata,ydata),...
+    min(xdata) + dx/100, max(xdata) - dx/100);
 [err_b1,fittedlines,slopes_b1] = util_FitBrokenStick(breaks,xdata,ydata);
 
-options = optimoptions('fmincon'); options.Display = 'off'; % to stop fmincon from displaying info
-[breaks2] = fmincon(@(b2) util_FitBrokenStick(b2,xdata,ydata),[min(xdata) + ...
-    dx/3,min(xdata) + dx*2/3],[],[],[],[],(min(xdata) + ...
-    dx/100)*ones(2,1),(max(xdata) - dx/100)*ones(2,1),[],options);
+% optimise three-segment fit
+options = optimoptions('fmincon'); 
+options.Display = 'off'; % to stop fmincon from displaying info
+% get initialization points for breaks
+bk1 = min(xdata) + dx/3;
+bk2 = min(xdata) + dx*2/3;
+% check that there are at least 10 points in the last section and revise breakpoints if not
+if sum(xdata > bk2) < 10
+    bk2 = xdata(end-10);
+    bk1 = min(xdata) + (bk2 - min(xdata))/2;
+end
+
+[breaks2] = fmincon(@(b2) util_FitBrokenStick(b2,xdata,ydata),...
+    [bk1, bk2],[],[],[],[],(min(xdata) + dx/100)*ones(2,1),...
+    (max(xdata) - dx/100)*ones(2,1),[],options);
 [err_b2,fittedlines2,slopes_b2] = util_FitBrokenStick(breaks2,xdata,ydata);
 
 RMS_errors = [err_b0,err_b1,err_b2];
@@ -148,6 +163,8 @@ if RMS_errors(2)<seg_test*RMS_errors(1)
         Segment_slopes = slopes_b2;
     end
 end
+
+Segment_slopes = -Segment_slopes; % convert slope to recession rate
 
 % optional plotting
 if plot_results
@@ -169,48 +186,3 @@ if plot_results
 end
 
 end
-
-% use util function instead
-%{
-function [err,fittedlines,slopes] = brokenstick(breakpoints,x,y)
-% Fits two or three part broken stick fit.
-% Adapted from online example by John D'Errico.
-
-breakpoints=breakpoints(:).'; % make breakpoints into row vector
-breaks = [min(x),breakpoints,max(x)];
-nx=length(x);
-% which points lie in which interval?
-xbins = discretize(x,breaks);
-
-% write the problem in matrix form
-if numel (breakpoints)==1
-    A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(xbins == 2)];
-elseif   numel (breakpoints)==2
-    A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
-else
-    error('Function brokenstick only works for 1 or 2 breakpoints')
-end
-
-% solve matrix
-coef = A\y;
-err = norm(y - A*coef);
-
-% unpack the coefficients
-c1 = coef(1);
-s = [coef(2:end)];
-css = cumsum(s);
-s = [s;s(end)];
-css = [css;css(end)];
-bi = [breaks(1:end-1).';breaks(end-1)];
-fittedlines = zeros(length(breaks),2);
-slopes = zeros(length(breaks),1);
-fittedlines(:,1) = breaks.';
-fittedlines(1:2,2) = (c1 - breaks(1).*s(1)) + s(1).*breaks(1:2).';
-fittedlines(3,2) = (c1 - breaks(1).*s(1) - breaks(2).*s(2)) + (s(1)+s(2)).*breaks(3).';
-if numel (breakpoints)==2
-    fittedlines(4,2) = (c1 - sum(breaks(1:3).'.*s(1:3))) + sum(s(1:3)).*breaks(4).';
-end
-slopes = cumsum(s);slopes=slopes(1:end-1);
-
-end
-%}

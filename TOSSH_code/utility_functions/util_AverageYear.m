@@ -67,7 +67,9 @@ for i = 1:12
     m = months(i);
     % loop over days
     for d = 1:n_days(m)
-        X_avg(index) = mean(X(day_vec == d & month_vec == m),'omitnan');
+        % X_avg(index) = mean(X(day_vec == d & month_vec == m),'omitnan');
+        X_tmp = X(day_vec == d & month_vec == m);
+        X_avg(index) = sum(X_tmp,'omitnan')/length(X_tmp);
         t_avg(index,:) = [0,m,d]; % dummy year
         index = index + 1;
     end

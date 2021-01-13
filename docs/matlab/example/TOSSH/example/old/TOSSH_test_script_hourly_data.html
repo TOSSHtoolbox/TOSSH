@@ -98,7 +98,7 @@ This function is called by:
 0054 <span class="comment">% some example signatures - quite slow!</span>
 0055 
 0056 BFI = NaN(length(catchment_id),1);
-0057 ResponseTime = NaN(length(catchment_id),1);
+0057 RLD = NaN(length(catchment_id),1);
 0058 RecessionParameters = NaN(length(catchment_id),2);
 0059 
 0060 <span class="keyword">for</span> i = 1:length(catchment_id)
@@ -106,7 +106,7 @@ This function is called by:
 0062         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,length(catchment_id))
 0063     <span class="keyword">end</span>
 0064     BFI(i) = sig_BFI(Q(:,i),t(:,i));
-0065     ResponseTime(i) = sig_CatchmentResponseTime(Q(:,i),t(:,i),P(:,i));
+0065     RLD(i) = sig_RisingLimbDensity(Q(:,i),t(:,i));
 0066     [RecessionParameters(i,:),~,~,error_string] = <span class="keyword">...</span>
 0067         sig_RecessionAnalysis(Q(:,i),t(:,i),<span class="keyword">...</span>
 0068         <span class="string">'fit_individual'</span>,false,<span class="string">'eps'</span>,median(Q(:,i),<span class="string">'omitnan'</span>).*0.001);
@@ -114,7 +114,7 @@ This function is called by:
 0070 <span class="keyword">end</span>
 0071 
 0072 disp(BFI)
-0073 disp(ResponseTime)
+0073 disp(RLD)
 0074 disp(RecessionParameters)
 0075 
 0076 <span class="comment">%% Calculation functions</span>
@@ -126,90 +126,94 @@ This function is called by:
 0082 
 0083 tic
 0084 <span class="comment">% TOSSH_signatures_hourly = calc_Addor(Q_mat, t_mat, P_mat);</span>
-0085 TOSSH_signatures_hourly = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
-0086 toc
-0087 
-0088 <span class="comment">%% NaNs in all time series</span>
-0089 Q_mat = num2cell(Q,1)';
-0090 t_mat = num2cell(t,1)';
-0091 P_mat = num2cell(P,1)';
-0092 PET_mat = num2cell(PET,1)';
-0093 T_mat = num2cell(T,1)';
-0094 
-0095 P_mat{1}(1000:2000) = NaN; 
-0096 P_mat{2}(1000:2000) = NaN; 
-0097 P_mat{3}(2000:5000) = NaN; 
-0098 P_mat{4}(10000:50000) = NaN; 
-0099 PET_mat{1}(1000:2000) = NaN; 
-0100 PET_mat{2}(2000:3000) = NaN; 
-0101 PET_mat{3}(1000:20000) = NaN; 
-0102 PET_mat{4}(1000:2000) = NaN; 
-0103 T_mat{1}(1000:2000) = NaN; 
-0104 T_mat{2}(4000:5000) = NaN; 
-0105 T_mat{3}(10000:20000) = NaN; 
-0106 T_mat{4}(10000:50000) = NaN; 
-0107 
-0108 tic
-0109 <span class="comment">% TOSSH_signatures_hourly_NaN = calc_Addor(Q_mat, t_mat, P_mat);</span>
-0110 TOSSH_signatures_hourly_NaN = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
-0111 toc
-0112 
-0113 <span class="comment">%% short time series</span>
-0114 Q_mat = num2cell(Q,1)';
-0115 t_mat = num2cell(t,1)';
-0116 P_mat = num2cell(P,1)';
-0117 PET_mat = num2cell(PET,1)';
-0118 T_mat = num2cell(T,1)';
-0119 
-0120 t_mat{1}(100:end) = []; 
-0121 t_mat{2}(1000:end) = []; 
-0122 t_mat{3}(1000:end) = []; 
-0123 t_mat{4}(10000:end) = []; 
-0124 Q_mat{1}(100:end) = []; 
-0125 Q_mat{2}(1000:end) = []; 
-0126 Q_mat{3}(1000:end) = []; 
-0127 Q_mat{4}(10000:end) = []; 
-0128 P_mat{1}(100:end) = []; 
-0129 P_mat{2}(1000:end) = []; 
-0130 P_mat{3}(2000:end) = []; 
-0131 P_mat{4}(10000:end) = []; 
-0132 PET_mat{1}(100:end) = []; 
-0133 PET_mat{2}(1000:end) = []; 
-0134 PET_mat{3}(2000:end) = []; 
-0135 PET_mat{4}(10000:end) = []; 
-0136 T_mat{1}(100:end) = []; 
-0137 T_mat{2}(1000:end) = []; 
-0138 T_mat{3}(2000:end) = []; 
-0139 T_mat{4}(10000:end) = []; 
-0140 
-0141 tic
-0142 <span class="comment">% TOSSH_signatures_hourly_short = calc_Addor(Q_mat, t_mat, P_mat);</span>
-0143 TOSSH_signatures_hourly_short = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
-0144 toc
-0145 
-0146 <span class="comment">%% test with weird timeseries, e.g. constant value or using P instead of Q</span>
-0147 Q_mat = num2cell(Q,1)';
-0148 t_mat = num2cell(t,1)';
-0149 P_mat = num2cell(P,1)';
-0150 PET_mat = num2cell(PET,1)';
-0151 T_mat = num2cell(T,1)';
-0152 
-0153 Q_mat{1}(:) = mean(Q_mat{1},<span class="string">'omitnan'</span>); 
-0154 Q_mat{2}(:) = 0.*Q_mat{2}; 
-0155 Q_mat{3}(:) = P_mat{3}(:); 
-0156 P_mat{5}(1:end-10) = 0.*P_mat{5}(1:end-10); 
-0157 Q_mat{5}(1:end-10) = 0.*Q_mat{5}(1:end-10);
-0158 <span class="comment">% Q_mat{5}(1:end) = 0.*Q_mat{5}(1:end);</span>
-0159 <span class="comment">% Q_mat{5}(1:end) = mean(Q_mat{5},'omitnan');</span>
-0160 
-0161 tic
-0162 <span class="comment">% TOSSH_signatures_hourly_crashtest = calc_Addor(Q_mat, t_mat, P_mat);</span>
-0163 <span class="comment">% TOSSH_signatures_hourly_crashtest = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);</span>
-0164 TOSSH_signatures_hourly_crashtest = calc_All({Q_mat{5}(:)}, {t_mat{5}(:)}, {P_mat{5}(:)}, {PET_mat{5}(:)}, {T_mat{5}(:)});
-0165 <span class="comment">% [a,b,c,d,e,f,g,h,i,j,k,l] = sig_EventGraphThresholds(Q_mat{5}(:), t_mat{5}(:), P_mat{5}(:))</span>
-0166 <span class="comment">% sig_RecessionAnalysis(Q_mat{3}(:), t_mat{2}(:),'eps',0.01*nanmedian(Q_mat{3}(:)))</span>
-0167 toc
-0168</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0085 <span class="comment">% TOSSH_signatures_hourly = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat);</span>
+0086 TOSSH_signatures_hourly = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0087 <span class="comment">% TOSSH_signatures_hourly = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat);</span>
+0088 toc
+0089 
+0090 <span class="comment">%% NaNs in all time series</span>
+0091 Q_mat = num2cell(Q,1)';
+0092 t_mat = num2cell(t,1)';
+0093 P_mat = num2cell(P,1)';
+0094 PET_mat = num2cell(PET,1)';
+0095 T_mat = num2cell(T,1)';
+0096 
+0097 P_mat{1}(1000:2000) = NaN; 
+0098 P_mat{2}(1000:2000) = NaN; 
+0099 <span class="comment">% P_mat{3}(2000:5000) = NaN;</span>
+0100 <span class="comment">% P_mat{4}(10000:50000) = NaN;</span>
+0101 <span class="comment">% PET_mat{1}(1000:2000) = NaN;</span>
+0102 <span class="comment">% PET_mat{2}(2000:3000) = NaN;</span>
+0103 <span class="comment">% PET_mat{3}(1000:20000) = NaN;</span>
+0104 <span class="comment">% PET_mat{4}(1000:2000) = NaN;</span>
+0105 <span class="comment">% T_mat{1}(1000:2000) = NaN;</span>
+0106 <span class="comment">% T_mat{2}(4000:5000) = NaN;</span>
+0107 <span class="comment">% T_mat{3}(10000:20000) = NaN;</span>
+0108 <span class="comment">% T_mat{4}(10000:50000) = NaN;</span>
+0109 
+0110 tic
+0111 <span class="comment">% TOSSH_signatures_hourly_NaN = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0112 <span class="comment">% TOSSH_signatures_hourly_NaN = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);</span>
+0113 <span class="comment">% TOSSH_signatures_hourly_NaN = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat);</span>
+0114 TOSSH_signatures_hourly_NaN = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat);
+0115 toc
+0116 
+0117 <span class="comment">%% short time series</span>
+0118 Q_mat = num2cell(Q,1)';
+0119 t_mat = num2cell(t,1)';
+0120 P_mat = num2cell(P,1)';
+0121 PET_mat = num2cell(PET,1)';
+0122 T_mat = num2cell(T,1)';
+0123 
+0124 t_mat{1}(100:end) = []; 
+0125 t_mat{2}(1000:end) = []; 
+0126 t_mat{3}(1000:end) = []; 
+0127 t_mat{4}(10000:end) = []; 
+0128 Q_mat{1}(100:end) = []; 
+0129 Q_mat{2}(1000:end) = []; 
+0130 Q_mat{3}(1000:end) = []; 
+0131 Q_mat{4}(10000:end) = []; 
+0132 P_mat{1}(100:end) = []; 
+0133 P_mat{2}(1000:end) = []; 
+0134 P_mat{3}(2000:end) = []; 
+0135 P_mat{4}(10000:end) = []; 
+0136 PET_mat{1}(100:end) = []; 
+0137 PET_mat{2}(1000:end) = []; 
+0138 PET_mat{3}(2000:end) = []; 
+0139 PET_mat{4}(10000:end) = []; 
+0140 T_mat{1}(100:end) = []; 
+0141 T_mat{2}(1000:end) = []; 
+0142 T_mat{3}(2000:end) = []; 
+0143 T_mat{4}(10000:end) = []; 
+0144 
+0145 tic
+0146 <span class="comment">% TOSSH_signatures_hourly_short = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0147 TOSSH_signatures_hourly_short = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0148 toc
+0149 
+0150 <span class="comment">%% test with weird timeseries, e.g. constant value or using P instead of Q</span>
+0151 Q_mat = num2cell(Q,1)';
+0152 t_mat = num2cell(t,1)';
+0153 P_mat = num2cell(P,1)';
+0154 PET_mat = num2cell(PET,1)';
+0155 T_mat = num2cell(T,1)';
+0156 
+0157 Q_mat{1}(:) = mean(Q_mat{1},<span class="string">'omitnan'</span>); 
+0158 Q_mat{2}(:) = 0.*Q_mat{2}; 
+0159 Q_mat{3}(:) = P_mat{3}(:); 
+0160 P_mat{5}(1:end-10) = 0.*P_mat{5}(1:end-10); 
+0161 Q_mat{5}(1:end-10) = 0.*Q_mat{5}(1:end-10);
+0162 <span class="comment">% Q_mat{5}(1:end) = 0.*Q_mat{5}(1:end);</span>
+0163 <span class="comment">% Q_mat{5}(1:end) = mean(Q_mat{5},'omitnan');</span>
+0164 
+0165 tic
+0166 <span class="comment">% TOSSH_signatures_hourly_crashtest = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0167 <span class="comment">% TOSSH_signatures_hourly_crashtest = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);</span>
+0168 TOSSH_signatures_hourly_crashtest = calc_All({Q_mat{5}(:)}, {t_mat{5}(:)}, {P_mat{5}(:)}, {PET_mat{5}(:)}, {T_mat{5}(:)});
+0169 <span class="comment">% [a,b,c,d,e,f,g,h,i,j,k,l] = sig_EventGraphThresholds(Q_mat{5}(:), t_mat{5}(:), P_mat{5}(:))</span>
+0170 <span class="comment">% sig_RecessionAnalysis(Q_mat{3}(:), t_mat{2}(:),'eps',0.01*nanmedian(Q_mat{3}(:)))</span>
+0171 toc
+0172</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

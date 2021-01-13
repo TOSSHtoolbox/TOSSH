@@ -10,7 +10,7 @@ function [BaseflowRecessionK, error_flag, error_str, fig_handles] = ...
 %   According to Safeeq et al. (2013), K<0.065 represent groundwater
 %   dominated slow-draining systems, K>=0.065 represent shallow subsurface
 %   flow dominated fast draining systems.
-%   (to do: remove snow-affected sections of the timeseries)
+%   (to do: remove snow-affected sections of the time series)
 %
 %   INPUT
 %   Q: streamflow [mm/timestep]
@@ -126,7 +126,7 @@ end
 % to consist of complete years only.
 
 % MRC constucted using the adapted matching strip method (Posavec et al., 2006)
-[MRC] = util_MasterRecessionCurve(Q, flow_section,'fit_method',fit_method,'plot_results',false);
+[MRC] = util_MasterRecessionCurve(Q, flow_section,'fit_method',fit_method,'match_method','log','plot_results',false);
 
 % k = slope of the linear regression between log-transformed discharge and recession length
 mdl = [(MRC(:,1).^0) (MRC(:,1))]\log(MRC(:,2));

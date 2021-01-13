@@ -177,6 +177,7 @@ title(c,'% complete')
 x=[0.64 0.135 0.01 0.14];
 set(c,'Position',x)
 % set(gca,'position',x1)
+c.TickLabels{1} = ['<' c.TickLabels{1}];
 
 % figure; hold on; 
 % colormap(colour_mat);

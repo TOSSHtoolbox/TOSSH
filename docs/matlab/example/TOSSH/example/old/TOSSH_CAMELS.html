@@ -62,95 +62,110 @@ This function is called by:
 0012 
 0013 <span class="comment">%% add directories for functions to path</span>
 0014 
-0015 <span class="keyword">if</span> exist(<span class="string">'./BrewerMap'</span>) == 7
-0016     addpath(genpath(<span class="string">'./BrewerMap'</span>));
-0017 <span class="keyword">else</span>
-0018     error(<span class="string">'BrewerMap toolbox needed. Can be downloaded from https://github.com/DrosteEffect/BrewerMap and should be in a folder named BrewerMap in the same directory.'</span>)
-0019 <span class="keyword">end</span>
-0020 
-0021 <span class="keyword">if</span> exist(<span class="string">'./CAMELS_Matlab'</span>) == 7
-0022     addpath(genpath(<span class="string">'./CAMELS_Matlab'</span>)); <span class="comment">% CAMELS data</span>
-0023 <span class="keyword">else</span>
-0024     error(<span class="string">'CAMELS data processing repository needed. Can be downloaded from https://github.com/SebastianGnann/CAMELS_Matlab and should be in a folder named CAMELS_Matlab in the same directory.'</span>)
-0025 <span class="keyword">end</span>
-0026 
-0027 <span class="comment">% figure path</span>
-0028 fig_path = <span class="string">'.\TOSSH_development\example\results\images'</span>;
+0015 user = <span class="string">'Hilary'</span>;
+0016 <span class="comment">%user = 'Original';</span>
+0017 
+0018 <span class="keyword">if</span> exist(<span class="string">'./BrewerMap'</span>) == 7
+0019     addpath(genpath(<span class="string">'./BrewerMap'</span>));
+0020 <span class="keyword">else</span>
+0021     error(<span class="string">'BrewerMap toolbox needed. Can be downloaded from https://github.com/DrosteEffect/BrewerMap and should be in a folder named BrewerMap in the same directory.'</span>)
+0022 <span class="keyword">end</span>
+0023 
+0024 <span class="keyword">if</span> exist(<span class="string">'./CAMELS_Matlab'</span>) == 7
+0025     addpath(genpath(<span class="string">'./CAMELS_Matlab'</span>)); <span class="comment">% CAMELS data</span>
+0026 <span class="keyword">else</span>
+0027     error(<span class="string">'CAMELS data processing repository needed. Can be downloaded from https://github.com/SebastianGnann/CAMELS_Matlab and should be in a folder named CAMELS_Matlab in the same directory.'</span>)
+0028 <span class="keyword">end</span>
 0029 
-0030 <span class="comment">%% load CAMELS data</span>
-0031 <span class="keyword">if</span> exist(<span class="string">'data_CAMELS_struc'</span>) <span class="comment">% check if data is already loaded</span>
-0032 <span class="keyword">else</span>
-0033     data_CAMELS_struc = load(<span class="string">'./CAMELS_Matlab/Data/CAMELS_data.mat'</span>);
-0034 <span class="keyword">end</span>
-0035 CAMELS_data = data_CAMELS_struc.CAMELS_data;
-0036 clear data_CAMELS_struc
-0037 
-0038 <span class="comment">%% calculate all TOSSH signatures for CAMELS catchments</span>
-0039 
-0040 n_CAMELS = length(CAMELS_data.gauge_id);
-0041 t_mat = cell(n_CAMELS,1);
-0042 Q_mat = cell(n_CAMELS,1);
-0043 P_mat = cell(n_CAMELS,1);
-0044 PET_mat = cell(n_CAMELS,1);
-0045 T_mat = cell(n_CAMELS,1);
+0030 <span class="comment">% figure path</span>
+0031 <span class="keyword">if</span> strcmp(user,<span class="string">'Hilary'</span>)
+0032     fig_path = <span class="string">'./Figures'</span>;
+0033 <span class="keyword">elseif</span> strcmp(user,<span class="string">'Original'</span>)
+0034     fig_path = <span class="string">'.\TOSSH_development\example\results\images'</span>;
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">%% load CAMELS data</span>
+0038 <span class="keyword">if</span> exist(<span class="string">'data_CAMELS_struc'</span>) <span class="comment">% check if data is already loaded</span>
+0039 <span class="keyword">else</span>
+0040     data_CAMELS_struc = load(<span class="string">'./CAMELS_Matlab/Data/CAMELS_data.mat'</span>);
+0041 <span class="keyword">end</span>
+0042 CAMELS_data = data_CAMELS_struc.CAMELS_data;
+0043 clear data_CAMELS_struc
+0044 
+0045 <span class="comment">%% calculate all TOSSH signatures for CAMELS catchments</span>
 0046 
-0047 <span class="keyword">for</span> i = 1:n_CAMELS 
-0048     
-0049     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
-0050         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
-0051     <span class="keyword">end</span>
-0052     
-0053     t = datetime(CAMELS_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
-0054     Q = CAMELS_data.Q{i}(:,2);    
-0055     P = CAMELS_data.P{i}(:,2);
-0056     PET = CAMELS_data.PET{i}(:,2);
-0057     T = CAMELS_data.T{i}(:,2);
-0058     
-0059     <span class="comment">% get subperiod, here from 1 Oct 1989 to 30 Sep 2009</span>
-0060     indices = 1:length(t); 
-0061     start_ind = indices(t==datetime(1989,10,1));
-0062     <span class="comment">% in case time series starts after 1 Oct 1989</span>
-0063     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span> 
-0064     end_ind = indices(t==datetime(2009,9,30));    
-0065     t = t(start_ind:end_ind);
-0066     Q = Q(start_ind:end_ind);
-0067     P = P(start_ind:end_ind);
-0068     PET = PET(start_ind:end_ind);
-0069     T = T(start_ind:end_ind);
-0070     
-0071     t_mat{i} = t;
-0072     Q_mat{i} = Q;
-0073     P_mat{i} = P;
-0074     PET_mat{i} = PET;
-0075     T_mat{i} = T;
-0076     
-0077 <span class="keyword">end</span>
-0078 
-0079 tic
-0080 <span class="comment">% CAMELS_TOSSH_signatures = calc_Addor(Q_mat, t_mat, P_mat);</span>
-0081 CAMELS_TOSSH_signatures = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
-0082 <span class="comment">% CAMELS_TOSSH_signatures = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat);</span>
-0083 toc
-0084 
-0085 <span class="comment">%% compare the signatures contained in CAMELS with the signatures calculated here</span>
-0086 
-0087 <span class="comment">% results = load('./TOSSH_development/example/results/CAMELS_TOSSH_signatures.mat');</span>
-0088 <span class="comment">% makeScatterPlot(CAMELS_TOSSH_signatures,CAMELS_data,98)</span>
-0089 <span class="comment">% saveFig(gcf,strcat('TOSSH_scatter_plot_US'),fig_path,'-dpng')</span>
-0090 
-0091 <span class="comment">% maps</span>
-0092 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.AC1,...</span>
-0093 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_data.gauge_id,...</span>
-0094 <span class="comment">%     'colour_scheme','Parula','flip_colour_scheme',true,...</span>
-0095 <span class="comment">%      'c_limits',[.5 1],'c_lower_limit_open',false,'c_upper_limit_open',false,...</span>
-0096 <span class="comment">%     'figure_title','','figure_name','xxx','save_figure',false,'figure_path',fig_path)</span>
-0097 <span class="comment">% set(gca,'ColorScale','log');</span>
-0098 <span class="comment">%</span>
-0099 <span class="comment">% plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.BaseflowRecessionK,...</span>
-0100 <span class="comment">%     'attribute_name','xxx','ID',CAMELS_data.gauge_id,...</span>
-0101 <span class="comment">%     'colour_scheme','Parula','flip_colour_scheme',false,...</span>
-0102 <span class="comment">%     'figure_title','','figure_name','','save_figure',false,'figure_path',fig_path)</span>
-0103</pre></div>
-<hr><address>Generated on Thu 10-Dec-2020 13:22:27 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0047 n_CAMELS = length(CAMELS_data.gauge_id);
+0048 t_mat = cell(n_CAMELS,1);
+0049 Q_mat = cell(n_CAMELS,1);
+0050 P_mat = cell(n_CAMELS,1);
+0051 PET_mat = cell(n_CAMELS,1);
+0052 T_mat = cell(n_CAMELS,1);
+0053 
+0054 <span class="keyword">for</span> i = 1:n_CAMELS 
+0055     
+0056     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0057         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS)
+0058     <span class="keyword">end</span>
+0059     
+0060     t = datetime(CAMELS_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0061     Q = CAMELS_data.Q{i}(:,2);    
+0062     P = CAMELS_data.P{i}(:,2);
+0063     PET = CAMELS_data.PET{i}(:,2);
+0064     T = CAMELS_data.T{i}(:,2);
+0065     
+0066     <span class="comment">% get subperiod, here from 1 Oct 1989 to 30 Sep 2009</span>
+0067     indices = 1:length(t); 
+0068     start_ind = indices(t==datetime(1989,10,1));
+0069     <span class="comment">% in case time series starts after 1 Oct 1989</span>
+0070     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span> 
+0071     end_ind = indices(t==datetime(2009,9,30));    
+0072     t = t(start_ind:end_ind);
+0073     Q = Q(start_ind:end_ind);
+0074     P = P(start_ind:end_ind);
+0075     PET = PET(start_ind:end_ind);
+0076     T = T(start_ind:end_ind);
+0077     
+0078     t_mat{i} = t;
+0079     Q_mat{i} = Q;
+0080     P_mat{i} = P;
+0081     PET_mat{i} = PET;
+0082     T_mat{i} = T;
+0083     
+0084 <span class="keyword">end</span>
+0085 
+0086 tic
+0087 <span class="comment">% CAMELS_TOSSH_signatures = calc_Addor(Q_mat, t_mat, P_mat);</span>
+0088 CAMELS_TOSSH_signatures = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat);
+0089 <span class="comment">%  CAMELS_TOSSH_signatures = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat);</span>
+0090 toc
+0091 
+0092 <span class="comment">%% compare the signatures contained in CAMELS with the signatures calculated here</span>
+0093 
+0094 <span class="comment">% results = load('./TOSSH_development/example/results/CAMELS_TOSSH_signatures.mat');</span>
+0095 <span class="comment">% makeScatterPlot(CAMELS_TOSSH_signatures,CAMELS_data,98)</span>
+0096 <span class="comment">% saveFig(gcf,strcat('TOSSH_scatter_plot_US'),fig_path,'-dpng')</span>
+0097 
+0098 <span class="comment">% maps</span>
+0099 <span class="comment">%figure;</span>
+0100 <span class="comment">%subplot(1,3,1)</span>
+0101 plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.BaseflowRecessionK,<span class="keyword">...</span>
+0102     <span class="string">'attribute_name'</span>,<span class="string">'Recession K [1/days]'</span>,<span class="string">'ID'</span>,CAMELS_data.gauge_id,<span class="keyword">...</span>
+0103     <span class="string">'colour_scheme'</span>,<span class="string">'Parula'</span>,<span class="string">'flip_colour_scheme'</span>,false,<span class="keyword">...</span>
+0104      <span class="string">'c_limits'</span>,[0.1 0.8],<span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0105     <span class="string">'figure_title'</span>,<span class="string">'(A)'</span>,<span class="string">'figure_name'</span>,<span class="string">'xxx'</span>,<span class="string">'save_figure'</span>,false,<span class="string">'figure_path'</span>,fig_path)
+0106 set(gca,<span class="string">'ColorScale'</span>,<span class="string">'log'</span>);
+0107 
+0108 <span class="comment">%subplot(1,3,2)</span>
+0109 plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.RecessionParameters(:,2),<span class="keyword">...</span>
+0110     <span class="string">'attribute_name'</span>,<span class="string">'Recession Beta [-]'</span>,<span class="string">'ID'</span>,CAMELS_data.gauge_id,<span class="keyword">...</span>
+0111     <span class="string">'c_limits'</span>,[1 2],<span class="string">'c_upper_limit_open'</span>,true,<span class="string">'colour_scheme'</span>,<span class="string">'Parula'</span>,<span class="string">'flip_colour_scheme'</span>,false,<span class="keyword">...</span>
+0112     <span class="string">'figure_title'</span>,<span class="string">'(B)'</span>,<span class="string">'figure_name'</span>,<span class="string">''</span>,<span class="string">'save_figure'</span>,false,<span class="string">'figure_path'</span>,fig_path)
+0113 
+0114 <span class="comment">%subplot(1,3,1)</span>
+0115 plotMapUS(CAMELS_data.gauge_lat,CAMELS_data.gauge_lon,CAMELS_TOSSH_signatures.EventRR,<span class="keyword">...</span>
+0116     <span class="string">'attribute_name'</span>,<span class="string">'Event Runoff Ratio [-]'</span>,<span class="string">'ID'</span>,CAMELS_data.gauge_id,<span class="keyword">...</span>
+0117     <span class="string">'c_limits'</span>,[0 0.8],<span class="string">'c_upper_limit_open'</span>,true,<span class="string">'colour_scheme'</span>,<span class="string">'Parula'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0118     <span class="string">'figure_title'</span>,<span class="string">'(C)'</span>,<span class="string">'figure_name'</span>,<span class="string">''</span>,<span class="string">'save_figure'</span>,false,<span class="string">'figure_path'</span>,fig_path)</pre></div>
+<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

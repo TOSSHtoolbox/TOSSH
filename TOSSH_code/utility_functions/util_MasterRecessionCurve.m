@@ -11,6 +11,8 @@ function [MRC, fig_handles] = util_MasterRecessionCurve(Q, flow_section, varargi
 %       exponential before stacking into MRC), 'nonparameteric' (fits 
 %       horizontal time shift for minimum standard deviation at each lag
 %       time, does not assume any form of the curve)
+%   match_method: how to space points on the MRC used for alignment,
+%       'linear' or 'log'
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
@@ -47,10 +49,12 @@ addRequired(ip, 'Q', @(Q) isnumeric(Q) && (size(Q,1)==1 || size(Q,2)==1))
 addRequired(ip, 'flow_section', @(flow_section) isnumeric(flow_section) && (size(flow_section,2)==2))
 
 addParameter(ip, 'fit_method', 'exponential', @ischar) % defines method for aligning flow segments
+addParameter(ip, 'match_method', 'log', @ischar) % defines method for aligning flow segments
 addParameter(ip, 'plot_results', false, @islogical) % whether to show plot of MRC
 
 parse(ip, Q, flow_section, varargin{:})
 fit_method = ip.Results.fit_method;
+match_method = ip.Results.match_method;
 plot_results = ip.Results.plot_results;
 
 % create empty figure handle
@@ -130,7 +134,69 @@ switch fit_method
             min_flow = jitter_size;
         end
         % get interpolated flow values where MRC will be evaluated
-        flow_vals = linspace(max_flow,min_flow,numflows);
+        switch match_method
+            case 'linear'
+                flow_vals = linspace(max_flow,min_flow,numflows);
+            case 'log'
+                frac_log = 0.2;
+                gridspace = (max_flow - min_flow)/numflows;
+                flow_vals = sort([linspace(max_flow-gridspace/2,min_flow+gridspace/2,numflows-floor(frac_log.*numflows)),...
+                    logspace(log10(max_flow),log10(min_flow),floor(frac_log.*numflows))],'descend');
+                flow_vals(end) = min_flow;
+                flow_vals(1) = max_flow;
+                flow_vals = sort(unique(flow_vals),'descend');
+                numflows = numel(flow_vals);
+            otherwise
+                error('Match method for MRC not a recognised option.')
+        end
+        
+        %Keep track of good segments
+        short_segs = false(size(flow_section,1),1);
+        
+        % extract and interpolate each segment, and check validity; remove
+        % invalid segments
+        for i = 1:numsegments
+                       
+            % extract segment
+            segment = segments{i};
+
+            % find indices of max and min interpolated flow values for this segment
+            fmax_index = find(segment(1) >= flow_vals,1,'first');
+            if segment(end) <= flow_vals(end)
+                fmin_index = numel(flow_vals);
+            else
+                fmin_index = find(segment(end) > flow_vals,1,'first')-1;
+            end
+                       
+            % find number of interpolated values
+            nf = fmin_index-fmax_index+1;
+            
+            % if no interpolated values (occurs when min and max of segment
+            % are too close together, remove the segment
+            if nf <= 1
+                %Collect segment number
+                short_segs(i) = true;
+
+            end
+                 
+        end
+        
+        %If some segments were rejected, recalculate flow values for
+        %interpolation and flow value initialisations and counts
+        if sum(short_segs) > 0
+            %Remove segments without interpolated values
+            segments(short_segs) = [];
+            numsegments = numel(segments);
+            % keep running tally of minimum
+            running_min = max(flow_init_value(sortind(~short_segs)));
+            %Remove flow vals for interpolation if the reduced 'good' segment
+            %set no longer cover those values
+            max_flow = max([segments{:}]);
+            min_flow = min([segments{:}]);
+            flow_vals(flow_vals > max_flow)=[];
+            flow_vals(flow_vals < min_flow)=[];
+            numflows = numel(flow_vals);
+        end
         
         % set up the optimisation matrix
         msp_matrix = zeros(numsegments*numflows*2,3);
@@ -139,9 +205,13 @@ switch fit_method
         mcount = 1;
         % initialise count into sparse matrix
         mspcount = 1;
+        %Keep track of any segments with no interpolated values
+        bad_segs = [];
+        
         
         % extract and interpolate each segment
         for i = 1:numsegments
+                       
             % extract segment
             segment = segments{i};
             % if there is a gap between previous segments and this one,
@@ -151,7 +221,7 @@ switch fit_method
             end
             % find indices of max and min interpolated flow values for this segment
             fmax_index = find(segment(1) >= flow_vals,1,'first');
-            if segment(end) == flow_vals(end)
+            if segment(end) <= flow_vals(end)
                 fmin_index = numel(flow_vals);
             else
                 fmin_index = find(segment(end) > flow_vals,1,'first')-1;
@@ -163,6 +233,15 @@ switch fit_method
             
             % find number of interpolated values
             nf = fmin_index-fmax_index+1;
+            
+            % if no interpolated values (occurs when min and max of segment
+            % are too close together 
+            if nf == 0
+                %Collect segment number
+                bad_segs = [bad_segs, i];
+                %Don't add to minimisation matrix
+                continue
+            end
             
             % construct the minimisation matrix block for each segment            
             if i==1
@@ -194,6 +273,12 @@ switch fit_method
         % cut off unused rows of optimisation matrix
         B_mat = -b_matrix(1:mcount-1);
         
+        %Delete unused columns of minimimsation matrix
+        seg_indices = [1:numsegments];
+        m_sparse(:,bad_segs-1)=[];
+        seg_indices(bad_segs)=[];
+        numsegments = numsegments - length(bad_segs);
+        
         % minimise the differences to a Master recession curve
         MRC_solve = m_sparse\B_mat;
         
@@ -202,6 +287,10 @@ switch fit_method
         mrc_time = MRC_solve(numsegments:end);
         % sort the MRC to avoid any places where not strictly decreasing
         mrc_time = sort(mrc_time,'ascend');
+        %Have the MRC start at 0 time
+        offset = min(mrc_time);
+        mrc_time = mrc_time - offset;
+        lags = lags - offset;
         
         % output
         MRC = [mrc_time(:),flow_vals(:)];
@@ -211,7 +300,7 @@ switch fit_method
             fig = figure('Position',[100 100 350 300]); hold on
             for i = 1:numsegments
                 % extract segment
-                segment = segments{i};
+                segment = segments{seg_indices(i)};
                 h1 = plot([1:length(segment)]+lags(i),segment,'b-');
             end
             h2 = plot(mrc_time,flow_vals,'g','linewidth',2);
