@@ -76,8 +76,10 @@ end
 error_flag_tmp = error_flag; % temporarily store error flag from data check
 error_str_tmp = error_str;
 % aggregate time series to get annual sums
-[Q_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(Q, t, start_water_year);
-[P_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(P, t, start_water_year);
+[Q_annual, ~, ~, year_length, error_flag, error_str] = ...
+    util_AggregateTimeSeries(Q, t, start_water_year);
+[P_annual, ~, ~, year_length, error_flag, error_str] = ...
+    util_AggregateTimeSeries(P, t, start_water_year);
 if error_flag == 0
     error_flag = error_flag_tmp;
     error_str = error_str_tmp;
@@ -85,17 +87,17 @@ end
 
 % calculate elasticity
 switch method
+    % use year_length to adjust for leap years and incomplete years
     case 'Sanka'
-        dQ = Q_annual-mean(Q_annual,'omitnan');
-        dP = P_annual-mean(P_annual,'omitnan');
+        dQ = Q_annual./year_length - mean(Q_annual./year_length,'omitnan');
+        dP = P_annual./year_length - mean(P_annual./year_length,'omitnan');
     case 'Sawicz'
-        dQ = diff(Q_annual);
-        dP = diff(P_annual);
+        dQ = diff(Q_annual./year_length);
+        dP = diff(P_annual./year_length);
     otherwise
-        error('Please choose one of the available baseflow separation methods (Sawicz or Sanka).')
+        error('Please choose one of the available methods (Sawicz or Sanka).')
 end
 
-QP_elasticity = median(...
-    (dQ./dP)*(mean(P_annual,'omitnan')/mean(Q_annual,'omitnan')),'omitnan');
+QP_elasticity = median((dQ./dP)*(mean(P,'omitnan')/mean(Q,'omitnan')),'omitnan');
 
 end

@@ -1,7 +1,8 @@
 function [HFD_mean, error_flag, error_str] = sig_HFD_mean(Q, t, varargin)
 %sig_HFD_mean calculates mean half flow date.
 %   Calculates day since start of water year on which the cumulative 
-%   discharge (default: October) reaches half of the annual discharge.
+%   discharge (default: October) reaches (here: exceeds) half of the annual 
+%   discharge.
 %
 %   INPUT
 %   Q: streamflow [mm/timestep]
@@ -86,7 +87,7 @@ for y = 2:length(year_list) % since we use water years, we always start in the "
         Q_half_sum = 0.5*sum(Q_water_year);
         Q_cumsum = cumsum(Q_water_year);
         aux_index = 1:length(Q_water_year);
-        HFD_aux = aux_index(Q_cumsum>=Q_half_sum);
+        HFD_aux = aux_index(Q_cumsum>Q_half_sum);
         HFD(y-1) = HFD_aux(1);
     catch
         error_tmp = true;

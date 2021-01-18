@@ -1,7 +1,7 @@
 function [PeakDistribution, error_flag, error_str, fig_handles] = ...
     sig_PeakDistribution(Q, t, varargin)
 %sig_PeakDistribution calculates peak distribution.
-%   Calculates the the slope between the 10th and 50th of a flow duration 
+%   Calculates the slope between the 10th and 50th of a flow duration 
 %   curve constructed constructed by only considering hydrograph peaks 
 %   (Euser et al., 2013). Slope can be fitted in linear or in log space.
 %
@@ -85,7 +85,6 @@ end
 % get peaks
 % Q_peak = findpeaks(Q);
 Q_peak = Q(islocalmax(Q));
-
 
 % get ranks as a proxy for exceedance probabilities
 Q_peak_sorted = sort(Q_peak);

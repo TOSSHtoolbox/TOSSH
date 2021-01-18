@@ -1,10 +1,10 @@
 function [HFI_mean, error_flag, error_str] = sig_HFI_mean(Q,t, varargin)
 %sig_HFI_mean calculates mean half flow interval.
 %   Calculates time span between the date on which the cumulative discharge 
-%   since start of water year (default: October) reaches a quarter of the
-%   annual discharge and the date on which the cumulative discharge since 
-%   since start of water year (default: October) reaches three quarters of  
-%   the annual discharge.
+%   since start of water year (default: October) reaches (here: exceeds) a 
+%   quarter of the annual discharge and the date on which the cumulative 
+%   discharge since start of water year (default: October) reaches three 
+%   quarters of the annual discharge.
 %
 %   INPUT
 %   Q: streamflow [mm/timestep]

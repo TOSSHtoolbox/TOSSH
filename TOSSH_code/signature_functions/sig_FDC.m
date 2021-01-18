@@ -58,9 +58,9 @@ if error_flag == 2
 end
 
 % calculate signature
-% get ranks as a proxy for exceedance probabilities
+% get ranks as a proxy for exceedance probabilities  
+Q = Q(~isnan(Q)); % remove NaN values 
 Q_sorted = sort(Q);
-% Q_ranked = tiedrank(Q_sorted);
 Q_ranked = [1:length(Q)]'; % give unique (random) rank to every measurement
 FDC = 1 - Q_ranked./length(Q_ranked); % flow duration curve with unique ranks
 

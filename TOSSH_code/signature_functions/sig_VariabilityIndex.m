@@ -56,6 +56,7 @@ end
 
 % calculate signature
 % get ranks as a proxy for exceedance probabilities
+Q = Q(~isnan(Q)); % remove NaN values 
 Q_sorted = sort(Q,'descend');
 
 % percentiles required are 10%, 20%, ..., 90%
