@@ -1,4 +1,4 @@
-function [X_annual, X_monthly, year_list, error_flag, error_str] = ...
+function [X_annual, X_monthly, year_list, year_length, error_flag, error_str] = ...
     util_AggregateTimeSeries(X, t, start_water_year)
 %util_AggregateTimeSeries calculates annual and monthly sums of time series.
 %   Start of water year can be specified so that the average is taken over
@@ -13,6 +13,7 @@ function [X_annual, X_monthly, year_list, error_flag, error_str] = ...
 %   X_annual: annual sums [mm/year]
 %   X_monthly: monthly sums [mm/month]
 %   year_list: corresponding years
+%   year_length: length of year in days
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
@@ -23,7 +24,7 @@ function [X_annual, X_monthly, year_list, error_flag, error_str] = ...
 %   Q = data.Q;
 %   t = data.t;
 %   start_water_year = 10;
-%   [Q_annual, Q_monthly, year_list] = ...
+%   [Q_annual, Q_monthly, year_list, leap_year] = ...
 %       util_AggregateTimeSeries(Q, t, start_water_year);
 %
 %   Copyright (C) 2020
@@ -63,6 +64,7 @@ end
 
 X_annual = NaN(year_end-year_start,1);
 X_monthly = NaN(year_end-year_start,12);
+year_length = NaN(size(year_list));
 
 % extract years and months
 for y = 1:length(year_list)
@@ -71,6 +73,7 @@ for y = 1:length(year_list)
         [X(year_vec==year-1 & month_vec>=start_water_year); ...
         X(year_vec==year & month_vec<start_water_year)];
     X_annual(y) = sum(X_water_year,'omitnan');
+    year_length(y) = length(X_water_year);        
     for m = start_water_year:12
         X_monthly(y,m-start_water_year+1) = sum(X(year_vec==year-1 & month_vec==m),'omitnan');
     end
