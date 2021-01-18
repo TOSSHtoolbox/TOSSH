@@ -100,13 +100,8 @@ end
 fprintf('Calculating signatures...\n')
 CAMELS_GB_signatures = calc_Addor(Q_mat, t_mat, P_mat);
 % Besides the signature values, the function also returns a list with 
-% warnings and error messages. Some warnings are specific to a certain 
-% signature. For example: "Warning: FDC slope could not be calculated, 
-% probably because flow is intermittent." tells us why sometimes NaN is
-% returned when we calculate FDC_slope. 
-fprintf(CAMELS_GB_signatures.FDC_slope_error_str(6)+"\n")
-% Most warnings come from our data check and indicate that there are some
-% NaN values in the time series. 
+% warnings and error messages. Most warnings come from our data check and 
+% indicate that there are some NaN values in the time series. 
 fprintf(CAMELS_GB_signatures.FDC_slope_error_str(1)+"\n")
 
 % We can save the results as mat file which can be easily loaded into

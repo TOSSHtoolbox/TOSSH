@@ -163,153 +163,148 @@ This function is called by:
 0100 fprintf(<span class="string">'Calculating signatures...\n'</span>)
 0101 CAMELS_GB_signatures = calc_Addor(Q_mat, t_mat, P_mat);
 0102 <span class="comment">% Besides the signature values, the function also returns a list with</span>
-0103 <span class="comment">% warnings and error messages. Some warnings are specific to a certain</span>
-0104 <span class="comment">% signature. For example: &quot;Warning: FDC slope could not be calculated,</span>
-0105 <span class="comment">% probably because flow is intermittent.&quot; tells us why sometimes NaN is</span>
-0106 <span class="comment">% returned when we calculate FDC_slope.</span>
-0107 fprintf(CAMELS_GB_signatures.FDC_slope_error_str(6)+&quot;\n&quot;)
-0108 <span class="comment">% Most warnings come from our data check and indicate that there are some</span>
-0109 <span class="comment">% NaN values in the time series.</span>
-0110 fprintf(CAMELS_GB_signatures.FDC_slope_error_str(1)+&quot;\n&quot;)
-0111 
-0112 <span class="comment">% We can save the results as mat file which can be easily loaded into</span>
-0113 <span class="comment">% Matlab. Alternatively, we can save the results as txt file.</span>
-0114 save(strcat(results_path,<span class="string">'CAMELS_GB_signatures.mat'</span>),<span class="keyword">...</span>
-0115     <span class="string">'-struct'</span>,<span class="string">'CAMELS_GB_signatures'</span>)
-0116 writetable(struct2table(CAMELS_GB_signatures),<span class="keyword">...</span>
-0117     strcat(results_path,<span class="string">'CAMELS_GB_signatures.txt'</span>))
-0118 
-0119 <span class="comment">%% Compare TOSSH signatures to CAMELS signatures</span>
-0120 <span class="comment">% We can compare the signatures contained in CAMELS GB with the signatures</span>
-0121 <span class="comment">% calculated here to see if we get the same results.</span>
-0122 makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,90)
-0123 saveFig(gcf,strcat(<span class="string">'TOSSH_scatter_plot_GB'</span>),fig_path,<span class="string">'-dpdf'</span>)
-0124 <span class="comment">% Overall the results are very similar, but for some signatures there are</span>
-0125 <span class="comment">% huge differences. The differences can be explained by different treatment</span>
-0126 <span class="comment">% of NaN values. The blue dots - which indicate a complete record - fall</span>
-0127 <span class="comment">% on a 1:1 line, the other ones mostly don't. Note that some signatures are</span>
-0128 <span class="comment">% extremly sensitive to NaN values, e.g. P-Q elasticity and FDC slope.</span>
-0129 
-0130 <span class="comment">%% Calculation of new signatures</span>
-0131 <span class="comment">% We can also calculate some new signatures that are not provided with</span>
-0132 <span class="comment">% CAMELS GB.</span>
-0133 <span class="comment">% Note that some signatures take a while to calculate because there are</span>
-0134 <span class="comment">% many internal calculations (e.g. recession extration, fitting, etc.).</span>
-0135 
-0136 BaseflowRecessionK = NaN(n_CAMELS_GB,1);
-0137 BaseflowRecessionK_error_flag = NaN(n_CAMELS_GB,1);
-0138 BaseflowRecessionK_error_str = strings(n_CAMELS_GB,1);
-0139 RecessionParameters = NaN(n_CAMELS_GB,2);
-0140 RecessionParameters_error_flag = NaN(n_CAMELS_GB,1);
-0141 RecessionParameters_error_str = strings(n_CAMELS_GB,1);
-0142 EventRR = NaN(n_CAMELS_GB,1);
-0143 EventRR_error_flag= NaN(n_CAMELS_GB,1);
-0144 EventRR_error_str = strings(n_CAMELS_GB,1);
-0145 
-0146 fprintf(<span class="string">'Calculating new signatures...\n'</span>)
-0147 <span class="keyword">for</span> i = 1:n_CAMELS_GB
-0148     
-0149     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
-0150         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS_GB)
-0151     <span class="keyword">end</span>
-0152     
-0153     <span class="comment">% Since there are many missing values before 1989, we will only</span>
-0154     <span class="comment">% consider the period from October 1989 to September 2009.</span>
-0155     t = datetime(CAMELS_GB_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
-0156     Q = CAMELS_GB_data.Q{i}(:,2);
-0157     P = CAMELS_GB_data.P{i}(:,2);
-0158     PET = CAMELS_GB_data.PET{i}(:,2);
-0159     
-0160     indices = 1:length(t);
-0161     start_ind = indices(t==datetime(1989,10,1));
-0162     <span class="comment">% in case time series starts after 1 Oct 1989</span>
-0163     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
-0164     end_ind = indices(t==datetime(2009,9,30));
-0165     t = t(start_ind:end_ind);
-0166     Q = Q(start_ind:end_ind);
-0167     P = P(start_ind:end_ind);
-0168     PET = PET(start_ind:end_ind);    
-0169 
-0170     [BaseflowRecessionK(i),BaseflowRecessionK_error_flag(i),BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
-0171         sig_BaseflowRecessionK(Q,t,<span class="string">'recession_length'</span>,5);
+0103 <span class="comment">% warnings and error messages. Most warnings come from our data check and</span>
+0104 <span class="comment">% indicate that there are some NaN values in the time series.</span>
+0105 fprintf(CAMELS_GB_signatures.FDC_slope_error_str(1)+&quot;\n&quot;)
+0106 
+0107 <span class="comment">% We can save the results as mat file which can be easily loaded into</span>
+0108 <span class="comment">% Matlab. Alternatively, we can save the results as txt file.</span>
+0109 save(strcat(results_path,<span class="string">'CAMELS_GB_signatures.mat'</span>),<span class="keyword">...</span>
+0110     <span class="string">'-struct'</span>,<span class="string">'CAMELS_GB_signatures'</span>)
+0111 writetable(struct2table(CAMELS_GB_signatures),<span class="keyword">...</span>
+0112     strcat(results_path,<span class="string">'CAMELS_GB_signatures.txt'</span>))
+0113 
+0114 <span class="comment">%% Compare TOSSH signatures to CAMELS signatures</span>
+0115 <span class="comment">% We can compare the signatures contained in CAMELS GB with the signatures</span>
+0116 <span class="comment">% calculated here to see if we get the same results.</span>
+0117 makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,90)
+0118 saveFig(gcf,strcat(<span class="string">'TOSSH_scatter_plot_GB'</span>),fig_path,<span class="string">'-dpdf'</span>)
+0119 <span class="comment">% Overall the results are very similar, but for some signatures there are</span>
+0120 <span class="comment">% huge differences. The differences can be explained by different treatment</span>
+0121 <span class="comment">% of NaN values. The blue dots - which indicate a complete record - fall</span>
+0122 <span class="comment">% on a 1:1 line, the other ones mostly don't. Note that some signatures are</span>
+0123 <span class="comment">% extremly sensitive to NaN values, e.g. P-Q elasticity and FDC slope.</span>
+0124 
+0125 <span class="comment">%% Calculation of new signatures</span>
+0126 <span class="comment">% We can also calculate some new signatures that are not provided with</span>
+0127 <span class="comment">% CAMELS GB.</span>
+0128 <span class="comment">% Note that some signatures take a while to calculate because there are</span>
+0129 <span class="comment">% many internal calculations (e.g. recession extration, fitting, etc.).</span>
+0130 
+0131 BaseflowRecessionK = NaN(n_CAMELS_GB,1);
+0132 BaseflowRecessionK_error_flag = NaN(n_CAMELS_GB,1);
+0133 BaseflowRecessionK_error_str = strings(n_CAMELS_GB,1);
+0134 RecessionParameters = NaN(n_CAMELS_GB,2);
+0135 RecessionParameters_error_flag = NaN(n_CAMELS_GB,1);
+0136 RecessionParameters_error_str = strings(n_CAMELS_GB,1);
+0137 EventRR = NaN(n_CAMELS_GB,1);
+0138 EventRR_error_flag= NaN(n_CAMELS_GB,1);
+0139 EventRR_error_str = strings(n_CAMELS_GB,1);
+0140 
+0141 fprintf(<span class="string">'Calculating new signatures...\n'</span>)
+0142 <span class="keyword">for</span> i = 1:n_CAMELS_GB
+0143     
+0144     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0145         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS_GB)
+0146     <span class="keyword">end</span>
+0147     
+0148     <span class="comment">% Since there are many missing values before 1989, we will only</span>
+0149     <span class="comment">% consider the period from October 1989 to September 2009.</span>
+0150     t = datetime(CAMELS_GB_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0151     Q = CAMELS_GB_data.Q{i}(:,2);
+0152     P = CAMELS_GB_data.P{i}(:,2);
+0153     PET = CAMELS_GB_data.PET{i}(:,2);
+0154     
+0155     indices = 1:length(t);
+0156     start_ind = indices(t==datetime(1989,10,1));
+0157     <span class="comment">% in case time series starts after 1 Oct 1989</span>
+0158     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
+0159     end_ind = indices(t==datetime(2009,9,30));
+0160     t = t(start_ind:end_ind);
+0161     Q = Q(start_ind:end_ind);
+0162     P = P(start_ind:end_ind);
+0163     PET = PET(start_ind:end_ind);    
+0164 
+0165     [BaseflowRecessionK(i),BaseflowRecessionK_error_flag(i),BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
+0166         sig_BaseflowRecessionK(Q,t,<span class="string">'recession_length'</span>,5);
+0167     
+0168     [RecessionParameters(i,:),~,RecessionParameters_error_flag(i),RecessionParameters_error_str(i)] <span class="keyword">...</span>
+0169         = sig_RecessionAnalysis(Q,t,<span class="string">'fit_individual'</span>,false);
+0170     
+0171     [EventRR(i),EventRR_error_flag(i),EventRR_error_str(i)] = sig_EventRR(Q,t,P);
 0172     
-0173     [RecessionParameters(i,:),~,RecessionParameters_error_flag(i),RecessionParameters_error_str(i)] <span class="keyword">...</span>
-0174         = sig_RecessionAnalysis(Q,t,<span class="string">'fit_individual'</span>,false);
-0175     
-0176     [EventRR(i),EventRR_error_flag(i),EventRR_error_str(i)] = sig_EventRR(Q,t,P);
-0177     
-0178 <span class="keyword">end</span>
-0179  
-0180 <span class="comment">%% Plot maps</span>
-0181 <span class="comment">% We can plot the resulting signatures on a map using a plotting function</span>
-0182 <span class="comment">% Note that the mapping toolbox is needed for plotting.</span>
-0183 
-0184 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,1./BaseflowRecessionK,<span class="keyword">...</span>
-0185     <span class="string">'attribute_name'</span>,<span class="string">'K [d]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
-0186     <span class="string">'colour_scheme'</span>,<span class="string">'bone'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
-0187     <span class="string">'c_limits'</span>,[0 30],<span class="keyword">...</span>
-0188     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
-0189     <span class="string">'figure_title'</span>,<span class="string">'(a)'</span>,<span class="string">'figure_name'</span>,<span class="string">'RecessionK'</span>,<span class="keyword">...</span>
-0190     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
-0191 
-0192 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,RecessionParameters(:,2),<span class="keyword">...</span>
-0193     <span class="string">'attribute_name'</span>,<span class="string">'\beta [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
-0194     <span class="string">'colour_scheme'</span>,<span class="string">'parula'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
-0195     <span class="string">'c_limits'</span>,[1 2],<span class="keyword">...</span>
-0196     <span class="string">'c_lower_limit_open'</span>,true,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
-0197     <span class="string">'figure_title'</span>,<span class="string">'(b)'</span>,<span class="string">'figure_name'</span>,<span class="string">'Recession_exponent'</span>,<span class="keyword">...</span>
-0198     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
-0199 
-0200 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,EventRR,<span class="keyword">...</span>
-0201     <span class="string">'attribute_name'</span>,<span class="string">'EventRR [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
-0202     <span class="string">'colour_scheme'</span>,<span class="string">'pink'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
-0203     <span class="string">'c_limits'</span>,[0.0 0.6],<span class="keyword">...</span>
-0204     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
-0205     <span class="string">'figure_title'</span>,<span class="string">'(c)'</span>,<span class="string">'figure_name'</span>,<span class="string">'EventRR'</span>,<span class="keyword">...</span>
-0206     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
-0207 
-0208 <span class="comment">% We can see a clear patterns for all three signatures. The event runoff</span>
-0209 <span class="comment">% mostly ratio follows climate arditiy. It is high along the very wet west</span>
-0210 <span class="comment">% coast and low in the drier south east. The recession constant and the</span>
-0211 <span class="comment">% recession exponent vary less smoothly in space as they are influenced</span>
-0212 <span class="comment">% more strongly by the underlying geology. In areas underlain by highly</span>
-0213 <span class="comment">% productive aquifers (e.g. Chalk), both the recession constant and the</span>
-0214 <span class="comment">% recession exponent tend to be low.</span>
-0215 
-0216 <span class="comment">%% Further analysis of resulting signatures</span>
-0217 <span class="comment">% We can also show more directly how certain signatures relate to certain</span>
-0218 <span class="comment">% catchment attributes by plotting them against each other. We use the</span>
-0219 <span class="comment">% CAMELS GB attribute &quot;frac_high_perc&quot; which quantifies the fraction of a</span>
-0220 <span class="comment">% catchment underlain by highly productive fractured aquifers to show the</span>
-0221 <span class="comment">% influence of geology and aridity to show the influence of climate.</span>
-0222 
-0223 figure(<span class="string">'pos'</span>,[100 100 400 300])
-0224 scatter(CAMELS_GB_data.aridity,BaseflowRecessionK,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
-0225 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
-0226 xlabel(<span class="string">'Aridity [-]'</span>)
-0227 ylabel(<span class="string">'K [1/d]'</span>)
-0228 
-0229 figure(<span class="string">'pos'</span>,[100 100 400 300])
-0230 scatter(CAMELS_GB_data.aridity,RecessionParameters(:,2),25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
-0231 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
-0232 xlabel(<span class="string">'Aridity [-]'</span>)
-0233 ylabel(<span class="string">'\beta [-]'</span>); ylim([0 3])
-0234 
-0235 figure(<span class="string">'pos'</span>,[100 100 400 300])
-0236 scatter(CAMELS_GB_data.aridity,EventRR,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
-0237 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
-0238 xlabel(<span class="string">'Aridity [-]'</span>)
-0239 ylabel(<span class="string">'EventRR [-]'</span>); ylim([0 1])
-0240 
-0241 <span class="comment">% These plots correspond well with the patterns visible on the maps. The</span>
-0242 <span class="comment">% event runoff ratio is strongly correlated with aridity. Geology</span>
-0243 <span class="comment">% influences both the recession constant and the recession exponent, but</span>
-0244 <span class="comment">% also the event runoff ratio, which is lower if a catchment is underlain</span>
-0245 <span class="comment">% by a productive aquifer.</span>
-0246 
-0247 <span class="comment">%% Further information</span>
-0248 <span class="comment">% Further information can be found in the online documentation:</span>
-0249 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0173 <span class="keyword">end</span>
+0174  
+0175 <span class="comment">%% Plot maps</span>
+0176 <span class="comment">% We can plot the resulting signatures on a map using a plotting function</span>
+0177 <span class="comment">% Note that the mapping toolbox is needed for plotting.</span>
+0178 
+0179 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,1./BaseflowRecessionK,<span class="keyword">...</span>
+0180     <span class="string">'attribute_name'</span>,<span class="string">'K [d]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0181     <span class="string">'colour_scheme'</span>,<span class="string">'bone'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0182     <span class="string">'c_limits'</span>,[0 30],<span class="keyword">...</span>
+0183     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0184     <span class="string">'figure_title'</span>,<span class="string">'(a)'</span>,<span class="string">'figure_name'</span>,<span class="string">'RecessionK'</span>,<span class="keyword">...</span>
+0185     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0186 
+0187 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,RecessionParameters(:,2),<span class="keyword">...</span>
+0188     <span class="string">'attribute_name'</span>,<span class="string">'\beta [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0189     <span class="string">'colour_scheme'</span>,<span class="string">'parula'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0190     <span class="string">'c_limits'</span>,[1 2],<span class="keyword">...</span>
+0191     <span class="string">'c_lower_limit_open'</span>,true,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0192     <span class="string">'figure_title'</span>,<span class="string">'(b)'</span>,<span class="string">'figure_name'</span>,<span class="string">'Recession_exponent'</span>,<span class="keyword">...</span>
+0193     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0194 
+0195 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,EventRR,<span class="keyword">...</span>
+0196     <span class="string">'attribute_name'</span>,<span class="string">'EventRR [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0197     <span class="string">'colour_scheme'</span>,<span class="string">'pink'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0198     <span class="string">'c_limits'</span>,[0.0 0.6],<span class="keyword">...</span>
+0199     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0200     <span class="string">'figure_title'</span>,<span class="string">'(c)'</span>,<span class="string">'figure_name'</span>,<span class="string">'EventRR'</span>,<span class="keyword">...</span>
+0201     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0202 
+0203 <span class="comment">% We can see a clear patterns for all three signatures. The event runoff</span>
+0204 <span class="comment">% mostly ratio follows climate arditiy. It is high along the very wet west</span>
+0205 <span class="comment">% coast and low in the drier south east. The recession constant and the</span>
+0206 <span class="comment">% recession exponent vary less smoothly in space as they are influenced</span>
+0207 <span class="comment">% more strongly by the underlying geology. In areas underlain by highly</span>
+0208 <span class="comment">% productive aquifers (e.g. Chalk), both the recession constant and the</span>
+0209 <span class="comment">% recession exponent tend to be low.</span>
+0210 
+0211 <span class="comment">%% Further analysis of resulting signatures</span>
+0212 <span class="comment">% We can also show more directly how certain signatures relate to certain</span>
+0213 <span class="comment">% catchment attributes by plotting them against each other. We use the</span>
+0214 <span class="comment">% CAMELS GB attribute &quot;frac_high_perc&quot; which quantifies the fraction of a</span>
+0215 <span class="comment">% catchment underlain by highly productive fractured aquifers to show the</span>
+0216 <span class="comment">% influence of geology and aridity to show the influence of climate.</span>
+0217 
+0218 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0219 scatter(CAMELS_GB_data.aridity,BaseflowRecessionK,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0220 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0221 xlabel(<span class="string">'Aridity [-]'</span>)
+0222 ylabel(<span class="string">'K [1/d]'</span>)
+0223 
+0224 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0225 scatter(CAMELS_GB_data.aridity,RecessionParameters(:,2),25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0226 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0227 xlabel(<span class="string">'Aridity [-]'</span>)
+0228 ylabel(<span class="string">'\beta [-]'</span>); ylim([0 3])
+0229 
+0230 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0231 scatter(CAMELS_GB_data.aridity,EventRR,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0232 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0233 xlabel(<span class="string">'Aridity [-]'</span>)
+0234 ylabel(<span class="string">'EventRR [-]'</span>); ylim([0 1])
+0235 
+0236 <span class="comment">% These plots correspond well with the patterns visible on the maps. The</span>
+0237 <span class="comment">% event runoff ratio is strongly correlated with aridity. Geology</span>
+0238 <span class="comment">% influences both the recession constant and the recession exponent, but</span>
+0239 <span class="comment">% also the event runoff ratio, which is lower if a catchment is underlain</span>
+0240 <span class="comment">% by a productive aquifer.</span>
+0241 
+0242 <span class="comment">%% Further information</span>
+0243 <span class="comment">% Further information can be found in the online documentation:</span>
+0244 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

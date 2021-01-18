@@ -28,7 +28,7 @@
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment">sig_PeakDistribution calculates peak distribution.
-   Calculates the the slope between the 10th and 50th of a flow duration 
+   Calculates the slope between the 10th and 50th of a flow duration 
    curve constructed constructed by only considering hydrograph peaks 
    (Euser et al., 2013). Slope can be fitted in linear or in log space.
 
@@ -83,7 +83,7 @@ This function is called by:
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [PeakDistribution, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
 0002     sig_PeakDistribution(Q, t, varargin)
 0003 <span class="comment">%sig_PeakDistribution calculates peak distribution.</span>
-0004 <span class="comment">%   Calculates the the slope between the 10th and 50th of a flow duration</span>
+0004 <span class="comment">%   Calculates the slope between the 10th and 50th of a flow duration</span>
 0005 <span class="comment">%   curve constructed constructed by only considering hydrograph peaks</span>
 0006 <span class="comment">%   (Euser et al., 2013). Slope can be fitted in linear or in log space.</span>
 0007 <span class="comment">%</span>
@@ -168,67 +168,66 @@ This function is called by:
 0086 <span class="comment">% Q_peak = findpeaks(Q);</span>
 0087 Q_peak = Q(islocalmax(Q));
 0088 
-0089 
-0090 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
-0091 Q_peak_sorted = sort(Q_peak);
-0092 <span class="comment">% Q_ranked = tiedrank(Q_sorted);</span>
-0093 Q_peak_ranked = [1:length(Q_peak)]'; <span class="comment">% give unique (random) rank to every measurement</span>
-0094 FDC = 1 - Q_peak_ranked./length(Q_peak_ranked); <span class="comment">% flow duration curve</span>
-0095 Q_peak_median = median(Q_peak,<span class="string">'omitnan'</span>); <span class="comment">%</span>
-0096 
-0097 <span class="comment">% slope of FDC between upper and lower percentile</span>
-0098 indices = 1:length(FDC);
-0099 bound_upp = max(indices(FDC &gt;= slope_range(2)));
-0100 bound_low = max(indices(FDC &gt;= slope_range(1)));
-0101 
-0102 <span class="comment">% fit slope, either in linear or in log space</span>
-0103 <span class="keyword">if</span> fitLogSpace
-0104     PeakDistribution = (log(Q_peak_sorted(bound_upp)/Q_peak_median) - <span class="keyword">...</span>
-0105         log(Q_peak_sorted(bound_low)/Q_peak_median))./<span class="keyword">...</span>
-0106         (FDC(bound_upp) - FDC(bound_low));
-0107 <span class="keyword">else</span>
-0108     PeakDistribution = ((Q_peak_sorted(bound_upp)/Q_peak_median) - <span class="keyword">...</span>
-0109         (Q_peak_sorted(bound_low)/Q_peak_median))./<span class="keyword">...</span>
-0110         (FDC(bound_upp) - FDC(bound_low));
-0111 <span class="keyword">end</span>
-0112 
-0113 <span class="comment">% in case flow is very intermittent (e.g. 66th percentile is 0)</span>
-0114 <span class="keyword">if</span> ~isfinite(PeakDistribution)
-0115     PeakDistribution = NaN;
-0116     error_flag = 3;
-0117     error_str = [<span class="string">'Error: Peak distibution could not be calculated. '</span>, error_str];
-0118     <span class="keyword">return</span>
-0119 <span class="keyword">elseif</span> isempty(PeakDistribution)     
-0120     PeakDistribution = NaN;
-0121     error_flag = 3;
-0122     error_str = [<span class="string">'Error: No peaks detected. '</span>, error_str];
-0123     <span class="keyword">return</span>    
-0124 <span class="keyword">end</span>
-0125 
-0126 <span class="comment">% optional plotting</span>
-0127 <span class="keyword">if</span> plot_results
-0128     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
-0129     hold on
-0130     <span class="keyword">if</span> fitLogSpace
-0131         plot(FDC,log(Q_peak_sorted./Q_peak_median),<span class="string">'linewidth'</span>,1.0)
-0132         x = FDC(bound_low):0.1:FDC(bound_upp);
-0133         c = log(Q_peak_sorted(bound_low)./Q_peak_median) - PeakDistribution.*FDC(bound_low);
-0134         y = PeakDistribution.*x + c;
-0135         ylabel(<span class="string">'log(Q/median(Q)) [-]'</span>)
-0136     <span class="keyword">else</span>
-0137         plot(FDC,(Q_peak_sorted./Q_peak_median),<span class="string">'linewidth'</span>,1.0)
-0138         x = FDC(bound_low):0.1:FDC(bound_upp);
-0139         c = (Q_peak_sorted(bound_low)./Q_peak_median) - PeakDistribution.*FDC(bound_low);
-0140         y = PeakDistribution.*x + c;
-0141         ylabel(<span class="string">'Q/median(Q) [-]'</span>)
-0142     <span class="keyword">end</span>
-0143     plot(x,y,<span class="string">'--'</span>,<span class="string">'linewidth'</span>,2)
-0144     xlabel(<span class="string">'Exceedance probability [-]'</span>)
-0145     fig_handles.PeakDistribution = fig;
-0146 <span class="keyword">end</span>
-0147 
-0148 <span class="keyword">end</span>
-0149</pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0089 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
+0090 Q_peak_sorted = sort(Q_peak);
+0091 <span class="comment">% Q_ranked = tiedrank(Q_sorted);</span>
+0092 Q_peak_ranked = [1:length(Q_peak)]'; <span class="comment">% give unique (random) rank to every measurement</span>
+0093 FDC = 1 - Q_peak_ranked./length(Q_peak_ranked); <span class="comment">% flow duration curve</span>
+0094 Q_peak_median = median(Q_peak,<span class="string">'omitnan'</span>); <span class="comment">%</span>
+0095 
+0096 <span class="comment">% slope of FDC between upper and lower percentile</span>
+0097 indices = 1:length(FDC);
+0098 bound_upp = max(indices(FDC &gt;= slope_range(2)));
+0099 bound_low = max(indices(FDC &gt;= slope_range(1)));
+0100 
+0101 <span class="comment">% fit slope, either in linear or in log space</span>
+0102 <span class="keyword">if</span> fitLogSpace
+0103     PeakDistribution = (log(Q_peak_sorted(bound_upp)/Q_peak_median) - <span class="keyword">...</span>
+0104         log(Q_peak_sorted(bound_low)/Q_peak_median))./<span class="keyword">...</span>
+0105         (FDC(bound_upp) - FDC(bound_low));
+0106 <span class="keyword">else</span>
+0107     PeakDistribution = ((Q_peak_sorted(bound_upp)/Q_peak_median) - <span class="keyword">...</span>
+0108         (Q_peak_sorted(bound_low)/Q_peak_median))./<span class="keyword">...</span>
+0109         (FDC(bound_upp) - FDC(bound_low));
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% in case flow is very intermittent (e.g. 66th percentile is 0)</span>
+0113 <span class="keyword">if</span> ~isfinite(PeakDistribution)
+0114     PeakDistribution = NaN;
+0115     error_flag = 3;
+0116     error_str = [<span class="string">'Error: Peak distibution could not be calculated. '</span>, error_str];
+0117     <span class="keyword">return</span>
+0118 <span class="keyword">elseif</span> isempty(PeakDistribution)     
+0119     PeakDistribution = NaN;
+0120     error_flag = 3;
+0121     error_str = [<span class="string">'Error: No peaks detected. '</span>, error_str];
+0122     <span class="keyword">return</span>    
+0123 <span class="keyword">end</span>
+0124 
+0125 <span class="comment">% optional plotting</span>
+0126 <span class="keyword">if</span> plot_results
+0127     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
+0128     hold on
+0129     <span class="keyword">if</span> fitLogSpace
+0130         plot(FDC,log(Q_peak_sorted./Q_peak_median),<span class="string">'linewidth'</span>,1.0)
+0131         x = FDC(bound_low):0.1:FDC(bound_upp);
+0132         c = log(Q_peak_sorted(bound_low)./Q_peak_median) - PeakDistribution.*FDC(bound_low);
+0133         y = PeakDistribution.*x + c;
+0134         ylabel(<span class="string">'log(Q/median(Q)) [-]'</span>)
+0135     <span class="keyword">else</span>
+0136         plot(FDC,(Q_peak_sorted./Q_peak_median),<span class="string">'linewidth'</span>,1.0)
+0137         x = FDC(bound_low):0.1:FDC(bound_upp);
+0138         c = (Q_peak_sorted(bound_low)./Q_peak_median) - PeakDistribution.*FDC(bound_low);
+0139         y = PeakDistribution.*x + c;
+0140         ylabel(<span class="string">'Q/median(Q) [-]'</span>)
+0141     <span class="keyword">end</span>
+0142     plot(x,y,<span class="string">'--'</span>,<span class="string">'linewidth'</span>,2)
+0143     xlabel(<span class="string">'Exceedance probability [-]'</span>)
+0144     fig_handles.PeakDistribution = fig;
+0145 <span class="keyword">end</span>
+0146 
+0147 <span class="keyword">end</span>
+0148</pre></div>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

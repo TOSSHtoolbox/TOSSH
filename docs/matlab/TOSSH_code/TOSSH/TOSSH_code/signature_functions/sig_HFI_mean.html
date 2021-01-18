@@ -29,10 +29,10 @@
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment">sig_HFI_mean calculates mean half flow interval.
    Calculates time span between the date on which the cumulative discharge 
-   since start of water year (default: October) reaches a quarter of the
-   annual discharge and the date on which the cumulative discharge since 
-   since start of water year (default: October) reaches three quarters of  
-   the annual discharge.
+   since start of water year (default: October) reaches (here: exceeds) a 
+   quarter of the annual discharge and the date on which the cumulative 
+   discharge since start of water year (default: October) reaches three 
+   quarters of the annual discharge.
 
    INPUT
    Q: streamflow [mm/timestep]
@@ -78,10 +78,10 @@ This function is called by:
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [HFI_mean, error_flag, error_str] = sig_HFI_mean(Q,t, varargin)</a>
 0002 <span class="comment">%sig_HFI_mean calculates mean half flow interval.</span>
 0003 <span class="comment">%   Calculates time span between the date on which the cumulative discharge</span>
-0004 <span class="comment">%   since start of water year (default: October) reaches a quarter of the</span>
-0005 <span class="comment">%   annual discharge and the date on which the cumulative discharge since</span>
-0006 <span class="comment">%   since start of water year (default: October) reaches three quarters of</span>
-0007 <span class="comment">%   the annual discharge.</span>
+0004 <span class="comment">%   since start of water year (default: October) reaches (here: exceeds) a</span>
+0005 <span class="comment">%   quarter of the annual discharge and the date on which the cumulative</span>
+0006 <span class="comment">%   discharge since start of water year (default: October) reaches three</span>
+0007 <span class="comment">%   quarters of the annual discharge.</span>
 0008 <span class="comment">%</span>
 0009 <span class="comment">%   INPUT</span>
 0010 <span class="comment">%   Q: streamflow [mm/timestep]</span>
@@ -186,6 +186,6 @@ This function is called by:
 0109 HFI_mean = mean(HFI,<span class="string">'omitnan'</span>)*timestep_days;
 0110 
 0111 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

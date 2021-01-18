@@ -148,12 +148,12 @@ writetable(struct2table(CAMELS_signatures),...
 %% Compare TOSSH signatures to CAMELS signatures
 % We can compare the signatures contained in CAMELS with the signatures 
 % calculated here to see if we get the same results.
-makeScatterPlot(CAMELS_signatures,CAMELS_data,99) 
+makeScatterPlot(CAMELS_signatures,CAMELS_data,-10) 
 saveFig(gcf,strcat('TOSSH_scatter_plot_US'),fig_path,'-dpdf') 
-% The results are very similar. The differences can be explained by 
-% (personal communication with Nans Addor):
-%   - different treatment of NaN values
-%   - error in the CAMELS data (FDC slope is wrong).
+% The results show that for most signatures, our code matches the CAMELS
+% data within the limits of small differences in signature definition. 
+% The differences in the slope of the FDC are due to an error in the CAMELS 
+% data (personal communication with Nans Addor).
 
 %% Further analysis of resulting signatures
 % We can also use the results to see how some signatures relate to 

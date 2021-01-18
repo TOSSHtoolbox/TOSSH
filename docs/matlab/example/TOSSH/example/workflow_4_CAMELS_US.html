@@ -220,12 +220,12 @@ This function is called by:
 0148 <span class="comment">%% Compare TOSSH signatures to CAMELS signatures</span>
 0149 <span class="comment">% We can compare the signatures contained in CAMELS with the signatures</span>
 0150 <span class="comment">% calculated here to see if we get the same results.</span>
-0151 makeScatterPlot(CAMELS_signatures,CAMELS_data,99) 
+0151 makeScatterPlot(CAMELS_signatures,CAMELS_data,-10) 
 0152 saveFig(gcf,strcat(<span class="string">'TOSSH_scatter_plot_US'</span>),fig_path,<span class="string">'-dpdf'</span>) 
-0153 <span class="comment">% The results are very similar. The differences can be explained by</span>
-0154 <span class="comment">% (personal communication with Nans Addor):</span>
-0155 <span class="comment">%   - different treatment of NaN values</span>
-0156 <span class="comment">%   - error in the CAMELS data (FDC slope is wrong).</span>
+0153 <span class="comment">% The results show that for most signatures, our code matches the CAMELS</span>
+0154 <span class="comment">% data within the limits of small differences in signature definition.</span>
+0155 <span class="comment">% The differences in the slope of the FDC are due to an error in the CAMELS</span>
+0156 <span class="comment">% data (personal communication with Nans Addor).</span>
 0157 
 0158 <span class="comment">%% Further analysis of resulting signatures</span>
 0159 <span class="comment">% We can also use the results to see how some signatures relate to</span>
@@ -243,6 +243,6 @@ This function is called by:
 0171 <span class="comment">%% Further information</span>
 0172 <span class="comment">% Further information can be found in the online documentation:</span>
 0173 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:42 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

@@ -130,28 +130,29 @@ This function is called by:
 0056 
 0057 <span class="comment">% calculate signature</span>
 0058 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
-0059 Q_sorted = sort(Q,<span class="string">'descend'</span>);
-0060 
-0061 <span class="comment">% percentiles required are 10%, 20%, ..., 90%</span>
-0062 percs = [10:10:90];
-0063 
-0064 <span class="comment">% get the corresponding rank of the FDC values</span>
-0065 indices_percs = round(length(Q_sorted).*percs./100);
-0066 
-0067 <span class="comment">% get the flow value at each rank</span>
-0068 flow_percs = Q_sorted(indices_percs);
-0069 
-0070 <span class="comment">% variation needed if some flow percentiles are zero for an intermittent</span>
-0071 <span class="comment">% stream - exclude these from the calculation</span>
-0072 recs = flow_percs &gt; 0;
-0073 
-0074 <span class="comment">% VI is the standard deviation of the common logarithms of discharge</span>
-0075 <span class="comment">% determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
-0076 <span class="comment">% distribution</span>
-0077 VariabilityIndex = std(log10(flow_percs(recs)));
-0078 
-0079 <span class="keyword">end</span>
-0080</pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0059 Q = Q(~isnan(Q)); <span class="comment">% remove NaN values</span>
+0060 Q_sorted = sort(Q,<span class="string">'descend'</span>);
+0061 
+0062 <span class="comment">% percentiles required are 10%, 20%, ..., 90%</span>
+0063 percs = [10:10:90];
+0064 
+0065 <span class="comment">% get the corresponding rank of the FDC values</span>
+0066 indices_percs = round(length(Q_sorted).*percs./100);
+0067 
+0068 <span class="comment">% get the flow value at each rank</span>
+0069 flow_percs = Q_sorted(indices_percs);
+0070 
+0071 <span class="comment">% variation needed if some flow percentiles are zero for an intermittent</span>
+0072 <span class="comment">% stream - exclude these from the calculation</span>
+0073 recs = flow_percs &gt; 0;
+0074 
+0075 <span class="comment">% VI is the standard deviation of the common logarithms of discharge</span>
+0076 <span class="comment">% determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
+0077 <span class="comment">% distribution</span>
+0078 VariabilityIndex = std(log10(flow_percs(recs)));
+0079 
+0080 <span class="keyword">end</span>
+0081</pre></div>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

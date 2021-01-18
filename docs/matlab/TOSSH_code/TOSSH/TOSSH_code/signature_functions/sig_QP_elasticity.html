@@ -159,29 +159,31 @@ This function is called by:
 0076 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
 0077 error_str_tmp = error_str;
 0078 <span class="comment">% aggregate time series to get annual sums</span>
-0079 [Q_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(Q, t, start_water_year);
-0080 [P_annual, ~, ~, error_flag, error_str] = util_AggregateTimeSeries(P, t, start_water_year);
-0081 <span class="keyword">if</span> error_flag == 0
-0082     error_flag = error_flag_tmp;
-0083     error_str = error_str_tmp;
-0084 <span class="keyword">end</span>
-0085 
-0086 <span class="comment">% calculate elasticity</span>
-0087 <span class="keyword">switch</span> method
-0088     <span class="keyword">case</span> <span class="string">'Sanka'</span>
-0089         dQ = Q_annual-mean(Q_annual,<span class="string">'omitnan'</span>);
-0090         dP = P_annual-mean(P_annual,<span class="string">'omitnan'</span>);
-0091     <span class="keyword">case</span> <span class="string">'Sawicz'</span>
-0092         dQ = diff(Q_annual);
-0093         dP = diff(P_annual);
-0094     <span class="keyword">otherwise</span>
-0095         error(<span class="string">'Please choose one of the available baseflow separation methods (Sawicz or Sanka).'</span>)
-0096 <span class="keyword">end</span>
-0097 
-0098 QP_elasticity = median(<span class="keyword">...</span>
-0099     (dQ./dP)*(mean(P_annual,<span class="string">'omitnan'</span>)/mean(Q_annual,<span class="string">'omitnan'</span>)),<span class="string">'omitnan'</span>);
+0079 [Q_annual, ~, ~, year_length, error_flag, error_str] = <span class="keyword">...</span>
+0080     util_AggregateTimeSeries(Q, t, start_water_year);
+0081 [P_annual, ~, ~, year_length, error_flag, error_str] = <span class="keyword">...</span>
+0082     util_AggregateTimeSeries(P, t, start_water_year);
+0083 <span class="keyword">if</span> error_flag == 0
+0084     error_flag = error_flag_tmp;
+0085     error_str = error_str_tmp;
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="comment">% calculate elasticity</span>
+0089 <span class="keyword">switch</span> method
+0090     <span class="comment">% use year_length to adjust for leap years and incomplete years</span>
+0091     <span class="keyword">case</span> <span class="string">'Sanka'</span>
+0092         dQ = Q_annual./year_length - mean(Q_annual./year_length,<span class="string">'omitnan'</span>);
+0093         dP = P_annual./year_length - mean(P_annual./year_length,<span class="string">'omitnan'</span>);
+0094     <span class="keyword">case</span> <span class="string">'Sawicz'</span>
+0095         dQ = diff(Q_annual./year_length);
+0096         dP = diff(P_annual./year_length);
+0097     <span class="keyword">otherwise</span>
+0098         error(<span class="string">'Please choose one of the available methods (Sawicz or Sanka).'</span>)
+0099 <span class="keyword">end</span>
 0100 
-0101 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 13-Jan-2021 15:51:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0101 QP_elasticity = median((dQ./dP)*(mean(P,<span class="string">'omitnan'</span>)/mean(Q,<span class="string">'omitnan'</span>)),<span class="string">'omitnan'</span>);
+0102 
+0103 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 18-Jan-2021 07:59:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
