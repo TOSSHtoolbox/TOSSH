@@ -117,10 +117,10 @@ writetable(struct2table(CAMELS_GB_signatures),...
 makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,90)
 saveFig(gcf,strcat('TOSSH_scatter_plot_GB'),fig_path,'-dpdf')
 % Overall the results are very similar, but for some signatures there are
-% huge differences. The differences can be explained by different treatment
-% of NaN values. The blue dots - which indicate a complete record - fall
-% on a 1:1 line, the other ones mostly don't. Note that some signatures are
-% extremly sensitive to NaN values, e.g. P-Q elasticity and FDC slope.
+% large differences, which can be explained by different treatment of NaN
+% values. The blue dots - which indicate a complete record - fall on a 1:1
+% line, the other ones mostly don not. Note that some signatures are 
+% extremly sensitive to NaN values, e.g. P-Q elasticity.
 
 %% Calculation of new signatures
 % We can also calculate some new signatures that are not provided with

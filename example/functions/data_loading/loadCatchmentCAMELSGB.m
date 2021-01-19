@@ -10,7 +10,7 @@ function [P, PET, Q, T] = loadCatchmentCAMELSGB(ID,path)
 %   P: precipitation [mm/d]
 %   PET: potential evapotranspiration (without interception correction) [mm/d]
 %   Q: streamflow [mm/d]
-%   T: T [°C]
+%   T: T [degC]
 %
 %   Copyright (C) 2020
 %   This software is distributed under the GNU Public License Version 3.
@@ -24,16 +24,14 @@ end
 file_ID = strcat(path,'CAMELS_GB_hydromet_timeseries_',num2str(ID),'_19701001-20150930.csv');
 
 % date	precipitation	pet	temperature	discharge_spec	discharge_vol	peti	humidity	shortwave_rad	longwave_rad	windspeed
-[data,data_str] = xlsread(file_ID);
+data = readtable(file_ID);
 
-formatIn = 'dd/mm/yyyy';
-date = datenum(data_str(2:end,1),formatIn);
-
-Q_temp = data(:,4);
-P_temp = data(:,1);
-PET_temp = data(:,2);
-% PET_temp = data(:,6); % with interception correction
-T_temp = data(:,3);
+date = datenum(data.date);
+Q_temp = data.discharge_spec;
+P_temp = data.precipitation;
+PET_temp = data.pet;
+% PET_temp = data.peti; % with interception correction
+T_temp = data.temperature;
 
 Q = [date Q_temp];
 P = [date P_temp];

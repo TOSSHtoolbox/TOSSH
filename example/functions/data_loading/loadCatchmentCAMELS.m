@@ -17,7 +17,7 @@ function [P, PET, Q, T] = loadCatchmentCAMELS(ID,path_mod,path_obs,area)
 %   PET: potential evapotranspiration (adjusted using standard coefficient
 %   of 1.26) [mm/d]
 %   Q: streamflow [mm/d]
-%   T: T [°C]
+%   T: T [degC]
 %
 %   Copyright (C) 2020
 %   This software is distributed under the GNU Public License Version 3.

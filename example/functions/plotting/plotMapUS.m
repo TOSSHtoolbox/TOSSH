@@ -75,7 +75,7 @@ figure_type = ip.Results.figure_type;
 %% plotting
 index = [1:length(ID)]';
 
-fig = figure('Name',figure_name,'NumberTitle','off','pos',[10 10 600 300]);
+fig = figure('Name',figure_name,'NumberTitle','off','pos',[100 100 600 300]);
 ax = axesm('MapProjection','mercator','MapLatLimit',[24 52],'MapLonLimit',[-130 -65]);
 states = shaperead('usastatelo', 'UseGeoCoords', true);
 geoshow(ax, states, ...

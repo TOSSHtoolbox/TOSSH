@@ -147,41 +147,44 @@ This function is called by:
 0067 <span class="keyword">end</span>
 0068 
 0069 <span class="comment">% calculate signature</span>
-0070 <span class="keyword">switch</span> type
-0071     
-0072     <span class="keyword">case</span> <span class="string">'no'</span>
-0073         x_Q_num = length(Q(Q==0));
-0074         x_Q_frequency = x_Q_num/length(Q);
-0075         
-0076     <span class="keyword">case</span> <span class="string">'high'</span>        
-0077         Q_high = 9*median(Q,<span class="string">'omitnan'</span>);
-0078         x_Q_num = length(Q(Q&gt;Q_high));
-0079         x_Q_frequency = x_Q_num/length(Q);
-0080         
-0081     <span class="keyword">case</span> <span class="string">'low'</span>
-0082         Q_low = 0.2*mean(Q,<span class="string">'omitnan'</span>);
-0083         x_Q_num = length(Q(Q&lt;Q_low));
-0084         x_Q_frequency = x_Q_num/length(Q);
-0085         
-0086     <span class="keyword">case</span> <span class="string">'custom_high'</span>
-0087         <span class="keyword">if</span> isempty(threshold) || numel(threshold) &gt; 1
-0088             error(<span class="string">'No/wrong custom threshold specified.'</span>)
-0089         <span class="keyword">end</span>
-0090         x_Q_num = length(Q(Q&gt;threshold));
-0091         x_Q_frequency = x_Q_num/length(Q);
-0092         
-0093     <span class="keyword">case</span> <span class="string">'custom_low'</span>
-0094         <span class="keyword">if</span> isempty(threshold) || numel(threshold) &gt; 1
-0095             error(<span class="string">'No/wrong custom threshold specified.'</span>)
-0096         <span class="keyword">end</span>
-0097         x_Q_num = length(Q(Q&lt;threshold));
-0098         x_Q_frequency = x_Q_num/length(Q);
-0099         
-0100     <span class="keyword">otherwise</span>
-0101         error(<span class="string">'Incorrect flow frequency type specified.'</span>)
-0102 <span class="keyword">end</span>
-0103 
-0104 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Mon 18-Jan-2021 07:59:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0070 
+0071 len = length(Q(~isnan(Q))); <span class="comment">% total amount of non-NaN values</span>
+0072 
+0073 <span class="keyword">switch</span> type
+0074     
+0075     <span class="keyword">case</span> <span class="string">'no'</span>
+0076         x_Q_num = length(Q(Q==0));
+0077         x_Q_frequency = x_Q_num/len;
+0078         
+0079     <span class="keyword">case</span> <span class="string">'high'</span>        
+0080         Q_high = 9*median(Q,<span class="string">'omitnan'</span>);
+0081         x_Q_num = length(Q(Q&gt;Q_high));
+0082         x_Q_frequency = x_Q_num/len;
+0083         
+0084     <span class="keyword">case</span> <span class="string">'low'</span>
+0085         Q_low = 0.2*mean(Q,<span class="string">'omitnan'</span>);
+0086         x_Q_num = length(Q(Q&lt;Q_low));
+0087         x_Q_frequency = x_Q_num/len;
+0088         
+0089     <span class="keyword">case</span> <span class="string">'custom_high'</span>
+0090         <span class="keyword">if</span> isempty(threshold) || numel(threshold) &gt; 1
+0091             error(<span class="string">'No/wrong custom threshold specified.'</span>)
+0092         <span class="keyword">end</span>
+0093         x_Q_num = length(Q(Q&gt;threshold));
+0094         x_Q_frequency = x_Q_num/len;
+0095         
+0096     <span class="keyword">case</span> <span class="string">'custom_low'</span>
+0097         <span class="keyword">if</span> isempty(threshold) || numel(threshold) &gt; 1
+0098             error(<span class="string">'No/wrong custom threshold specified.'</span>)
+0099         <span class="keyword">end</span>
+0100         x_Q_num = length(Q(Q&lt;threshold));
+0101         x_Q_frequency = x_Q_num/len;
+0102         
+0103     <span class="keyword">otherwise</span>
+0104         error(<span class="string">'Incorrect flow frequency type specified.'</span>)
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 19-Jan-2021 15:20:26 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

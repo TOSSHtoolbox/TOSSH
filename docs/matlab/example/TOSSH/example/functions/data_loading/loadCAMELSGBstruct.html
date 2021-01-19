@@ -123,409 +123,425 @@ This function is called by:
 0053 
 0054 <span class="comment">% topography</span>
 0055 <span class="comment">% gauge_id    gauge_name    gauge_lat    gauge_lon    gauge_easting    gauge_northing    gauge_elev    area    dpsbar    elev_mean    elev_min    elev_10    elev_50    elev_90    elev_max</span>
-0056 [camels_GB_topo_data,camels_GB_topo_data_str] = <span class="keyword">...</span>
-0057     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_topographic_attributes.csv'</span>));
-0058 
-0059 <span class="comment">% climatic indices</span>
-0060 <span class="comment">% gauge_id    p_mean    pet_mean    aridity    p_seasonality    frac_snow    high_prec_freq    high_prec_dur    high_prec_timing    low_prec_freq    low_prec_dur    low_prec_timing</span>
-0061 [camels_GB_climate_data,camels_GB_climate_data_str] = <span class="keyword">...</span>
-0062     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_climatic_attributes.csv'</span>));
-0063 
-0064 <span class="comment">% hydrology</span>
-0065 <span class="comment">% gauge_id    q_mean    runoff_ratio    stream_elas    slope_fdc    baseflow_index    baseflow_index_ceh    hfd_mean    Q5    Q95    high_q_freq    high_q_dur    low_q_freq    low_q_dur    zero_q_freq</span>
-0066 [camels_GB_hydro_data,camels_GB_hydro_data_str] = <span class="keyword">...</span>
-0067     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrologic_attributes.csv'</span>));
-0068 
-0069 <span class="comment">% land cover</span>
-0070 <span class="comment">% gauge_id    dwood_perc    ewood_perc    grass_perc    shrub_perc    crop_perc    urban_perc    inwater_perc    bares_perc    dom_land_cover</span>
-0071 [camels_GB_land_data,camels_GB_land_data_str] = <span class="keyword">...</span>
-0072     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_landcover_attributes.csv'</span>));
-0073 
-0074 <span class="comment">% soils</span>
-0075 <span class="comment">% gauge_id    sand_perc    sand_perc_missing    silt_perc    silt_perc_missing    clay_perc    clay_perc_missing    organic_perc    organic_perc_missing    bulkdens    bulkdens_missing    bulkdens_5    bulkdens_50    bulkdens_95    tawc    tawc_missing    tawc_5    tawc_50    tawc_95    porosity_cosby    porosity_cosby_missing    porosity_cosby_5    porosity_cosby_50    porosity_cosby_95    porosity_hypres    porosity_hypres_missing    porosity_hypres_5    porosity_hypres_50    porosity_hypres_95    conductivity_cosby    conductivity_cosby_missing    conductivity_cosby_5    conductivity_cosby_50    conductivity_cosby_95    conductivity_hypres    conductivity_hypres_missing    conductivity_hypres_5    conductivity_hypres_50    conductivity_hypres_95    root_depth    root_depth_missing    root_depth_5    root_depth_50    root_depth_95    soil_depth_pelletier    soil_depth_pelletier_missing    soil_depth_pelletier_5    soil_depth_pelletier_50    soil_depth_pelletier_95</span>
-0076 [camels_GB_soil_data,camels_GB_soil_data_str] = <span class="keyword">...</span>
-0077     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_soil_attributes.csv'</span>));
-0078 
-0079 <span class="comment">% hydrogeology</span>
-0080 <span class="comment">% gauge_id    inter_high_perc    inter_mod_perc    inter_low_perc    frac_high_perc    frac_mod_perc    frac_low_perc    no_gw_perc    low_nsig_perc    nsig_low_perc</span>
-0081 [camels_GB_geology_data,camels_GB_geology_data_str] = <span class="keyword">...</span>
-0082     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrogeology_attributes.csv'</span>));
-0083 
-0084 <span class="comment">% hydrometry data</span>
-0085 <span class="comment">% gauge_id    station_type    flow_period_start    flow_period_end    flow_perc_complete    bankfull_flow    structurefull_flow    q5_uncert_upper    q5_uncert_lower    q25_uncert_upper    q25_uncert_lower    q50_uncert_upper    q50_uncert_lower    q75_uncert_upper    q75_uncert_lower    q95_uncert_upper    q95_uncert_lower    q99_uncert_upper    q99_uncert_lower    quncert_meta</span>
-0086 [camels_GB_hydrometry_data,camels_GB_hydrometry_data_str] = <span class="keyword">...</span>
-0087     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrometry_attributes.csv'</span>));
+0056 <span class="comment">% [camels_GB_topo_data,camels_GB_topo_data_str] = ...</span>
+0057 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_topographic_attributes.csv'));</span>
+0058 camels_GB_topo_data = readtable(<span class="keyword">...</span>
+0059     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_topographic_attributes.csv'</span>));
+0060 
+0061 <span class="comment">% climatic indices</span>
+0062 <span class="comment">% gauge_id    p_mean    pet_mean    aridity    p_seasonality    frac_snow    high_prec_freq    high_prec_dur    high_prec_timing    low_prec_freq    low_prec_dur    low_prec_timing</span>
+0063 <span class="comment">% [camels_GB_climate_data,camels_GB_climate_data_str] = ...</span>
+0064 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_climatic_attributes.csv'));</span>
+0065 camels_GB_climate_data = readtable(<span class="keyword">...</span>
+0066     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_climatic_attributes.csv'</span>));
+0067 
+0068 <span class="comment">% hydrology</span>
+0069 <span class="comment">% gauge_id    q_mean    runoff_ratio    stream_elas    slope_fdc    baseflow_index    baseflow_index_ceh    hfd_mean    Q5    Q95    high_q_freq    high_q_dur    low_q_freq    low_q_dur    zero_q_freq</span>
+0070 <span class="comment">% [camels_GB_hydro_data,camels_GB_hydro_data_str] = ...</span>
+0071 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrologic_attributes.csv'));</span>
+0072 camels_GB_hydro_data = readtable(<span class="keyword">...</span>
+0073     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrologic_attributes.csv'</span>));
+0074 
+0075 <span class="comment">% land cover</span>
+0076 <span class="comment">% gauge_id    dwood_perc    ewood_perc    grass_perc    shrub_perc    crop_perc    urban_perc    inwater_perc    bares_perc    dom_land_cover</span>
+0077 <span class="comment">% [camels_GB_land_data,camels_GB_land_data_str] = ...</span>
+0078 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_landcover_attributes.csv'));</span>
+0079 camels_GB_land_data = readtable(<span class="keyword">...</span>
+0080     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_landcover_attributes.csv'</span>));
+0081 
+0082 <span class="comment">% soils</span>
+0083 <span class="comment">% gauge_id    sand_perc    sand_perc_missing    silt_perc    silt_perc_missing    clay_perc    clay_perc_missing    organic_perc    organic_perc_missing    bulkdens    bulkdens_missing    bulkdens_5    bulkdens_50    bulkdens_95    tawc    tawc_missing    tawc_5    tawc_50    tawc_95    porosity_cosby    porosity_cosby_missing    porosity_cosby_5    porosity_cosby_50    porosity_cosby_95    porosity_hypres    porosity_hypres_missing    porosity_hypres_5    porosity_hypres_50    porosity_hypres_95    conductivity_cosby    conductivity_cosby_missing    conductivity_cosby_5    conductivity_cosby_50    conductivity_cosby_95    conductivity_hypres    conductivity_hypres_missing    conductivity_hypres_5    conductivity_hypres_50    conductivity_hypres_95    root_depth    root_depth_missing    root_depth_5    root_depth_50    root_depth_95    soil_depth_pelletier    soil_depth_pelletier_missing    soil_depth_pelletier_5    soil_depth_pelletier_50    soil_depth_pelletier_95</span>
+0084 <span class="comment">% [camels_GB_soil_data,camels_GB_soil_data_str] = ...</span>
+0085 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_soil_attributes.csv'));</span>
+0086 camels_GB_soil_data = readtable(<span class="keyword">...</span>
+0087     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_soil_attributes.csv'</span>));
 0088 
-0089 <span class="comment">% human influences</span>
-0090 <span class="comment">% gauge_id    benchmark_catch    surfacewater_abs    groundwater_abs    discharges    abs_agriculture_perc    abs_amenities_perc    abs_energy_perc    abs_environmental_perc    abs_industry_perc    abs_watersupply_perc    num_reservoir    reservoir_cap    reservoir_he    reservoir_nav    reservoir_drain    reservoir_wr    reservoir_fs    reservoir_env    reservoir_nousedata    reservoir_year_first    reservoir_year_last</span>
-0091 [camels_GB_human_data,camels_GB_human_data_str] = <span class="keyword">...</span>
-0092     xlsread(strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_humaninfluence_attributes.csv'</span>));
-0093 
-0094 <span class="comment">%% extract data from matrices</span>
+0089 <span class="comment">% hydrogeology</span>
+0090 <span class="comment">% gauge_id    inter_high_perc    inter_mod_perc    inter_low_perc    frac_high_perc    frac_mod_perc    frac_low_perc    no_gw_perc    low_nsig_perc    nsig_low_perc</span>
+0091 <span class="comment">% [camels_GB_geology_data,camels_GB_geology_data_str] = ...</span>
+0092 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrogeology_attributes.csv'));</span>
+0093 camels_GB_geology_data = readtable(<span class="keyword">...</span>
+0094     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrogeology_attributes.csv'</span>));
 0095 
-0096 <span class="comment">% topography</span>
-0097 gauge_id = camels_GB_topo_data(:,1);
-0098 gauge_name = camels_GB_topo_data_str(2:<span class="keyword">end</span>,2); <span class="comment">%</span>
-0099 gauge_lat = camels_GB_topo_data(:,3);
-0100 gauge_lon = camels_GB_topo_data(:,4);
-0101 gauge_easting = camels_GB_topo_data(:,5);
-0102 gauge_northing = camels_GB_topo_data(:,6);
-0103 gauge_elev = camels_GB_topo_data(:,7);
-0104 area = camels_GB_topo_data(:,8);
-0105 dpsbar = camels_GB_topo_data(:,9);
-0106 elev_mean = camels_GB_topo_data(:,10);
-0107 elev_min = camels_GB_topo_data(:,11);
-0108 elev_10 = camels_GB_topo_data(:,12);
-0109 elev_50 = camels_GB_topo_data(:,13);
-0110 elev_90 = camels_GB_topo_data(:,14);
-0111 elev_max = camels_GB_topo_data(:,15);
-0112 
-0113 <span class="comment">% climatic indices</span>
-0114 p_mean = camels_GB_climate_data(:,2);
-0115 pet_mean = camels_GB_climate_data(:,3);
-0116 aridity = camels_GB_climate_data(:,4);
-0117 p_seasonality = camels_GB_climate_data(:,5);
-0118 frac_snow = camels_GB_climate_data(:,6);
-0119 high_prec_freq = camels_GB_climate_data(:,7);
-0120 high_prec_dur = camels_GB_climate_data(:,8);
-0121 high_prec_timing = camels_GB_climate_data_str(2:<span class="keyword">end</span>,9);
-0122 low_prec_freq = camels_GB_climate_data(:,10);
-0123 low_prec_dur = camels_GB_climate_data(:,11);
-0124 low_prec_timing = camels_GB_climate_data_str(2:<span class="keyword">end</span>,12);
-0125 
-0126 <span class="comment">% hydrological signatures</span>
-0127 q_mean = camels_GB_hydro_data(:,2);
-0128 runoff_ratio = camels_GB_hydro_data(:,3);
-0129 stream_elas = camels_GB_hydro_data(:,4);
-0130 slope_fdc = camels_GB_hydro_data(:,5);
-0131 baseflow_index = camels_GB_hydro_data(:,6);
-0132 baseflow_index_ceh = camels_GB_hydro_data(:,7);
-0133 hfd_mean = camels_GB_hydro_data(:,8);
-0134 q5 = camels_GB_hydro_data(:,9);
-0135 q95 = camels_GB_hydro_data(:,10);
-0136 high_q_freq = camels_GB_hydro_data(:,11);
-0137 high_q_dur = camels_GB_hydro_data(:,12);
-0138 low_q_freq = camels_GB_hydro_data(:,13);
-0139 low_q_dur = camels_GB_hydro_data(:,14);
-0140 zero_q_freq = camels_GB_hydro_data(:,15);
+0096 <span class="comment">% hydrometry data</span>
+0097 <span class="comment">% gauge_id    station_type    flow_period_start    flow_period_end    flow_perc_complete    bankfull_flow    structurefull_flow    q5_uncert_upper    q5_uncert_lower    q25_uncert_upper    q25_uncert_lower    q50_uncert_upper    q50_uncert_lower    q75_uncert_upper    q75_uncert_lower    q95_uncert_upper    q95_uncert_lower    q99_uncert_upper    q99_uncert_lower    quncert_meta</span>
+0098 <span class="comment">% [camels_GB_hydrometry_data,camels_GB_hydrometry_data_str] = ...</span>
+0099 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrometry_attributes.csv'));</span>
+0100 camels_GB_hydrometry_data = readtable(<span class="keyword">...</span>
+0101     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_hydrometry_attributes.csv'</span>));
+0102 
+0103 <span class="comment">% human influences</span>
+0104 <span class="comment">% gauge_id    benchmark_catch    surfacewater_abs    groundwater_abs    discharges    abs_agriculture_perc    abs_amenities_perc    abs_energy_perc    abs_environmental_perc    abs_industry_perc    abs_watersupply_perc    num_reservoir    reservoir_cap    reservoir_he    reservoir_nav    reservoir_drain    reservoir_wr    reservoir_fs    reservoir_env    reservoir_nousedata    reservoir_year_first    reservoir_year_last</span>
+0105 <span class="comment">% [camels_GB_human_data,camels_GB_human_data_str] = ...</span>
+0106 <span class="comment">%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_humaninfluence_attributes.csv'));</span>
+0107 camels_GB_human_data = readtable(<span class="keyword">...</span>
+0108     strcat(path_catchment_attributes,<span class="string">'CAMELS_GB_humaninfluence_attributes.csv'</span>));
+0109 
+0110 <span class="comment">%% extract data from matrices</span>
+0111 
+0112 <span class="comment">% topography</span>
+0113 gauge_id = camels_GB_topo_data.gauge_id;
+0114 gauge_name = camels_GB_topo_data.gauge_name;
+0115 gauge_lat = camels_GB_topo_data.gauge_lat;
+0116 gauge_lon = camels_GB_topo_data.gauge_lon;
+0117 gauge_easting = camels_GB_topo_data.gauge_easting;
+0118 gauge_northing = camels_GB_topo_data.gauge_northing;
+0119 gauge_elev = camels_GB_topo_data.gauge_elev;
+0120 area = camels_GB_topo_data.area;
+0121 dpsbar = camels_GB_topo_data.dpsbar;
+0122 elev_mean = camels_GB_topo_data.elev_mean;
+0123 elev_min = camels_GB_topo_data.elev_min;
+0124 elev_10 = camels_GB_topo_data.elev_10;
+0125 elev_50 = camels_GB_topo_data.elev_50;
+0126 elev_90 = camels_GB_topo_data.elev_90;
+0127 elev_max = camels_GB_topo_data.elev_max;
+0128 
+0129 <span class="comment">% climatic indices</span>
+0130 p_mean = camels_GB_climate_data.p_mean;
+0131 pet_mean = camels_GB_climate_data.pet_mean;
+0132 aridity = camels_GB_climate_data.aridity;
+0133 p_seasonality = camels_GB_climate_data.p_seasonality;
+0134 frac_snow = camels_GB_climate_data.frac_snow;
+0135 high_prec_freq = camels_GB_climate_data.high_prec_freq;
+0136 high_prec_dur = camels_GB_climate_data.high_prec_dur;
+0137 high_prec_timing = camels_GB_climate_data.high_prec_timing;
+0138 low_prec_freq = camels_GB_climate_data.low_prec_freq;
+0139 low_prec_dur = camels_GB_climate_data.low_prec_dur;
+0140 low_prec_timing = camels_GB_climate_data.low_prec_timing;
 0141 
-0142 <span class="comment">% land cover</span>
-0143 dwood_perc = camels_GB_land_data(:,2);
-0144 ewood_perc = camels_GB_land_data(:,3);
-0145 grass_perc = camels_GB_land_data(:,4);
-0146 shrub_perc = camels_GB_land_data(:,5);
-0147 crop_perc = camels_GB_land_data(:,6);
-0148 urban_perc = camels_GB_land_data(:,7);
-0149 inwater_perc = camels_GB_land_data(:,8);
-0150 bares_perc = camels_GB_land_data(:,9);
-0151 dom_land_cover = camels_GB_land_data_str(2:<span class="keyword">end</span>,10);
-0152 
-0153 <span class="comment">% soils</span>
-0154 sand_perc = camels_GB_soil_data(:,2);
-0155 sand_perc_missing = camels_GB_soil_data(:,3);
-0156 silt_perc = camels_GB_soil_data(:,4);
-0157 silt_perc_missing = camels_GB_soil_data(:,5);
-0158 clay_perc = camels_GB_soil_data(:,6);
-0159 clay_perc_missing = camels_GB_soil_data(:,7);
-0160 organic_perc = camels_GB_soil_data(:,8);
-0161 organic_perc_missing = camels_GB_soil_data(:,9);
-0162 bulkdens = camels_GB_soil_data(:,10);
-0163 bulkdens_missing = camels_GB_soil_data(:,11);
-0164 bulkdens_5 = camels_GB_soil_data(:,12);
-0165 bulkdens_50 = camels_GB_soil_data(:,13);
-0166 bulkdens_95 = camels_GB_soil_data(:,14);
-0167 tawc = camels_GB_soil_data(:,15);
-0168 tawc_missing = camels_GB_soil_data(:,16);
-0169 tawc_5 = camels_GB_soil_data(:,17);
-0170 tawc_50 = camels_GB_soil_data(:,18);
-0171 tawc_95 = camels_GB_soil_data(:,19);
-0172 porosity_cosby = camels_GB_soil_data(:,20);
-0173 porosity_cosby_missing = camels_GB_soil_data(:,21);
-0174 porosity_cosby_5 = camels_GB_soil_data(:,22);
-0175 porosity_cosby_50 = camels_GB_soil_data(:,23);
-0176 porosity_cosby_95 = camels_GB_soil_data(:,24);
-0177 porosity_hypres = camels_GB_soil_data(:,25);
-0178 porosity_hypres_missing = camels_GB_soil_data(:,26);
-0179 porosity_hypres_5 = camels_GB_soil_data(:,27);
-0180 porosity_hypres_50 = camels_GB_soil_data(:,28);
-0181 porosity_hypres_95 = camels_GB_soil_data(:,29);
-0182 conductivity_cosby = camels_GB_soil_data(:,30);
-0183 conductivity_cosby_missing = camels_GB_soil_data(:,31);
-0184 conductivity_cosby_5 = camels_GB_soil_data(:,32);
-0185 conductivity_cosby_50 = camels_GB_soil_data(:,33);
-0186 conductivity_cosby_95 = camels_GB_soil_data(:,34);
-0187 conductivity_hypres = camels_GB_soil_data(:,35);
-0188 conductivity_hypres_missing = camels_GB_soil_data(:,36);
-0189 conductivity_hypres_5 = camels_GB_soil_data(:,37);
-0190 conductivity_hypres_50 = camels_GB_soil_data(:,38);
-0191 conductivity_hypres_95 = camels_GB_soil_data(:,39);
-0192 root_depth = camels_GB_soil_data(:,40);
-0193 root_depth_missing = camels_GB_soil_data(:,41);
-0194 root_depth_5 = camels_GB_soil_data(:,42);
-0195 root_depth_50 = camels_GB_soil_data(:,43);
-0196 root_depth_95 = camels_GB_soil_data(:,44);
-0197 soil_depth_pelletier = camels_GB_soil_data(:,45);
-0198 soil_depth_pelletier_missing = camels_GB_soil_data(:,46);
-0199 soil_depth_pelletier_5 = camels_GB_soil_data(:,47);
-0200 soil_depth_pelletier_50 = camels_GB_soil_data(:,48);
-0201 soil_depth_pelletier_95 = camels_GB_soil_data(:,49);
-0202 
-0203 <span class="comment">% hydrogeology</span>
-0204 inter_high_perc = camels_GB_geology_data(:,2);
-0205 inter_mod_perc = camels_GB_geology_data(:,3);
-0206 inter_low_perc = camels_GB_geology_data(:,4);
-0207 frac_high_perc = camels_GB_geology_data(:,5);
-0208 frac_mod_perc = camels_GB_geology_data(:,6);
-0209 frac_low_perc = camels_GB_geology_data(:,7);
-0210 no_gw_perc = camels_GB_geology_data(:,8);
-0211 low_nsig_perc = camels_GB_geology_data(:,9);
-0212 nsig_low_perc = camels_GB_geology_data(:,10);
-0213 
-0214 <span class="comment">% hydrometry</span>
-0215 station_type = camels_GB_hydrometry_data_str(2:<span class="keyword">end</span>,2);
-0216 flow_period_start = camels_GB_hydrometry_data_str(2:<span class="keyword">end</span>,3);
-0217 flow_period_end = camels_GB_hydrometry_data_str(2:<span class="keyword">end</span>,4);
-0218 flow_perc_complete = camels_GB_hydrometry_data(:,5);
-0219 bankfull_flow = camels_GB_hydrometry_data(:,6);
-0220 structurefull_flow = camels_GB_hydrometry_data(:,7);
-0221 q5_uncert_upper = camels_GB_hydrometry_data(:,8);
-0222 q5_uncert_lower = camels_GB_hydrometry_data(:,9);
-0223 q25_uncert_upper = camels_GB_hydrometry_data(:,10);
-0224 q25_uncert_lower = camels_GB_hydrometry_data(:,11);
-0225 q50_uncert_upper = camels_GB_hydrometry_data(:,12);
-0226 q50_uncert_lower = camels_GB_hydrometry_data(:,13);
-0227 q75_uncert_upper = camels_GB_hydrometry_data(:,14);
-0228 q75_uncert_lower = camels_GB_hydrometry_data(:,15);
-0229 q95_uncert_upper = camels_GB_hydrometry_data(:,16);
-0230 q95_uncert_lower = camels_GB_hydrometry_data(:,17);
-0231 q99_uncert_upper = camels_GB_hydrometry_data(:,18);
-0232 q99_uncert_lower = camels_GB_hydrometry_data(:,19);
-0233 quncert_meta = camels_GB_hydrometry_data_str(2:<span class="keyword">end</span>,20);
-0234 
-0235 <span class="comment">% human influences</span>
-0236 benchmark_catch = camels_GB_human_data_str(2:<span class="keyword">end</span>,2);
-0237 isBenchmark = zeros(size(benchmark_catch));
-0238 isBenchmark(strcmp(<span class="string">'Y'</span>,benchmark_catch)) = 1;
-0239 isBenchmark = logical(isBenchmark);
-0240 surfacewater_abs = camels_GB_human_data(:,3);
-0241 groundwater_abs = camels_GB_human_data(:,4);
-0242 discharges = camels_GB_human_data(:,5);
-0243 abs_agriculture_perc = camels_GB_human_data(:,6);
-0244 abs_amenities_perc = camels_GB_human_data(:,7);
-0245 abs_energy_perc = camels_GB_human_data(:,8);
-0246 abs_environmental_perc = camels_GB_human_data(:,9);
-0247 abs_industry_perc = camels_GB_human_data(:,10);
-0248 abs_watersupply_perc = camels_GB_human_data(:,11);
-0249 num_reservoir = camels_GB_human_data(:,12);
-0250 reservoir_cap = camels_GB_human_data(:,13);
-0251 reservoir_he = camels_GB_human_data(:,14);
-0252 reservoir_nav = camels_GB_human_data(:,15);
-0253 reservoir_drain = camels_GB_human_data(:,16);
-0254 reservoir_wr = camels_GB_human_data(:,17);
-0255 reservoir_fs = camels_GB_human_data(:,18);
-0256 reservoir_env = camels_GB_human_data(:,19);
-0257 reservoir_nousedata = camels_GB_human_data(:,20);
-0258 reservoir_year_first = camels_GB_human_data(:,21);
-0259 reservoir_year_last = camels_GB_human_data(:,22);
-0260 
-0261 <span class="comment">%% Load hydro-meteorological time series</span>
-0262 <span class="comment">% To extract the time series, we loop over all catchments.</span>
-0263 P = cell(length(gauge_id),1); <span class="comment">% precipitation</span>
-0264 PET = cell(length(gauge_id),1); <span class="comment">% potential evapotranspiration</span>
-0265 Q = cell(length(gauge_id),1); <span class="comment">% streamflow</span>
-0266 T = cell(length(gauge_id),1); <span class="comment">% temperature</span>
-0267 
-0268 fprintf(<span class="string">'Loading catchment data...\n'</span>)
-0269 <span class="keyword">for</span> i = 1:length(gauge_id) <span class="comment">% loop over all catchments</span>
-0270     
-0271     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
-0272         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,length(gauge_id))
-0273     <span class="keyword">end</span>
-0274     
-0275     ID = gauge_id(i);
-0276     [P{i}, PET{i}, Q{i}, T{i}] = <a href="loadCatchmentCAMELSGB.html" class="code" title="function [P, PET, Q, T] = loadCatchmentCAMELSGB(ID,path)">loadCatchmentCAMELSGB</a>(ID,path_time_series);
-0277     
-0278 <span class="keyword">end</span>
-0279 
-0280 <span class="comment">%% Create struct file with catchment attributes and time series</span>
-0281 <span class="comment">% We create a Matlab structure file containing all the data, i.e. the</span>
-0282 <span class="comment">% hydro-meteorological time series and the catchment attributes and</span>
-0283 <span class="comment">% metadata.</span>
-0284 
-0285 <span class="comment">% topography</span>
-0286 CAMELS_GB_data.gauge_id = gauge_id;
-0287 CAMELS_GB_data.gauge_name = gauge_name;
-0288 CAMELS_GB_data.gauge_lat = gauge_lat;
-0289 CAMELS_GB_data.gauge_lon = gauge_lon;
-0290 CAMELS_GB_data.gauge_easting = gauge_easting;
-0291 CAMELS_GB_data.gauge_northing = gauge_northing;
-0292 CAMELS_GB_data.gauge_elev = gauge_elev;
-0293 CAMELS_GB_data.area = area;
-0294 CAMELS_GB_data.dpsbar = dpsbar;
-0295 CAMELS_GB_data.elev_mean = elev_mean;
-0296 CAMELS_GB_data.elev_min = elev_min;
-0297 CAMELS_GB_data.elev_10 = elev_10;
-0298 CAMELS_GB_data.elev_50 = elev_50;
-0299 CAMELS_GB_data.elev_90 = elev_90;
-0300 CAMELS_GB_data.elev_max = elev_max;
-0301 
-0302 <span class="comment">% climatic indices</span>
-0303 CAMELS_GB_data.p_mean = p_mean;
-0304 CAMELS_GB_data.pet_mean = pet_mean;
-0305 CAMELS_GB_data.aridity = aridity;
-0306 CAMELS_GB_data.p_seasonality = p_seasonality;
-0307 CAMELS_GB_data.frac_snow = frac_snow;
-0308 CAMELS_GB_data.high_prec_freq = high_prec_freq;
-0309 CAMELS_GB_data.high_prec_dur = high_prec_dur;
-0310 CAMELS_GB_data.high_prec_timing = high_prec_timing;
-0311 CAMELS_GB_data.low_prec_freq = low_prec_freq;
-0312 CAMELS_GB_data.low_prec_dur = low_prec_dur;
-0313 CAMELS_GB_data.low_prec_timing = low_prec_timing;
-0314 
-0315 <span class="comment">% hydrological signatures</span>
-0316 CAMELS_GB_data.q_mean = q_mean;
-0317 CAMELS_GB_data.runoff_ratio = runoff_ratio;
-0318 CAMELS_GB_data.stream_elas = stream_elas;
-0319 CAMELS_GB_data.slope_fdc = slope_fdc;
-0320 CAMELS_GB_data.baseflow_index = baseflow_index;
-0321 CAMELS_GB_data.baseflow_index_ceh = baseflow_index_ceh;
-0322 CAMELS_GB_data.hfd_mean = hfd_mean;
-0323 CAMELS_GB_data.q5 = q5;
-0324 CAMELS_GB_data.q95 = q95;
-0325 CAMELS_GB_data.high_q_freq = high_q_freq;
-0326 CAMELS_GB_data.high_q_dur = high_q_dur;
-0327 CAMELS_GB_data.low_q_freq = low_q_freq;
-0328 CAMELS_GB_data.low_q_dur = low_q_dur;
-0329 CAMELS_GB_data.zero_q_freq = zero_q_freq;
+0142 <span class="comment">% hydrological signatures</span>
+0143 q_mean = camels_GB_hydro_data.q_mean;
+0144 runoff_ratio = camels_GB_hydro_data.runoff_ratio;
+0145 stream_elas = camels_GB_hydro_data.stream_elas;
+0146 slope_fdc = camels_GB_hydro_data.slope_fdc;
+0147 baseflow_index = camels_GB_hydro_data.baseflow_index;
+0148 baseflow_index_ceh = camels_GB_hydro_data.baseflow_index_ceh;
+0149 hfd_mean = camels_GB_hydro_data.hfd_mean;
+0150 q5 = camels_GB_hydro_data.Q5;
+0151 q95 = camels_GB_hydro_data.Q95;
+0152 high_q_freq = camels_GB_hydro_data.high_q_freq;
+0153 high_q_dur = camels_GB_hydro_data.high_q_dur;
+0154 low_q_freq = camels_GB_hydro_data.low_q_freq;
+0155 low_q_dur = camels_GB_hydro_data.low_q_dur;
+0156 zero_q_freq = camels_GB_hydro_data.zero_q_freq;
+0157 
+0158 <span class="comment">% land cover</span>
+0159 dwood_perc = camels_GB_land_data.dwood_perc;
+0160 ewood_perc = camels_GB_land_data.ewood_perc;
+0161 grass_perc = camels_GB_land_data.grass_perc;
+0162 shrub_perc = camels_GB_land_data.shrub_perc;
+0163 crop_perc = camels_GB_land_data.crop_perc;
+0164 urban_perc = camels_GB_land_data.urban_perc;
+0165 inwater_perc = camels_GB_land_data.inwater_perc;
+0166 bares_perc = camels_GB_land_data.bares_perc;
+0167 dom_land_cover = camels_GB_land_data.dom_land_cover;
+0168 
+0169 <span class="comment">% soils</span>
+0170 sand_perc = camels_GB_soil_data.sand_perc;
+0171 sand_perc_missing = camels_GB_soil_data.sand_perc_missing;
+0172 silt_perc = camels_GB_soil_data.silt_perc;
+0173 silt_perc_missing = camels_GB_soil_data.silt_perc_missing;
+0174 clay_perc = camels_GB_soil_data.clay_perc;
+0175 clay_perc_missing = camels_GB_soil_data.clay_perc_missing;
+0176 organic_perc = camels_GB_soil_data.organic_perc;
+0177 organic_perc_missing = camels_GB_soil_data.organic_perc_missing;
+0178 bulkdens = camels_GB_soil_data.bulkdens;
+0179 bulkdens_missing = camels_GB_soil_data.bulkdens_missing;
+0180 bulkdens_5 = camels_GB_soil_data.bulkdens_5;
+0181 bulkdens_50 = camels_GB_soil_data.bulkdens_50;
+0182 bulkdens_95 = camels_GB_soil_data.bulkdens_95;
+0183 tawc = camels_GB_soil_data.tawc;
+0184 tawc_missing = camels_GB_soil_data.tawc_missing;
+0185 tawc_5 = camels_GB_soil_data.tawc_5;
+0186 tawc_50 = camels_GB_soil_data.tawc_50;
+0187 tawc_95 = camels_GB_soil_data.tawc_95;
+0188 porosity_cosby = camels_GB_soil_data.porosity_cosby;
+0189 porosity_cosby_missing = camels_GB_soil_data.porosity_cosby_missing;
+0190 porosity_cosby_5 = camels_GB_soil_data.porosity_cosby_5;
+0191 porosity_cosby_50 = camels_GB_soil_data.porosity_cosby_50;
+0192 porosity_cosby_95 = camels_GB_soil_data.porosity_cosby_95;
+0193 porosity_hypres = camels_GB_soil_data.porosity_hypres;
+0194 porosity_hypres_missing = camels_GB_soil_data.porosity_hypres_missing;
+0195 porosity_hypres_5 = camels_GB_soil_data.porosity_hypres_5;
+0196 porosity_hypres_50 = camels_GB_soil_data.porosity_hypres_50;
+0197 porosity_hypres_95 = camels_GB_soil_data.porosity_hypres_95;
+0198 conductivity_cosby = camels_GB_soil_data.conductivity_cosby;
+0199 conductivity_cosby_missing = camels_GB_soil_data.conductivity_cosby_missing;
+0200 conductivity_cosby_5 = camels_GB_soil_data.conductivity_cosby_5;
+0201 conductivity_cosby_50 = camels_GB_soil_data.conductivity_cosby_50;
+0202 conductivity_cosby_95 = camels_GB_soil_data.conductivity_cosby_95;
+0203 conductivity_hypres = camels_GB_soil_data.conductivity_hypres;
+0204 conductivity_hypres_missing = camels_GB_soil_data.conductivity_hypres_missing;
+0205 conductivity_hypres_5 = camels_GB_soil_data.conductivity_hypres_5;
+0206 conductivity_hypres_50 = camels_GB_soil_data.conductivity_hypres_50;
+0207 conductivity_hypres_95 = camels_GB_soil_data.conductivity_hypres_95;
+0208 root_depth = camels_GB_soil_data.root_depth;
+0209 root_depth_missing = camels_GB_soil_data.root_depth_missing;
+0210 root_depth_5 = camels_GB_soil_data.root_depth_5;
+0211 root_depth_50 = camels_GB_soil_data.root_depth_50;
+0212 root_depth_95 = camels_GB_soil_data.root_depth_95;
+0213 soil_depth_pelletier = camels_GB_soil_data.soil_depth_pelletier;
+0214 soil_depth_pelletier_missing = camels_GB_soil_data.soil_depth_pelletier_missing;
+0215 soil_depth_pelletier_5 = camels_GB_soil_data.soil_depth_pelletier_5;
+0216 soil_depth_pelletier_50 = camels_GB_soil_data.soil_depth_pelletier_50;
+0217 soil_depth_pelletier_95 = camels_GB_soil_data.soil_depth_pelletier_95;
+0218 
+0219 <span class="comment">% hydrogeology</span>
+0220 inter_high_perc = camels_GB_geology_data.inter_high_perc;
+0221 inter_mod_perc = camels_GB_geology_data.inter_mod_perc;
+0222 inter_low_perc = camels_GB_geology_data.inter_low_perc;
+0223 frac_high_perc = camels_GB_geology_data.frac_high_perc;
+0224 frac_mod_perc = camels_GB_geology_data.frac_mod_perc;
+0225 frac_low_perc = camels_GB_geology_data.frac_low_perc;
+0226 no_gw_perc = camels_GB_geology_data.no_gw_perc;
+0227 low_nsig_perc = camels_GB_geology_data.low_nsig_perc;
+0228 nsig_low_perc = camels_GB_geology_data.nsig_low_perc;
+0229 
+0230 <span class="comment">% hydrometry</span>
+0231 station_type = camels_GB_hydrometry_data.station_type;
+0232 flow_period_start = camels_GB_hydrometry_data.flow_period_start;
+0233 flow_period_end = camels_GB_hydrometry_data.flow_period_end;
+0234 flow_perc_complete = camels_GB_hydrometry_data.flow_perc_complete;
+0235 bankfull_flow = camels_GB_hydrometry_data.bankfull_flow;
+0236 structurefull_flow = camels_GB_hydrometry_data.structurefull_flow;
+0237 q5_uncert_upper = camels_GB_hydrometry_data.q5_uncert_upper;
+0238 q5_uncert_lower = camels_GB_hydrometry_data.q5_uncert_lower;
+0239 q25_uncert_upper = camels_GB_hydrometry_data.q25_uncert_upper;
+0240 q25_uncert_lower = camels_GB_hydrometry_data.q25_uncert_lower;
+0241 q50_uncert_upper = camels_GB_hydrometry_data.q50_uncert_upper;
+0242 q50_uncert_lower = camels_GB_hydrometry_data.q50_uncert_lower;
+0243 q75_uncert_upper = camels_GB_hydrometry_data.q75_uncert_upper;
+0244 q75_uncert_lower = camels_GB_hydrometry_data.q75_uncert_lower;
+0245 q95_uncert_upper = camels_GB_hydrometry_data.q95_uncert_upper;
+0246 q95_uncert_lower = camels_GB_hydrometry_data.q95_uncert_lower;
+0247 q99_uncert_upper = camels_GB_hydrometry_data.q99_uncert_upper;
+0248 q99_uncert_lower = camels_GB_hydrometry_data.q99_uncert_lower;
+0249 quncert_meta = camels_GB_hydrometry_data.quncert_meta;
+0250 
+0251 <span class="comment">% human influences</span>
+0252 benchmark_catch = camels_GB_human_data.benchmark_catch;
+0253 isBenchmark = zeros(size(benchmark_catch));
+0254 isBenchmark(strcmp(<span class="string">'Y'</span>,benchmark_catch)) = 1;
+0255 isBenchmark = logical(isBenchmark);
+0256 surfacewater_abs = camels_GB_human_data.surfacewater_abs;
+0257 groundwater_abs = camels_GB_human_data.groundwater_abs;
+0258 discharges = camels_GB_human_data.discharges;
+0259 abs_agriculture_perc = camels_GB_human_data.abs_agriculture_perc;
+0260 abs_amenities_perc = camels_GB_human_data.abs_energy_perc;
+0261 abs_energy_perc = camels_GB_human_data.abs_energy_perc;
+0262 abs_environmental_perc = camels_GB_human_data.abs_environmental_perc;
+0263 abs_industry_perc = camels_GB_human_data.abs_industry_perc;
+0264 abs_watersupply_perc = camels_GB_human_data.abs_watersupply_perc;
+0265 num_reservoir = camels_GB_human_data.num_reservoir;
+0266 reservoir_cap = camels_GB_human_data.reservoir_cap;
+0267 reservoir_he = camels_GB_human_data.reservoir_he;
+0268 reservoir_nav = camels_GB_human_data.reservoir_nav;
+0269 reservoir_drain = camels_GB_human_data.reservoir_drain;
+0270 reservoir_wr = camels_GB_human_data.reservoir_wr;
+0271 reservoir_fs = camels_GB_human_data.reservoir_fs;
+0272 reservoir_env = camels_GB_human_data.reservoir_env;
+0273 reservoir_nousedata = camels_GB_human_data.reservoir_nousedata;
+0274 reservoir_year_first = camels_GB_human_data.reservoir_year_first;
+0275 reservoir_year_last = camels_GB_human_data.reservoir_year_last;
+0276 
+0277 <span class="comment">%% Load hydro-meteorological time series</span>
+0278 <span class="comment">% To extract the time series, we loop over all catchments.</span>
+0279 P = cell(length(gauge_id),1); <span class="comment">% precipitation</span>
+0280 PET = cell(length(gauge_id),1); <span class="comment">% potential evapotranspiration</span>
+0281 Q = cell(length(gauge_id),1); <span class="comment">% streamflow</span>
+0282 T = cell(length(gauge_id),1); <span class="comment">% temperature</span>
+0283 
+0284 fprintf(<span class="string">'Loading catchment data...\n'</span>)
+0285 <span class="keyword">for</span> i = 1:length(gauge_id) <span class="comment">% loop over all catchments</span>
+0286     
+0287     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0288         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,length(gauge_id))
+0289     <span class="keyword">end</span>
+0290     
+0291     ID = gauge_id(i);
+0292     [P{i}, PET{i}, Q{i}, T{i}] = <a href="loadCatchmentCAMELSGB.html" class="code" title="function [P, PET, Q, T] = loadCatchmentCAMELSGB(ID,path)">loadCatchmentCAMELSGB</a>(ID,path_time_series);
+0293     
+0294 <span class="keyword">end</span>
+0295 
+0296 <span class="comment">%% Create struct file with catchment attributes and time series</span>
+0297 <span class="comment">% We create a Matlab structure file containing all the data, i.e. the</span>
+0298 <span class="comment">% hydro-meteorological time series and the catchment attributes and</span>
+0299 <span class="comment">% metadata.</span>
+0300 
+0301 <span class="comment">% topography</span>
+0302 CAMELS_GB_data.gauge_id = gauge_id;
+0303 CAMELS_GB_data.gauge_name = gauge_name;
+0304 CAMELS_GB_data.gauge_lat = gauge_lat;
+0305 CAMELS_GB_data.gauge_lon = gauge_lon;
+0306 CAMELS_GB_data.gauge_easting = gauge_easting;
+0307 CAMELS_GB_data.gauge_northing = gauge_northing;
+0308 CAMELS_GB_data.gauge_elev = gauge_elev;
+0309 CAMELS_GB_data.area = area;
+0310 CAMELS_GB_data.dpsbar = dpsbar;
+0311 CAMELS_GB_data.elev_mean = elev_mean;
+0312 CAMELS_GB_data.elev_min = elev_min;
+0313 CAMELS_GB_data.elev_10 = elev_10;
+0314 CAMELS_GB_data.elev_50 = elev_50;
+0315 CAMELS_GB_data.elev_90 = elev_90;
+0316 CAMELS_GB_data.elev_max = elev_max;
+0317 
+0318 <span class="comment">% climatic indices</span>
+0319 CAMELS_GB_data.p_mean = p_mean;
+0320 CAMELS_GB_data.pet_mean = pet_mean;
+0321 CAMELS_GB_data.aridity = aridity;
+0322 CAMELS_GB_data.p_seasonality = p_seasonality;
+0323 CAMELS_GB_data.frac_snow = frac_snow;
+0324 CAMELS_GB_data.high_prec_freq = high_prec_freq;
+0325 CAMELS_GB_data.high_prec_dur = high_prec_dur;
+0326 CAMELS_GB_data.high_prec_timing = high_prec_timing;
+0327 CAMELS_GB_data.low_prec_freq = low_prec_freq;
+0328 CAMELS_GB_data.low_prec_dur = low_prec_dur;
+0329 CAMELS_GB_data.low_prec_timing = low_prec_timing;
 0330 
-0331 <span class="comment">% land cover</span>
-0332 CAMELS_GB_data.dwood_perc = dwood_perc;
-0333 CAMELS_GB_data.ewood_perc = ewood_perc;
-0334 CAMELS_GB_data.grass_perc = grass_perc;
-0335 CAMELS_GB_data.shrub_perc = shrub_perc;
-0336 CAMELS_GB_data.crop_perc = crop_perc;
-0337 CAMELS_GB_data.urban_perc = urban_perc;
-0338 CAMELS_GB_data.inwater_perc = inwater_perc;
-0339 CAMELS_GB_data.bares_perc = bares_perc;
-0340 CAMELS_GB_data.dom_land_cover = dom_land_cover;
-0341 
-0342 <span class="comment">% soils</span>
-0343 CAMELS_GB_data.sand_perc = sand_perc;
-0344 CAMELS_GB_data.sand_perc_missing = sand_perc_missing;
-0345 CAMELS_GB_data.silt_perc = silt_perc;
-0346 CAMELS_GB_data.silt_perc_missing = silt_perc_missing;
-0347 CAMELS_GB_data.clay_perc = clay_perc;
-0348 CAMELS_GB_data.clay_perc_missing = clay_perc_missing;
-0349 CAMELS_GB_data.organic_perc = organic_perc;
-0350 CAMELS_GB_data.organic_perc_missing = organic_perc_missing;
-0351 CAMELS_GB_data.bulkdens = bulkdens;
-0352 CAMELS_GB_data.bulkdens_missing = bulkdens_missing;
-0353 CAMELS_GB_data.bulkdens_5 = bulkdens_5;
-0354 CAMELS_GB_data.bulkdens_50 = bulkdens_50;
-0355 CAMELS_GB_data.bulkdens_95 = bulkdens_95;
-0356 CAMELS_GB_data.tawc = tawc;
-0357 CAMELS_GB_data.tawc_missing = tawc_missing;
-0358 CAMELS_GB_data.tawc_5 = tawc_5;
-0359 CAMELS_GB_data.tawc_50 = tawc_50;
-0360 CAMELS_GB_data.tawc_95 = tawc_95;
-0361 CAMELS_GB_data.porosity_cosby = porosity_cosby;
-0362 CAMELS_GB_data.porosity_cosby_missing = porosity_cosby_missing;
-0363 CAMELS_GB_data.porosity_cosby_5 = porosity_cosby_5;
-0364 CAMELS_GB_data.porosity_cosby_50 = porosity_cosby_50;
-0365 CAMELS_GB_data.porosity_cosby_95 = porosity_cosby_95;
-0366 CAMELS_GB_data.porosity_hypres = porosity_hypres;
-0367 CAMELS_GB_data.porosity_hypres_missing = porosity_hypres_missing;
-0368 CAMELS_GB_data.porosity_hypres_5 = porosity_hypres_5;
-0369 CAMELS_GB_data.porosity_hypres_50 = porosity_hypres_50;
-0370 CAMELS_GB_data.porosity_hypres_95 = porosity_hypres_95;
-0371 CAMELS_GB_data.conductivity_cosby = conductivity_cosby;
-0372 CAMELS_GB_data.conductivity_cosby_missing = conductivity_cosby_missing;
-0373 CAMELS_GB_data.conductivity_cosby_5 = conductivity_cosby_5;
-0374 CAMELS_GB_data.conductivity_cosby_50 = conductivity_cosby_50;
-0375 CAMELS_GB_data.conductivity_cosby_95 = conductivity_cosby_95;
-0376 CAMELS_GB_data.conductivity_hypres = conductivity_hypres;
-0377 CAMELS_GB_data.conductivity_hypres_missing = conductivity_hypres_missing;
-0378 CAMELS_GB_data.conductivity_hypres_5 = conductivity_hypres_5;
-0379 CAMELS_GB_data.conductivity_hypres_50 = conductivity_hypres_50;
-0380 CAMELS_GB_data.conductivity_hypres_95 = conductivity_hypres_95;
-0381 CAMELS_GB_data.root_depth = root_depth;
-0382 CAMELS_GB_data.root_depth_missing = root_depth_missing;
-0383 CAMELS_GB_data.root_depth_5 = root_depth_5;
-0384 CAMELS_GB_data.root_depth_50 = root_depth_50;
-0385 CAMELS_GB_data.root_depth_95 = root_depth_95;
-0386 CAMELS_GB_data.soil_depth_pelletier = soil_depth_pelletier;
-0387 CAMELS_GB_data.soil_depth_pelletier_missing = soil_depth_pelletier_missing;
-0388 CAMELS_GB_data.soil_depth_pelletier_5 = soil_depth_pelletier_5;
-0389 CAMELS_GB_data.soil_depth_pelletier_50 = soil_depth_pelletier_50;
-0390 CAMELS_GB_data.soil_depth_pelletier_95 = soil_depth_pelletier_95;
-0391 
-0392 <span class="comment">% hydrogeology</span>
-0393 CAMELS_GB_data.inter_high_perc = inter_high_perc;
-0394 CAMELS_GB_data.inter_mod_perc = inter_mod_perc;
-0395 CAMELS_GB_data.inter_low_perc = inter_low_perc;
-0396 CAMELS_GB_data.frac_high_perc = frac_high_perc;
-0397 CAMELS_GB_data.frac_mod_perc = frac_mod_perc;
-0398 CAMELS_GB_data.frac_low_perc = frac_low_perc;
-0399 CAMELS_GB_data.no_gw_perc = no_gw_perc;
-0400 CAMELS_GB_data.low_nsig_perc = low_nsig_perc;
-0401 CAMELS_GB_data.low_nsig_perc = low_nsig_perc;
-0402 
-0403 <span class="comment">% hydrometry</span>
-0404 CAMELS_GB_data.station_type = station_type;
-0405 CAMELS_GB_data.flow_period_start = flow_period_start;
-0406 CAMELS_GB_data.flow_period_end = flow_period_end;
-0407 CAMELS_GB_data.flow_perc_complete = flow_perc_complete;
-0408 CAMELS_GB_data.bankfull_flow = bankfull_flow;
-0409 CAMELS_GB_data.structurefull_flow = structurefull_flow;
-0410 CAMELS_GB_data.q5_uncert_upper = q5_uncert_upper;
-0411 CAMELS_GB_data.q5_uncert_lower = q5_uncert_lower;
-0412 CAMELS_GB_data.q25_uncert_upper = q25_uncert_upper;
-0413 CAMELS_GB_data.q25_uncert_lower = q25_uncert_lower;
-0414 CAMELS_GB_data.q50_uncert_upper = q50_uncert_upper;
-0415 CAMELS_GB_data.q50_uncert_lower = q50_uncert_lower;
-0416 CAMELS_GB_data.q75_uncert_upper = q75_uncert_upper;
-0417 CAMELS_GB_data.q75_uncert_lower = q75_uncert_lower;
-0418 CAMELS_GB_data.q95_uncert_upper = q95_uncert_upper;
-0419 CAMELS_GB_data.q95_uncert_lower = q95_uncert_lower;
-0420 CAMELS_GB_data.q99_uncert_upper = q99_uncert_upper;
-0421 CAMELS_GB_data.q99_uncert_lower = q99_uncert_lower;
-0422 CAMELS_GB_data.quncert_meta = quncert_meta;
-0423 
-0424 <span class="comment">% human influences</span>
-0425 CAMELS_GB_data.benchmark_catch = benchmark_catch;
-0426 CAMELS_GB_data.isBenchmark = isBenchmark;
-0427 CAMELS_GB_data.surfacewater_abs = surfacewater_abs;
-0428 CAMELS_GB_data.groundwater_abs = groundwater_abs;
-0429 CAMELS_GB_data.discharges = discharges;
-0430 CAMELS_GB_data.abs_agriculture_perc = abs_agriculture_perc;
-0431 CAMELS_GB_data.abs_amenities_perc = abs_amenities_perc;
-0432 CAMELS_GB_data.abs_energy_perc = abs_energy_perc;
-0433 CAMELS_GB_data.abs_environmental_perc = abs_environmental_perc;
-0434 CAMELS_GB_data.abs_industry_perc = abs_industry_perc;
-0435 CAMELS_GB_data.abs_watersupply_perc = abs_watersupply_perc;
-0436 CAMELS_GB_data.num_reservoir = num_reservoir;
-0437 CAMELS_GB_data.reservoir_cap = reservoir_cap;
-0438 CAMELS_GB_data.reservoir_he = reservoir_he;
-0439 CAMELS_GB_data.reservoir_nav = reservoir_nav;
-0440 CAMELS_GB_data.reservoir_drain = reservoir_drain;
-0441 CAMELS_GB_data.reservoir_wr = reservoir_wr;
-0442 CAMELS_GB_data.reservoir_fs = reservoir_fs;
-0443 CAMELS_GB_data.reservoir_env = reservoir_env;
-0444 CAMELS_GB_data.reservoir_nousedata = reservoir_nousedata;
-0445 CAMELS_GB_data.reservoir_year_first = reservoir_year_first;
-0446 CAMELS_GB_data.reservoir_year_last = reservoir_year_last;
-0447 
-0448 <span class="comment">% hydro-meteorological time series</span>
-0449 CAMELS_GB_data.P = P;
-0450 CAMELS_GB_data.PET = PET;
-0451 CAMELS_GB_data.Q = Q;
-0452 CAMELS_GB_data.T = T;
-0453 
-0454 <span class="comment">% To avoid loading CAMELS from the original files every time, we could also</span>
-0455 <span class="comment">% save the struct file and just load that.</span>
-0456 <span class="comment">% save('./example/example_data/CAMELS_GB_data.mat','CAMELS_GB_data')</span>
-0457 
-0458 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Mon 18-Jan-2021 07:59:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0331 <span class="comment">% hydrological signatures</span>
+0332 CAMELS_GB_data.q_mean = q_mean;
+0333 CAMELS_GB_data.runoff_ratio = runoff_ratio;
+0334 CAMELS_GB_data.stream_elas = stream_elas;
+0335 CAMELS_GB_data.slope_fdc = slope_fdc;
+0336 CAMELS_GB_data.baseflow_index = baseflow_index;
+0337 CAMELS_GB_data.baseflow_index_ceh = baseflow_index_ceh;
+0338 CAMELS_GB_data.hfd_mean = hfd_mean;
+0339 CAMELS_GB_data.q5 = q5;
+0340 CAMELS_GB_data.q95 = q95;
+0341 CAMELS_GB_data.high_q_freq = high_q_freq;
+0342 CAMELS_GB_data.high_q_dur = high_q_dur;
+0343 CAMELS_GB_data.low_q_freq = low_q_freq;
+0344 CAMELS_GB_data.low_q_dur = low_q_dur;
+0345 CAMELS_GB_data.zero_q_freq = zero_q_freq;
+0346 
+0347 <span class="comment">% land cover</span>
+0348 CAMELS_GB_data.dwood_perc = dwood_perc;
+0349 CAMELS_GB_data.ewood_perc = ewood_perc;
+0350 CAMELS_GB_data.grass_perc = grass_perc;
+0351 CAMELS_GB_data.shrub_perc = shrub_perc;
+0352 CAMELS_GB_data.crop_perc = crop_perc;
+0353 CAMELS_GB_data.urban_perc = urban_perc;
+0354 CAMELS_GB_data.inwater_perc = inwater_perc;
+0355 CAMELS_GB_data.bares_perc = bares_perc;
+0356 CAMELS_GB_data.dom_land_cover = dom_land_cover;
+0357 
+0358 <span class="comment">% soils</span>
+0359 CAMELS_GB_data.sand_perc = sand_perc;
+0360 CAMELS_GB_data.sand_perc_missing = sand_perc_missing;
+0361 CAMELS_GB_data.silt_perc = silt_perc;
+0362 CAMELS_GB_data.silt_perc_missing = silt_perc_missing;
+0363 CAMELS_GB_data.clay_perc = clay_perc;
+0364 CAMELS_GB_data.clay_perc_missing = clay_perc_missing;
+0365 CAMELS_GB_data.organic_perc = organic_perc;
+0366 CAMELS_GB_data.organic_perc_missing = organic_perc_missing;
+0367 CAMELS_GB_data.bulkdens = bulkdens;
+0368 CAMELS_GB_data.bulkdens_missing = bulkdens_missing;
+0369 CAMELS_GB_data.bulkdens_5 = bulkdens_5;
+0370 CAMELS_GB_data.bulkdens_50 = bulkdens_50;
+0371 CAMELS_GB_data.bulkdens_95 = bulkdens_95;
+0372 CAMELS_GB_data.tawc = tawc;
+0373 CAMELS_GB_data.tawc_missing = tawc_missing;
+0374 CAMELS_GB_data.tawc_5 = tawc_5;
+0375 CAMELS_GB_data.tawc_50 = tawc_50;
+0376 CAMELS_GB_data.tawc_95 = tawc_95;
+0377 CAMELS_GB_data.porosity_cosby = porosity_cosby;
+0378 CAMELS_GB_data.porosity_cosby_missing = porosity_cosby_missing;
+0379 CAMELS_GB_data.porosity_cosby_5 = porosity_cosby_5;
+0380 CAMELS_GB_data.porosity_cosby_50 = porosity_cosby_50;
+0381 CAMELS_GB_data.porosity_cosby_95 = porosity_cosby_95;
+0382 CAMELS_GB_data.porosity_hypres = porosity_hypres;
+0383 CAMELS_GB_data.porosity_hypres_missing = porosity_hypres_missing;
+0384 CAMELS_GB_data.porosity_hypres_5 = porosity_hypres_5;
+0385 CAMELS_GB_data.porosity_hypres_50 = porosity_hypres_50;
+0386 CAMELS_GB_data.porosity_hypres_95 = porosity_hypres_95;
+0387 CAMELS_GB_data.conductivity_cosby = conductivity_cosby;
+0388 CAMELS_GB_data.conductivity_cosby_missing = conductivity_cosby_missing;
+0389 CAMELS_GB_data.conductivity_cosby_5 = conductivity_cosby_5;
+0390 CAMELS_GB_data.conductivity_cosby_50 = conductivity_cosby_50;
+0391 CAMELS_GB_data.conductivity_cosby_95 = conductivity_cosby_95;
+0392 CAMELS_GB_data.conductivity_hypres = conductivity_hypres;
+0393 CAMELS_GB_data.conductivity_hypres_missing = conductivity_hypres_missing;
+0394 CAMELS_GB_data.conductivity_hypres_5 = conductivity_hypres_5;
+0395 CAMELS_GB_data.conductivity_hypres_50 = conductivity_hypres_50;
+0396 CAMELS_GB_data.conductivity_hypres_95 = conductivity_hypres_95;
+0397 CAMELS_GB_data.root_depth = root_depth;
+0398 CAMELS_GB_data.root_depth_missing = root_depth_missing;
+0399 CAMELS_GB_data.root_depth_5 = root_depth_5;
+0400 CAMELS_GB_data.root_depth_50 = root_depth_50;
+0401 CAMELS_GB_data.root_depth_95 = root_depth_95;
+0402 CAMELS_GB_data.soil_depth_pelletier = soil_depth_pelletier;
+0403 CAMELS_GB_data.soil_depth_pelletier_missing = soil_depth_pelletier_missing;
+0404 CAMELS_GB_data.soil_depth_pelletier_5 = soil_depth_pelletier_5;
+0405 CAMELS_GB_data.soil_depth_pelletier_50 = soil_depth_pelletier_50;
+0406 CAMELS_GB_data.soil_depth_pelletier_95 = soil_depth_pelletier_95;
+0407 
+0408 <span class="comment">% hydrogeology</span>
+0409 CAMELS_GB_data.inter_high_perc = inter_high_perc;
+0410 CAMELS_GB_data.inter_mod_perc = inter_mod_perc;
+0411 CAMELS_GB_data.inter_low_perc = inter_low_perc;
+0412 CAMELS_GB_data.frac_high_perc = frac_high_perc;
+0413 CAMELS_GB_data.frac_mod_perc = frac_mod_perc;
+0414 CAMELS_GB_data.frac_low_perc = frac_low_perc;
+0415 CAMELS_GB_data.no_gw_perc = no_gw_perc;
+0416 CAMELS_GB_data.low_nsig_perc = low_nsig_perc;
+0417 CAMELS_GB_data.nsig_low_perc = nsig_low_perc;
+0418 
+0419 <span class="comment">% hydrometry</span>
+0420 CAMELS_GB_data.station_type = station_type;
+0421 CAMELS_GB_data.flow_period_start = flow_period_start;
+0422 CAMELS_GB_data.flow_period_end = flow_period_end;
+0423 CAMELS_GB_data.flow_perc_complete = flow_perc_complete;
+0424 CAMELS_GB_data.bankfull_flow = bankfull_flow;
+0425 CAMELS_GB_data.structurefull_flow = structurefull_flow;
+0426 CAMELS_GB_data.q5_uncert_upper = q5_uncert_upper;
+0427 CAMELS_GB_data.q5_uncert_lower = q5_uncert_lower;
+0428 CAMELS_GB_data.q25_uncert_upper = q25_uncert_upper;
+0429 CAMELS_GB_data.q25_uncert_lower = q25_uncert_lower;
+0430 CAMELS_GB_data.q50_uncert_upper = q50_uncert_upper;
+0431 CAMELS_GB_data.q50_uncert_lower = q50_uncert_lower;
+0432 CAMELS_GB_data.q75_uncert_upper = q75_uncert_upper;
+0433 CAMELS_GB_data.q75_uncert_lower = q75_uncert_lower;
+0434 CAMELS_GB_data.q95_uncert_upper = q95_uncert_upper;
+0435 CAMELS_GB_data.q95_uncert_lower = q95_uncert_lower;
+0436 CAMELS_GB_data.q99_uncert_upper = q99_uncert_upper;
+0437 CAMELS_GB_data.q99_uncert_lower = q99_uncert_lower;
+0438 CAMELS_GB_data.quncert_meta = quncert_meta;
+0439 
+0440 <span class="comment">% human influences</span>
+0441 CAMELS_GB_data.benchmark_catch = benchmark_catch;
+0442 CAMELS_GB_data.isBenchmark = isBenchmark;
+0443 CAMELS_GB_data.surfacewater_abs = surfacewater_abs;
+0444 CAMELS_GB_data.groundwater_abs = groundwater_abs;
+0445 CAMELS_GB_data.discharges = discharges;
+0446 CAMELS_GB_data.abs_agriculture_perc = abs_agriculture_perc;
+0447 CAMELS_GB_data.abs_amenities_perc = abs_amenities_perc;
+0448 CAMELS_GB_data.abs_energy_perc = abs_energy_perc;
+0449 CAMELS_GB_data.abs_environmental_perc = abs_environmental_perc;
+0450 CAMELS_GB_data.abs_industry_perc = abs_industry_perc;
+0451 CAMELS_GB_data.abs_watersupply_perc = abs_watersupply_perc;
+0452 CAMELS_GB_data.num_reservoir = num_reservoir;
+0453 CAMELS_GB_data.reservoir_cap = reservoir_cap;
+0454 CAMELS_GB_data.reservoir_he = reservoir_he;
+0455 CAMELS_GB_data.reservoir_nav = reservoir_nav;
+0456 CAMELS_GB_data.reservoir_drain = reservoir_drain;
+0457 CAMELS_GB_data.reservoir_wr = reservoir_wr;
+0458 CAMELS_GB_data.reservoir_fs = reservoir_fs;
+0459 CAMELS_GB_data.reservoir_env = reservoir_env;
+0460 CAMELS_GB_data.reservoir_nousedata = reservoir_nousedata;
+0461 CAMELS_GB_data.reservoir_year_first = reservoir_year_first;
+0462 CAMELS_GB_data.reservoir_year_last = reservoir_year_last;
+0463 
+0464 <span class="comment">% hydro-meteorological time series</span>
+0465 CAMELS_GB_data.P = P;
+0466 CAMELS_GB_data.PET = PET;
+0467 CAMELS_GB_data.Q = Q;
+0468 CAMELS_GB_data.T = T;
+0469 
+0470 <span class="comment">% To avoid loading CAMELS from the original files every time, we could also</span>
+0471 <span class="comment">% save the struct file and just load that.</span>
+0472 <span class="comment">% save('./example/example_data/CAMELS_GB_data.mat','CAMELS_GB_data')</span>
+0473 
+0474 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 19-Jan-2021 15:20:39 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

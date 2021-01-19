@@ -38,7 +38,7 @@
    P: precipitation [mm/d]
    PET: potential evapotranspiration (without interception correction) [mm/d]
    Q: streamflow [mm/d]
-   T: T [°C]
+   T: T [degC]
 
    Copyright (C) 2020
    This software is distributed under the GNU Public License Version 3.
@@ -69,7 +69,7 @@ This function is called by:
 0010 <span class="comment">%   P: precipitation [mm/d]</span>
 0011 <span class="comment">%   PET: potential evapotranspiration (without interception correction) [mm/d]</span>
 0012 <span class="comment">%   Q: streamflow [mm/d]</span>
-0013 <span class="comment">%   T: T [°C]</span>
+0013 <span class="comment">%   T: T [degC]</span>
 0014 <span class="comment">%</span>
 0015 <span class="comment">%   Copyright (C) 2020</span>
 0016 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
@@ -83,24 +83,22 @@ This function is called by:
 0024 file_ID = strcat(path,<span class="string">'CAMELS_GB_hydromet_timeseries_'</span>,num2str(ID),<span class="string">'_19701001-20150930.csv'</span>);
 0025 
 0026 <span class="comment">% date    precipitation    pet    temperature    discharge_spec    discharge_vol    peti    humidity    shortwave_rad    longwave_rad    windspeed</span>
-0027 [data,data_str] = xlsread(file_ID);
+0027 data = readtable(file_ID);
 0028 
-0029 formatIn = <span class="string">'dd/mm/yyyy'</span>;
-0030 date = datenum(data_str(2:<span class="keyword">end</span>,1),formatIn);
-0031 
-0032 Q_temp = data(:,4);
-0033 P_temp = data(:,1);
-0034 PET_temp = data(:,2);
-0035 <span class="comment">% PET_temp = data(:,6); % with interception correction</span>
-0036 T_temp = data(:,3);
-0037 
-0038 Q = [date Q_temp];
-0039 P = [date P_temp];
-0040 PET = [date PET_temp];
-0041 T = [date T_temp];
-0042 
-0043 <span class="keyword">end</span>
-0044</pre></div>
-<hr><address>Generated on Mon 18-Jan-2021 07:59:51 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0029 date = datenum(data.date);
+0030 Q_temp = data.discharge_spec;
+0031 P_temp = data.precipitation;
+0032 PET_temp = data.pet;
+0033 <span class="comment">% PET_temp = data.peti; % with interception correction</span>
+0034 T_temp = data.temperature;
+0035 
+0036 Q = [date Q_temp];
+0037 P = [date P_temp];
+0038 PET = [date PET_temp];
+0039 T = [date T_temp];
+0040 
+0041 <span class="keyword">end</span>
+0042</pre></div>
+<hr><address>Generated on Tue 19-Jan-2021 15:20:39 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

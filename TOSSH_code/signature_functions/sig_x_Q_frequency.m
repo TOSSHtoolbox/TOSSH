@@ -67,35 +67,38 @@ if error_flag == 2
 end
 
 % calculate signature
+
+len = length(Q(~isnan(Q))); % total amount of non-NaN values
+
 switch type
     
     case 'no'
         x_Q_num = length(Q(Q==0));
-        x_Q_frequency = x_Q_num/length(Q);
+        x_Q_frequency = x_Q_num/len;
         
     case 'high'        
         Q_high = 9*median(Q,'omitnan');
         x_Q_num = length(Q(Q>Q_high));
-        x_Q_frequency = x_Q_num/length(Q);
+        x_Q_frequency = x_Q_num/len;
         
     case 'low'
         Q_low = 0.2*mean(Q,'omitnan');
         x_Q_num = length(Q(Q<Q_low));
-        x_Q_frequency = x_Q_num/length(Q);
+        x_Q_frequency = x_Q_num/len;
         
     case 'custom_high'
         if isempty(threshold) || numel(threshold) > 1
             error('No/wrong custom threshold specified.')
         end
         x_Q_num = length(Q(Q>threshold));
-        x_Q_frequency = x_Q_num/length(Q);
+        x_Q_frequency = x_Q_num/len;
         
     case 'custom_low'
         if isempty(threshold) || numel(threshold) > 1
             error('No/wrong custom threshold specified.')
         end
         x_Q_num = length(Q(Q<threshold));
-        x_Q_frequency = x_Q_num/length(Q);
+        x_Q_frequency = x_Q_num/len;
         
     otherwise
         error('Incorrect flow frequency type specified.')

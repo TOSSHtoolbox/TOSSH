@@ -76,9 +76,9 @@ end
 error_flag_tmp = error_flag; % temporarily store error flag from data check
 error_str_tmp = error_str;
 % aggregate time series to get annual sums
-[Q_annual, ~, ~, year_length, error_flag, error_str] = ...
+[Q_annual, ~, ~, days_per_year, error_flag, error_str] = ...
     util_AggregateTimeSeries(Q, t, start_water_year);
-[P_annual, ~, ~, year_length, error_flag, error_str] = ...
+[P_annual, ~, ~, days_per_year, error_flag, error_str] = ...
     util_AggregateTimeSeries(P, t, start_water_year);
 if error_flag == 0
     error_flag = error_flag_tmp;
@@ -89,11 +89,11 @@ end
 switch method
     % use year_length to adjust for leap years and incomplete years
     case 'Sanka'
-        dQ = Q_annual./year_length - mean(Q_annual./year_length,'omitnan');
-        dP = P_annual./year_length - mean(P_annual./year_length,'omitnan');
+        dQ = Q_annual./days_per_year - mean(Q_annual./days_per_year,'omitnan');
+        dP = P_annual./days_per_year - mean(P_annual./days_per_year,'omitnan');
     case 'Sawicz'
-        dQ = diff(Q_annual./year_length);
-        dP = diff(P_annual./year_length);
+        dQ = diff(Q_annual./days_per_year);
+        dP = diff(P_annual./days_per_year);
     otherwise
         error('Please choose one of the available methods (Sawicz or Sanka).')
 end

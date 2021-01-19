@@ -53,210 +53,226 @@ end
 
 % topography
 % gauge_id	gauge_name	gauge_lat	gauge_lon	gauge_easting	gauge_northing	gauge_elev	area	dpsbar	elev_mean	elev_min	elev_10	elev_50	elev_90	elev_max
-[camels_GB_topo_data,camels_GB_topo_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_topographic_attributes.csv'));
+% [camels_GB_topo_data,camels_GB_topo_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_topographic_attributes.csv'));
+camels_GB_topo_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_topographic_attributes.csv'));
 
 % climatic indices
 % gauge_id	p_mean	pet_mean	aridity	p_seasonality	frac_snow	high_prec_freq	high_prec_dur	high_prec_timing	low_prec_freq	low_prec_dur	low_prec_timing
-[camels_GB_climate_data,camels_GB_climate_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_climatic_attributes.csv'));
+% [camels_GB_climate_data,camels_GB_climate_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_climatic_attributes.csv'));
+camels_GB_climate_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_climatic_attributes.csv'));
 
 % hydrology
 % gauge_id	q_mean	runoff_ratio	stream_elas	slope_fdc	baseflow_index	baseflow_index_ceh	hfd_mean	Q5	Q95	high_q_freq	high_q_dur	low_q_freq	low_q_dur	zero_q_freq
-[camels_GB_hydro_data,camels_GB_hydro_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrologic_attributes.csv'));
+% [camels_GB_hydro_data,camels_GB_hydro_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrologic_attributes.csv'));
+camels_GB_hydro_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_hydrologic_attributes.csv'));
 
 % land cover
 % gauge_id	dwood_perc	ewood_perc	grass_perc	shrub_perc	crop_perc	urban_perc	inwater_perc	bares_perc	dom_land_cover
-[camels_GB_land_data,camels_GB_land_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_landcover_attributes.csv'));
+% [camels_GB_land_data,camels_GB_land_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_landcover_attributes.csv'));
+camels_GB_land_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_landcover_attributes.csv'));
 
 % soils
 % gauge_id	sand_perc	sand_perc_missing	silt_perc	silt_perc_missing	clay_perc	clay_perc_missing	organic_perc	organic_perc_missing	bulkdens	bulkdens_missing	bulkdens_5	bulkdens_50	bulkdens_95	tawc	tawc_missing	tawc_5	tawc_50	tawc_95	porosity_cosby	porosity_cosby_missing	porosity_cosby_5	porosity_cosby_50	porosity_cosby_95	porosity_hypres	porosity_hypres_missing	porosity_hypres_5	porosity_hypres_50	porosity_hypres_95	conductivity_cosby	conductivity_cosby_missing	conductivity_cosby_5	conductivity_cosby_50	conductivity_cosby_95	conductivity_hypres	conductivity_hypres_missing	conductivity_hypres_5	conductivity_hypres_50	conductivity_hypres_95	root_depth	root_depth_missing	root_depth_5	root_depth_50	root_depth_95	soil_depth_pelletier	soil_depth_pelletier_missing	soil_depth_pelletier_5	soil_depth_pelletier_50	soil_depth_pelletier_95
-[camels_GB_soil_data,camels_GB_soil_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_soil_attributes.csv'));
+% [camels_GB_soil_data,camels_GB_soil_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_soil_attributes.csv'));
+camels_GB_soil_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_soil_attributes.csv'));
 
 % hydrogeology
 % gauge_id	inter_high_perc	inter_mod_perc	inter_low_perc	frac_high_perc	frac_mod_perc	frac_low_perc	no_gw_perc	low_nsig_perc	nsig_low_perc
-[camels_GB_geology_data,camels_GB_geology_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrogeology_attributes.csv'));
+% [camels_GB_geology_data,camels_GB_geology_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrogeology_attributes.csv'));
+camels_GB_geology_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_hydrogeology_attributes.csv'));
 
 % hydrometry data
 % gauge_id	station_type	flow_period_start	flow_period_end	flow_perc_complete	bankfull_flow	structurefull_flow	q5_uncert_upper	q5_uncert_lower	q25_uncert_upper	q25_uncert_lower	q50_uncert_upper	q50_uncert_lower	q75_uncert_upper	q75_uncert_lower	q95_uncert_upper	q95_uncert_lower	q99_uncert_upper	q99_uncert_lower	quncert_meta
-[camels_GB_hydrometry_data,camels_GB_hydrometry_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrometry_attributes.csv'));
+% [camels_GB_hydrometry_data,camels_GB_hydrometry_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_hydrometry_attributes.csv'));
+camels_GB_hydrometry_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_hydrometry_attributes.csv'));
 
 % human influences
 % gauge_id	benchmark_catch	surfacewater_abs	groundwater_abs	discharges	abs_agriculture_perc	abs_amenities_perc	abs_energy_perc	abs_environmental_perc	abs_industry_perc	abs_watersupply_perc	num_reservoir	reservoir_cap	reservoir_he	reservoir_nav	reservoir_drain	reservoir_wr	reservoir_fs	reservoir_env	reservoir_nousedata	reservoir_year_first	reservoir_year_last
-[camels_GB_human_data,camels_GB_human_data_str] = ...
-    xlsread(strcat(path_catchment_attributes,'CAMELS_GB_humaninfluence_attributes.csv'));
+% [camels_GB_human_data,camels_GB_human_data_str] = ...
+%     xlsread(strcat(path_catchment_attributes,'CAMELS_GB_humaninfluence_attributes.csv'));
+camels_GB_human_data = readtable(...
+    strcat(path_catchment_attributes,'CAMELS_GB_humaninfluence_attributes.csv'));
 
 %% extract data from matrices
 
 % topography
-gauge_id = camels_GB_topo_data(:,1);
-gauge_name = camels_GB_topo_data_str(2:end,2); %
-gauge_lat = camels_GB_topo_data(:,3);
-gauge_lon = camels_GB_topo_data(:,4);
-gauge_easting = camels_GB_topo_data(:,5);
-gauge_northing = camels_GB_topo_data(:,6);
-gauge_elev = camels_GB_topo_data(:,7);
-area = camels_GB_topo_data(:,8);
-dpsbar = camels_GB_topo_data(:,9);
-elev_mean = camels_GB_topo_data(:,10);
-elev_min = camels_GB_topo_data(:,11);
-elev_10 = camels_GB_topo_data(:,12);
-elev_50 = camels_GB_topo_data(:,13);
-elev_90 = camels_GB_topo_data(:,14);
-elev_max = camels_GB_topo_data(:,15);
+gauge_id = camels_GB_topo_data.gauge_id;
+gauge_name = camels_GB_topo_data.gauge_name;
+gauge_lat = camels_GB_topo_data.gauge_lat;
+gauge_lon = camels_GB_topo_data.gauge_lon;
+gauge_easting = camels_GB_topo_data.gauge_easting;
+gauge_northing = camels_GB_topo_data.gauge_northing;
+gauge_elev = camels_GB_topo_data.gauge_elev;
+area = camels_GB_topo_data.area;
+dpsbar = camels_GB_topo_data.dpsbar;
+elev_mean = camels_GB_topo_data.elev_mean;
+elev_min = camels_GB_topo_data.elev_min;
+elev_10 = camels_GB_topo_data.elev_10;
+elev_50 = camels_GB_topo_data.elev_50;
+elev_90 = camels_GB_topo_data.elev_90;
+elev_max = camels_GB_topo_data.elev_max;
 
 % climatic indices
-p_mean = camels_GB_climate_data(:,2);
-pet_mean = camels_GB_climate_data(:,3);
-aridity = camels_GB_climate_data(:,4);
-p_seasonality = camels_GB_climate_data(:,5);
-frac_snow = camels_GB_climate_data(:,6);
-high_prec_freq = camels_GB_climate_data(:,7);
-high_prec_dur = camels_GB_climate_data(:,8);
-high_prec_timing = camels_GB_climate_data_str(2:end,9);
-low_prec_freq = camels_GB_climate_data(:,10);
-low_prec_dur = camels_GB_climate_data(:,11);
-low_prec_timing = camels_GB_climate_data_str(2:end,12);
+p_mean = camels_GB_climate_data.p_mean;
+pet_mean = camels_GB_climate_data.pet_mean;
+aridity = camels_GB_climate_data.aridity;
+p_seasonality = camels_GB_climate_data.p_seasonality;
+frac_snow = camels_GB_climate_data.frac_snow;
+high_prec_freq = camels_GB_climate_data.high_prec_freq;
+high_prec_dur = camels_GB_climate_data.high_prec_dur;
+high_prec_timing = camels_GB_climate_data.high_prec_timing;
+low_prec_freq = camels_GB_climate_data.low_prec_freq;
+low_prec_dur = camels_GB_climate_data.low_prec_dur;
+low_prec_timing = camels_GB_climate_data.low_prec_timing;
 
 % hydrological signatures
-q_mean = camels_GB_hydro_data(:,2);
-runoff_ratio = camels_GB_hydro_data(:,3);
-stream_elas = camels_GB_hydro_data(:,4);
-slope_fdc = camels_GB_hydro_data(:,5);
-baseflow_index = camels_GB_hydro_data(:,6);
-baseflow_index_ceh = camels_GB_hydro_data(:,7);
-hfd_mean = camels_GB_hydro_data(:,8);
-q5 = camels_GB_hydro_data(:,9);
-q95 = camels_GB_hydro_data(:,10);
-high_q_freq = camels_GB_hydro_data(:,11);
-high_q_dur = camels_GB_hydro_data(:,12);
-low_q_freq = camels_GB_hydro_data(:,13);
-low_q_dur = camels_GB_hydro_data(:,14);
-zero_q_freq = camels_GB_hydro_data(:,15);
+q_mean = camels_GB_hydro_data.q_mean;
+runoff_ratio = camels_GB_hydro_data.runoff_ratio;
+stream_elas = camels_GB_hydro_data.stream_elas;
+slope_fdc = camels_GB_hydro_data.slope_fdc;
+baseflow_index = camels_GB_hydro_data.baseflow_index;
+baseflow_index_ceh = camels_GB_hydro_data.baseflow_index_ceh;
+hfd_mean = camels_GB_hydro_data.hfd_mean;
+q5 = camels_GB_hydro_data.Q5;
+q95 = camels_GB_hydro_data.Q95;
+high_q_freq = camels_GB_hydro_data.high_q_freq;
+high_q_dur = camels_GB_hydro_data.high_q_dur;
+low_q_freq = camels_GB_hydro_data.low_q_freq;
+low_q_dur = camels_GB_hydro_data.low_q_dur;
+zero_q_freq = camels_GB_hydro_data.zero_q_freq;
 
 % land cover
-dwood_perc = camels_GB_land_data(:,2);
-ewood_perc = camels_GB_land_data(:,3);
-grass_perc = camels_GB_land_data(:,4);
-shrub_perc = camels_GB_land_data(:,5);
-crop_perc = camels_GB_land_data(:,6);
-urban_perc = camels_GB_land_data(:,7);
-inwater_perc = camels_GB_land_data(:,8);
-bares_perc = camels_GB_land_data(:,9);
-dom_land_cover = camels_GB_land_data_str(2:end,10);
+dwood_perc = camels_GB_land_data.dwood_perc;
+ewood_perc = camels_GB_land_data.ewood_perc;
+grass_perc = camels_GB_land_data.grass_perc;
+shrub_perc = camels_GB_land_data.shrub_perc;
+crop_perc = camels_GB_land_data.crop_perc;
+urban_perc = camels_GB_land_data.urban_perc;
+inwater_perc = camels_GB_land_data.inwater_perc;
+bares_perc = camels_GB_land_data.bares_perc;
+dom_land_cover = camels_GB_land_data.dom_land_cover;
 
 % soils
-sand_perc = camels_GB_soil_data(:,2);
-sand_perc_missing = camels_GB_soil_data(:,3);
-silt_perc = camels_GB_soil_data(:,4);
-silt_perc_missing = camels_GB_soil_data(:,5);
-clay_perc = camels_GB_soil_data(:,6);
-clay_perc_missing = camels_GB_soil_data(:,7);
-organic_perc = camels_GB_soil_data(:,8);
-organic_perc_missing = camels_GB_soil_data(:,9);
-bulkdens = camels_GB_soil_data(:,10);
-bulkdens_missing = camels_GB_soil_data(:,11);
-bulkdens_5 = camels_GB_soil_data(:,12);
-bulkdens_50 = camels_GB_soil_data(:,13);
-bulkdens_95 = camels_GB_soil_data(:,14);
-tawc = camels_GB_soil_data(:,15);
-tawc_missing = camels_GB_soil_data(:,16);
-tawc_5 = camels_GB_soil_data(:,17);
-tawc_50 = camels_GB_soil_data(:,18);
-tawc_95 = camels_GB_soil_data(:,19);
-porosity_cosby = camels_GB_soil_data(:,20);
-porosity_cosby_missing = camels_GB_soil_data(:,21);
-porosity_cosby_5 = camels_GB_soil_data(:,22);
-porosity_cosby_50 = camels_GB_soil_data(:,23);
-porosity_cosby_95 = camels_GB_soil_data(:,24);
-porosity_hypres = camels_GB_soil_data(:,25);
-porosity_hypres_missing = camels_GB_soil_data(:,26);
-porosity_hypres_5 = camels_GB_soil_data(:,27);
-porosity_hypres_50 = camels_GB_soil_data(:,28);
-porosity_hypres_95 = camels_GB_soil_data(:,29);
-conductivity_cosby = camels_GB_soil_data(:,30);
-conductivity_cosby_missing = camels_GB_soil_data(:,31);
-conductivity_cosby_5 = camels_GB_soil_data(:,32);
-conductivity_cosby_50 = camels_GB_soil_data(:,33);
-conductivity_cosby_95 = camels_GB_soil_data(:,34);
-conductivity_hypres = camels_GB_soil_data(:,35);
-conductivity_hypres_missing = camels_GB_soil_data(:,36);
-conductivity_hypres_5 = camels_GB_soil_data(:,37);
-conductivity_hypres_50 = camels_GB_soil_data(:,38);
-conductivity_hypres_95 = camels_GB_soil_data(:,39);
-root_depth = camels_GB_soil_data(:,40);
-root_depth_missing = camels_GB_soil_data(:,41);
-root_depth_5 = camels_GB_soil_data(:,42);
-root_depth_50 = camels_GB_soil_data(:,43);
-root_depth_95 = camels_GB_soil_data(:,44);
-soil_depth_pelletier = camels_GB_soil_data(:,45);
-soil_depth_pelletier_missing = camels_GB_soil_data(:,46);
-soil_depth_pelletier_5 = camels_GB_soil_data(:,47);
-soil_depth_pelletier_50 = camels_GB_soil_data(:,48);
-soil_depth_pelletier_95 = camels_GB_soil_data(:,49);
+sand_perc = camels_GB_soil_data.sand_perc;
+sand_perc_missing = camels_GB_soil_data.sand_perc_missing;
+silt_perc = camels_GB_soil_data.silt_perc;
+silt_perc_missing = camels_GB_soil_data.silt_perc_missing;
+clay_perc = camels_GB_soil_data.clay_perc;
+clay_perc_missing = camels_GB_soil_data.clay_perc_missing;
+organic_perc = camels_GB_soil_data.organic_perc;
+organic_perc_missing = camels_GB_soil_data.organic_perc_missing;
+bulkdens = camels_GB_soil_data.bulkdens;
+bulkdens_missing = camels_GB_soil_data.bulkdens_missing;
+bulkdens_5 = camels_GB_soil_data.bulkdens_5;
+bulkdens_50 = camels_GB_soil_data.bulkdens_50;
+bulkdens_95 = camels_GB_soil_data.bulkdens_95;
+tawc = camels_GB_soil_data.tawc;
+tawc_missing = camels_GB_soil_data.tawc_missing;
+tawc_5 = camels_GB_soil_data.tawc_5;
+tawc_50 = camels_GB_soil_data.tawc_50;
+tawc_95 = camels_GB_soil_data.tawc_95;
+porosity_cosby = camels_GB_soil_data.porosity_cosby;
+porosity_cosby_missing = camels_GB_soil_data.porosity_cosby_missing;
+porosity_cosby_5 = camels_GB_soil_data.porosity_cosby_5;
+porosity_cosby_50 = camels_GB_soil_data.porosity_cosby_50;
+porosity_cosby_95 = camels_GB_soil_data.porosity_cosby_95;
+porosity_hypres = camels_GB_soil_data.porosity_hypres;
+porosity_hypres_missing = camels_GB_soil_data.porosity_hypres_missing;
+porosity_hypres_5 = camels_GB_soil_data.porosity_hypres_5;
+porosity_hypres_50 = camels_GB_soil_data.porosity_hypres_50;
+porosity_hypres_95 = camels_GB_soil_data.porosity_hypres_95;
+conductivity_cosby = camels_GB_soil_data.conductivity_cosby;
+conductivity_cosby_missing = camels_GB_soil_data.conductivity_cosby_missing;
+conductivity_cosby_5 = camels_GB_soil_data.conductivity_cosby_5;
+conductivity_cosby_50 = camels_GB_soil_data.conductivity_cosby_50;
+conductivity_cosby_95 = camels_GB_soil_data.conductivity_cosby_95;
+conductivity_hypres = camels_GB_soil_data.conductivity_hypres;
+conductivity_hypres_missing = camels_GB_soil_data.conductivity_hypres_missing;
+conductivity_hypres_5 = camels_GB_soil_data.conductivity_hypres_5;
+conductivity_hypres_50 = camels_GB_soil_data.conductivity_hypres_50;
+conductivity_hypres_95 = camels_GB_soil_data.conductivity_hypres_95;
+root_depth = camels_GB_soil_data.root_depth;
+root_depth_missing = camels_GB_soil_data.root_depth_missing;
+root_depth_5 = camels_GB_soil_data.root_depth_5;
+root_depth_50 = camels_GB_soil_data.root_depth_50;
+root_depth_95 = camels_GB_soil_data.root_depth_95;
+soil_depth_pelletier = camels_GB_soil_data.soil_depth_pelletier;
+soil_depth_pelletier_missing = camels_GB_soil_data.soil_depth_pelletier_missing;
+soil_depth_pelletier_5 = camels_GB_soil_data.soil_depth_pelletier_5;
+soil_depth_pelletier_50 = camels_GB_soil_data.soil_depth_pelletier_50;
+soil_depth_pelletier_95 = camels_GB_soil_data.soil_depth_pelletier_95;
 
 % hydrogeology
-inter_high_perc = camels_GB_geology_data(:,2);
-inter_mod_perc = camels_GB_geology_data(:,3);
-inter_low_perc = camels_GB_geology_data(:,4);
-frac_high_perc = camels_GB_geology_data(:,5);
-frac_mod_perc = camels_GB_geology_data(:,6);
-frac_low_perc = camels_GB_geology_data(:,7);
-no_gw_perc = camels_GB_geology_data(:,8);
-low_nsig_perc = camels_GB_geology_data(:,9);
-nsig_low_perc = camels_GB_geology_data(:,10);
+inter_high_perc = camels_GB_geology_data.inter_high_perc;
+inter_mod_perc = camels_GB_geology_data.inter_mod_perc;
+inter_low_perc = camels_GB_geology_data.inter_low_perc;
+frac_high_perc = camels_GB_geology_data.frac_high_perc;
+frac_mod_perc = camels_GB_geology_data.frac_mod_perc;
+frac_low_perc = camels_GB_geology_data.frac_low_perc;
+no_gw_perc = camels_GB_geology_data.no_gw_perc;
+low_nsig_perc = camels_GB_geology_data.low_nsig_perc;
+nsig_low_perc = camels_GB_geology_data.nsig_low_perc;
 
 % hydrometry
-station_type = camels_GB_hydrometry_data_str(2:end,2);
-flow_period_start = camels_GB_hydrometry_data_str(2:end,3);
-flow_period_end = camels_GB_hydrometry_data_str(2:end,4);
-flow_perc_complete = camels_GB_hydrometry_data(:,5);
-bankfull_flow = camels_GB_hydrometry_data(:,6);
-structurefull_flow = camels_GB_hydrometry_data(:,7);
-q5_uncert_upper = camels_GB_hydrometry_data(:,8);
-q5_uncert_lower = camels_GB_hydrometry_data(:,9);
-q25_uncert_upper = camels_GB_hydrometry_data(:,10);
-q25_uncert_lower = camels_GB_hydrometry_data(:,11);
-q50_uncert_upper = camels_GB_hydrometry_data(:,12);
-q50_uncert_lower = camels_GB_hydrometry_data(:,13);
-q75_uncert_upper = camels_GB_hydrometry_data(:,14);
-q75_uncert_lower = camels_GB_hydrometry_data(:,15);
-q95_uncert_upper = camels_GB_hydrometry_data(:,16);
-q95_uncert_lower = camels_GB_hydrometry_data(:,17);
-q99_uncert_upper = camels_GB_hydrometry_data(:,18);
-q99_uncert_lower = camels_GB_hydrometry_data(:,19);
-quncert_meta = camels_GB_hydrometry_data_str(2:end,20);
+station_type = camels_GB_hydrometry_data.station_type;
+flow_period_start = camels_GB_hydrometry_data.flow_period_start;
+flow_period_end = camels_GB_hydrometry_data.flow_period_end;
+flow_perc_complete = camels_GB_hydrometry_data.flow_perc_complete;
+bankfull_flow = camels_GB_hydrometry_data.bankfull_flow;
+structurefull_flow = camels_GB_hydrometry_data.structurefull_flow;
+q5_uncert_upper = camels_GB_hydrometry_data.q5_uncert_upper;
+q5_uncert_lower = camels_GB_hydrometry_data.q5_uncert_lower;
+q25_uncert_upper = camels_GB_hydrometry_data.q25_uncert_upper;
+q25_uncert_lower = camels_GB_hydrometry_data.q25_uncert_lower;
+q50_uncert_upper = camels_GB_hydrometry_data.q50_uncert_upper;
+q50_uncert_lower = camels_GB_hydrometry_data.q50_uncert_lower;
+q75_uncert_upper = camels_GB_hydrometry_data.q75_uncert_upper;
+q75_uncert_lower = camels_GB_hydrometry_data.q75_uncert_lower;
+q95_uncert_upper = camels_GB_hydrometry_data.q95_uncert_upper;
+q95_uncert_lower = camels_GB_hydrometry_data.q95_uncert_lower;
+q99_uncert_upper = camels_GB_hydrometry_data.q99_uncert_upper;
+q99_uncert_lower = camels_GB_hydrometry_data.q99_uncert_lower;
+quncert_meta = camels_GB_hydrometry_data.quncert_meta;
 
 % human influences
-benchmark_catch = camels_GB_human_data_str(2:end,2);
+benchmark_catch = camels_GB_human_data.benchmark_catch;
 isBenchmark = zeros(size(benchmark_catch));
 isBenchmark(strcmp('Y',benchmark_catch)) = 1;
 isBenchmark = logical(isBenchmark);
-surfacewater_abs = camels_GB_human_data(:,3);
-groundwater_abs = camels_GB_human_data(:,4);
-discharges = camels_GB_human_data(:,5);
-abs_agriculture_perc = camels_GB_human_data(:,6);
-abs_amenities_perc = camels_GB_human_data(:,7);
-abs_energy_perc = camels_GB_human_data(:,8);
-abs_environmental_perc = camels_GB_human_data(:,9);
-abs_industry_perc = camels_GB_human_data(:,10);
-abs_watersupply_perc = camels_GB_human_data(:,11);
-num_reservoir = camels_GB_human_data(:,12);
-reservoir_cap = camels_GB_human_data(:,13);
-reservoir_he = camels_GB_human_data(:,14);
-reservoir_nav = camels_GB_human_data(:,15);
-reservoir_drain = camels_GB_human_data(:,16);
-reservoir_wr = camels_GB_human_data(:,17);
-reservoir_fs = camels_GB_human_data(:,18);
-reservoir_env = camels_GB_human_data(:,19);
-reservoir_nousedata = camels_GB_human_data(:,20);
-reservoir_year_first = camels_GB_human_data(:,21);
-reservoir_year_last = camels_GB_human_data(:,22);
+surfacewater_abs = camels_GB_human_data.surfacewater_abs;
+groundwater_abs = camels_GB_human_data.groundwater_abs;
+discharges = camels_GB_human_data.discharges;
+abs_agriculture_perc = camels_GB_human_data.abs_agriculture_perc;
+abs_amenities_perc = camels_GB_human_data.abs_energy_perc;
+abs_energy_perc = camels_GB_human_data.abs_energy_perc;
+abs_environmental_perc = camels_GB_human_data.abs_environmental_perc;
+abs_industry_perc = camels_GB_human_data.abs_industry_perc;
+abs_watersupply_perc = camels_GB_human_data.abs_watersupply_perc;
+num_reservoir = camels_GB_human_data.num_reservoir;
+reservoir_cap = camels_GB_human_data.reservoir_cap;
+reservoir_he = camels_GB_human_data.reservoir_he;
+reservoir_nav = camels_GB_human_data.reservoir_nav;
+reservoir_drain = camels_GB_human_data.reservoir_drain;
+reservoir_wr = camels_GB_human_data.reservoir_wr;
+reservoir_fs = camels_GB_human_data.reservoir_fs;
+reservoir_env = camels_GB_human_data.reservoir_env;
+reservoir_nousedata = camels_GB_human_data.reservoir_nousedata;
+reservoir_year_first = camels_GB_human_data.reservoir_year_first;
+reservoir_year_last = camels_GB_human_data.reservoir_year_last;
 
 %% Load hydro-meteorological time series
 % To extract the time series, we loop over all catchments. 
@@ -398,7 +414,7 @@ CAMELS_GB_data.frac_mod_perc = frac_mod_perc;
 CAMELS_GB_data.frac_low_perc = frac_low_perc;
 CAMELS_GB_data.no_gw_perc = no_gw_perc;
 CAMELS_GB_data.low_nsig_perc = low_nsig_perc;
-CAMELS_GB_data.low_nsig_perc = low_nsig_perc;
+CAMELS_GB_data.nsig_low_perc = nsig_low_perc;
 
 % hydrometry
 CAMELS_GB_data.station_type = station_type;

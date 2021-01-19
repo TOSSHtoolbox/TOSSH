@@ -76,7 +76,7 @@ figure_type = ip.Results.figure_type;
 %% plotting
 index = [1:length(z)]';
 
-fig = figure('Name',figure_name,'NumberTitle','off','pos',[10 10 350 500]);
+fig = figure('Name',figure_name,'NumberTitle','off','pos',[100 100 350 500]);
 ax = axesm('MapProjection','mercator','MapLatLimit',[49 60],'MapLonLimit',[-9 3]);
 states = shaperead('great_britain_50m.shp', 'UseGeoCoords', true);
 geoshow(ax, states, ...

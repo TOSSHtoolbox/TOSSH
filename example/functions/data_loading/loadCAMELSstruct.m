@@ -58,129 +58,135 @@ end
 
 % topography
 % gauge_id;gauge_lat;gauge_lon;elev_mean;slope_mean;area_gages2;area_geospa_fabric
-file_ID_topo = fopen(strcat(path_catchment_attributes,'camels_topo.txt'),'r');
-file_topo = fread(file_ID_topo,'*char');
-file_topo = strrep(file_topo','NA','NaN'); % replace NA with NaN
-camels_topo_data = textscan(file_topo,'%f %f %f %f %f %f %f',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_topo);
+% file_ID_topo = fopen(strcat(path_catchment_attributes,'camels_topo.txt'),'r');
+% file_topo = fread(file_ID_topo,'*char');
+% file_topo = strrep(file_topo','NA','NaN'); % replace NA with NaN
+% camels_topo_data = textscan(file_topo,'%f %f %f %f %f %f %f',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_topo);
+camels_topo_data = readtable(strcat(path_catchment_attributes,'camels_topo.txt'));
 
 % climate
 % gauge_id;p_mean;pet_mean;p_seasonality;frac_snow;aridity;high_prec_freq;high_prec_dur;high_prec_timing;low_prec_freq;low_prec_dur;low_prec_timing
-file_ID_clim = fopen(strcat(path_catchment_attributes,'camels_clim.txt'),'r');
-file_clim = fread(file_ID_clim,'*char');
-file_clim = strrep(file_clim','NA','NaN'); % replace NA with NaN
-camels_climate_data = textscan(file_clim,'%f %f %f %f %f %f %f %f %s %f %f %s',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_clim);
+% file_ID_clim = fopen(strcat(path_catchment_attributes,'camels_clim.txt'),'r');
+% file_clim = fread(file_ID_clim,'*char');
+% file_clim = strrep(file_clim','NA','NaN'); % replace NA with NaN
+% camels_climate_data = textscan(file_clim,'%f %f %f %f %f %f %f %f %s %f %f %s',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_clim);
+camels_climate_data = readtable(strcat(path_catchment_attributes,'camels_clim.txt'));
 
 % hydrology
 % gauge_id;q_mean;runoff_ratio;slope_fdc;baseflow_index;stream_elas;q5;q95;high_q_freq;high_q_dur;low_q_freq;low_q_dur;zero_q_freq;hfd_mean
-file_ID_hydro = fopen(strcat(path_catchment_attributes,'camels_hydro.txt'),'r');
-file_hydro = fread(file_ID_hydro,'*char');
-file_hydro = strrep(file_hydro','NA','NaN'); % replace NA with NaN
-camels_hydro_data = textscan(file_hydro,'%f %f %f %f %f %f %f %f %f %f %f %f %f %f',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_hydro);
+% file_ID_hydro = fopen(strcat(path_catchment_attributes,'camels_hydro.txt'),'r');
+% file_hydro = fread(file_ID_hydro,'*char');
+% file_hydro = strrep(file_hydro','NA','NaN'); % replace NA with NaN
+% camels_hydro_data = textscan(file_hydro,'%f %f %f %f %f %f %f %f %f %f %f %f %f %f',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_hydro);
+camels_hydro_data = readtable(strcat(path_catchment_attributes,'camels_hydro.txt'));
 
 % soils
 % gauge_id;soil_depth_pelletier;soil_depth_statsgo;soil_porosity;soil_conductivity;max_water_content;sand_frac;silt_frac;clay_frac;water_frac;organic_frac;other_frac
-file_ID_soil = fopen(strcat(path_catchment_attributes,'camels_soil.txt'),'r');
-file_soil = fread(file_ID_soil,'*char');
-file_soil = strrep(file_soil','NA','NaN'); % replace NA with NaN
-camels_soil_data = textscan(file_soil,'%f %f %f %f %f %f %f %f %f %f %f %f',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_soil);
+% file_ID_soil = fopen(strcat(path_catchment_attributes,'camels_soil.txt'),'r');
+% file_soil = fread(file_ID_soil,'*char');
+% file_soil = strrep(file_soil','NA','NaN'); % replace NA with NaN
+% camels_soil_data = textscan(file_soil,'%f %f %f %f %f %f %f %f %f %f %f %f',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_soil);
+camels_soil_data = readtable(strcat(path_catchment_attributes,'camels_soil.txt'));
 
 % geology
 % gauge_id;geol_1st_class;glim_1st_class_frac;geol_2nd_class;glim_2nd_class_frac;carbonate_rocks_frac;geol_porostiy;geol_permeability
-file_ID_geol = fopen(strcat(path_catchment_attributes,'camels_geol.txt'),'r');
-file_geol = fread(file_ID_geol,'*char');
-file_geol = strrep(file_geol','NA','NaN'); % replace NA with NaN
-camels_geol_data = textscan(file_geol,'%f %s %f %s %f %f %f %f',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_geol);
+% file_ID_geol = fopen(strcat(path_catchment_attributes,'camels_geol.txt'),'r');
+% file_geol = fread(file_ID_geol,'*char');
+% file_geol = strrep(file_geol','NA','NaN'); % replace NA with NaN
+% camels_geol_data = textscan(file_geol,'%f %s %f %s %f %f %f %f',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_geol);
+camels_geol_data = readtable(strcat(path_catchment_attributes,'camels_geol.txt'));
 
 % vegetation
 % gauge_id;frac_forest;lai_max;lai_diff;gvf_max;gvf_diff;dom_land_cover_frac;dom_land_cover;root_depth_50;root_depth_99
-file_ID_vege = fopen(strcat(path_catchment_attributes,'camels_vege.txt'),'r');
-file_vege = fread(file_ID_vege,'*char');
-file_vege = strrep(file_vege','NA','NaN'); % replace NA with NaN
-camels_vege_data = textscan(file_vege,'%f %f %f %f %f %f %f %s %f %f',...
-    'Delimiter',';','headerlines',1);
-fclose(file_ID_vege);
+% file_ID_vege = fopen(strcat(path_catchment_attributes,'camels_vege.txt'),'r');
+% file_vege = fread(file_ID_vege,'*char');
+% file_vege = strrep(file_vege','NA','NaN'); % replace NA with NaN
+% camels_vege_data = textscan(file_vege,'%f %f %f %f %f %f %f %s %f %f',...
+%     'Delimiter',';','headerlines',1);
+% fclose(file_ID_vege);
+camels_vege_data = readtable(strcat(path_catchment_attributes,'camels_vege.txt'));
 
 % We then create arrays containing the catchment attributes and metadata.
 gauge_id = camels_climate_data{:,1};
 
 % topography
-gauge_lat = camels_topo_data{:,2};
-gauge_lon = camels_topo_data{:,3};
-elev_mean = camels_topo_data{:,4};
-slope_mean = camels_topo_data{:,5};
-area_gages2 = camels_topo_data{:,6};
-area_geospa_fabric = camels_topo_data{:,7};
+gauge_lat = camels_topo_data.gauge_lat;
+gauge_lon = camels_topo_data.gauge_lon;
+elev_mean = camels_topo_data.elev_mean;
+slope_mean = camels_topo_data.slope_mean;
+area_gages2 = camels_topo_data.area_gages2;
+area_geospa_fabric = camels_topo_data.area_geospa_fabric;
 
 % climate
-p_mean = (camels_climate_data{:,2});
-pet_mean = (camels_climate_data{:,3});
-p_seasonality = (camels_climate_data{:,4});
-frac_snow = (camels_climate_data{:,5});
-aridity = (camels_climate_data{:,6});
-high_prec_freq = (camels_climate_data{:,7});
-high_prec_dur = (camels_climate_data{:,8});
-high_prec_timing = (camels_climate_data{:,9});
-low_prec_freq = (camels_climate_data{:,10});
-low_prec_dur = (camels_climate_data{:,11});
-low_prec_timing = (camels_climate_data{:,12});
+p_mean = camels_climate_data.p_mean;
+pet_mean = camels_climate_data.pet_mean;
+p_seasonality = camels_climate_data.p_seasonality;
+frac_snow = camels_climate_data.frac_snow;
+aridity = camels_climate_data.aridity;
+high_prec_freq = camels_climate_data.high_prec_freq;
+high_prec_dur = camels_climate_data.high_prec_dur;
+high_prec_timing = camels_climate_data.high_prec_timing;
+low_prec_freq = camels_climate_data.low_prec_freq;
+low_prec_dur = camels_climate_data.low_prec_dur;
+low_prec_timing = camels_climate_data.low_prec_timing;
 
 % hydrology
-q_mean = (camels_hydro_data{:,2});
-runoff_ratio = (camels_hydro_data{:,3});
-slope_fdc = (camels_hydro_data{:,4});
-baseflow_index = (camels_hydro_data{:,5});
-stream_elas = (camels_hydro_data{:,6});
-q5 = (camels_hydro_data{:,7});
-q95 = (camels_hydro_data{:,8});
-high_q_freq = (camels_hydro_data{:,9});
-high_q_dur = (camels_hydro_data{:,10});
-low_q_freq = (camels_hydro_data{:,11});
-low_q_dur = (camels_hydro_data{:,12});
-zero_q_freq = (camels_hydro_data{:,13});
-hfd_mean = (camels_hydro_data{:,14});
+q_mean = camels_hydro_data.q_mean;
+runoff_ratio = camels_hydro_data.runoff_ratio;
+slope_fdc = camels_hydro_data.slope_fdc;
+baseflow_index = camels_hydro_data.baseflow_index;
+stream_elas = camels_hydro_data.stream_elas;
+q5 = camels_hydro_data.q5;
+q95 = camels_hydro_data.q95;
+high_q_freq = camels_hydro_data.high_q_freq;
+high_q_dur = camels_hydro_data.high_q_dur;
+low_q_freq = camels_hydro_data.low_q_freq;
+low_q_dur = camels_hydro_data.low_q_dur;
+zero_q_freq = camels_hydro_data.zero_q_freq;
+hfd_mean = camels_hydro_data.hfd_mean;
 
 % soil
-soil_depth_pelletier = (camels_soil_data{:,2});
-soil_depth_statsgo = (camels_soil_data{:,3});
-soil_porosity = (camels_soil_data{:,4});
-soil_conductivity = (camels_soil_data{:,5});
-max_water_content = (camels_soil_data{:,6});
-sand_frac = (camels_soil_data{:,7});
-silt_frac = (camels_soil_data{:,8});
-clay_frac = (camels_soil_data{:,9});
-water_frac = (camels_soil_data{:,10});
-organic_frac = (camels_soil_data{:,11});
-other_frac = (camels_soil_data{:,12});
+soil_depth_pelletier = camels_soil_data.soil_depth_pelletier;
+soil_depth_statsgo = camels_soil_data.soil_depth_statsgo;
+soil_porosity = camels_soil_data.soil_porosity;
+soil_conductivity = camels_soil_data.soil_conductivity;
+max_water_content = camels_soil_data.max_water_content;
+sand_frac = camels_soil_data.sand_frac;
+silt_frac = camels_soil_data.silt_frac;
+clay_frac = camels_soil_data.clay_frac;
+water_frac = camels_soil_data.water_frac;
+organic_frac = camels_soil_data.organic_frac;
+other_frac = camels_soil_data.other_frac;
 
 % geology
-geol_1st_class = (camels_geol_data{:,2});
-glim_1st_class_frac = (camels_geol_data{:,3});
-geol_2nd_class = (camels_geol_data{:,4});
-glim_2nd_class_frac = (camels_geol_data{:,5});
-carbonate_rocks_frac = (camels_geol_data{:,6});
-geol_porosity = (camels_geol_data{:,7});
-geol_permeability = (camels_geol_data{:,8});
+geol_1st_class = camels_geol_data.geol_1st_class;
+glim_1st_class_frac = camels_geol_data.glim_1st_class_frac;
+geol_2nd_class = camels_geol_data.geol_2nd_class;
+glim_2nd_class_frac = camels_geol_data.glim_2nd_class_frac;
+carbonate_rocks_frac = camels_geol_data.carbonate_rocks_frac;
+geol_porosity = camels_geol_data.geol_porostiy;
+geol_permeability = camels_geol_data.geol_permeability;
 
 % vegetation
-frac_forest = (camels_vege_data{:,2});
-lai_max = (camels_vege_data{:,3});
-lai_diff = (camels_vege_data{:,4});
-gvf_max = (camels_vege_data{:,5});
-gvf_diff = (camels_vege_data{:,6});
-dom_land_cover_frac = (camels_vege_data{:,7});
-dom_land_cover = (camels_vege_data{:,8});
-root_depth_50 = (camels_vege_data{:,9});
-root_depth_99 = (camels_vege_data{:,10});
+frac_forest = camels_vege_data.frac_forest;
+lai_max = camels_vege_data.lai_max;
+lai_diff = camels_vege_data.lai_diff;
+gvf_max = camels_vege_data.gvf_max;
+gvf_diff = camels_vege_data.gvf_diff;
+dom_land_cover_frac = camels_vege_data.dom_land_cover_frac;
+dom_land_cover = camels_vege_data.dom_land_cover;
+root_depth_50 = camels_vege_data.root_depth_50;
+root_depth_99 = camels_vege_data.root_depth_99;
 
 %% Load hydro-meteorological time series
 % To extract the time series, we loop over all catchments. We also
