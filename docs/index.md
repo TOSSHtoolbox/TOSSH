@@ -7,7 +7,7 @@ nav: false
 
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/TOSSHtoolbox/TOSSH/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/319343774.svg)](https://zenodo.org/badge/latestdoi/319343774)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4451846.svg)](https://doi.org/10.5281/zenodo.4451846)
 
 
 This documentation gives a technical overview of TOSSH: A Toolbox for Streamflow Signatures in Hydrology (Gnann et al., submitted).
