@@ -83,11 +83,11 @@ end
 
 % calculate signature
 % get ranks as a proxy for exceedance probabilities  
-Q = Q(~isnan(Q)); % remove NaN values 
-Q_sorted = sort(Q);
-Q_ranked = [1:length(Q)]'; % give unique (random) rank to every measurement
+Q_tmp = Q(~isnan(Q)); % remove NaN values 
+Q_sorted = sort(Q_tmp);
+Q_ranked = [1:length(Q_tmp)]'; % give unique (random) rank to every measurement
 FDC = 1 - Q_ranked./length(Q_ranked); % flow duration curve with unique ranks
-Q_median = median(Q,'omitnan'); %
+Q_median = median(Q_tmp,'omitnan'); 
 
 % slope of FDC between upper and lower percentile
 indices = 1:length(FDC);
@@ -115,6 +115,12 @@ if ~isfinite(FDC_slope)
     error_flag = 3;
     error_str = ['Error: FDC slope could not be calculated, probably because flow is intermittent. ', error_str];
     return
+end
+
+% add warning for intermittent streams
+if length(Q_tmp(Q_tmp==0)) > length(Q_tmp)*0.05
+    error_flag = 2;
+    error_str = ['Warning: Flow is zero at least 5% of the time (intermittent flow). ', error_str];
 end
 
 % optional plotting

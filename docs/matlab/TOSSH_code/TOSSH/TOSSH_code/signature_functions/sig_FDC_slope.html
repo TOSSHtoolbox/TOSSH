@@ -166,11 +166,11 @@ This function is called by:
 0083 
 0084 <span class="comment">% calculate signature</span>
 0085 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
-0086 Q = Q(~isnan(Q)); <span class="comment">% remove NaN values</span>
-0087 Q_sorted = sort(Q);
-0088 Q_ranked = [1:length(Q)]'; <span class="comment">% give unique (random) rank to every measurement</span>
+0086 Q_tmp = Q(~isnan(Q)); <span class="comment">% remove NaN values</span>
+0087 Q_sorted = sort(Q_tmp);
+0088 Q_ranked = [1:length(Q_tmp)]'; <span class="comment">% give unique (random) rank to every measurement</span>
 0089 FDC = 1 - Q_ranked./length(Q_ranked); <span class="comment">% flow duration curve with unique ranks</span>
-0090 Q_median = median(Q,<span class="string">'omitnan'</span>); <span class="comment">%</span>
+0090 Q_median = median(Q_tmp,<span class="string">'omitnan'</span>); 
 0091 
 0092 <span class="comment">% slope of FDC between upper and lower percentile</span>
 0093 indices = 1:length(FDC);
@@ -200,30 +200,36 @@ This function is called by:
 0117     <span class="keyword">return</span>
 0118 <span class="keyword">end</span>
 0119 
-0120 <span class="comment">% optional plotting</span>
-0121 <span class="keyword">if</span> plot_results
-0122     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
-0123     <span class="keyword">if</span> fitLogSpace
-0124         plot(FDC,log(Q_sorted./Q_median),<span class="string">'linewidth'</span>,1.0)
-0125         x = FDC(bound_low):0.001:FDC(bound_upp);
-0126         c = log(Q_sorted(bound_low)./Q_median) - FDC_slope.*FDC(bound_low);
-0127         y = FDC_slope.*x + c;
-0128         ylabel(<span class="string">'log(Q/median(Q)) [-]'</span>)
-0129     <span class="keyword">else</span>
-0130         plot(FDC,(Q_sorted./Q_median),<span class="string">'linewidth'</span>,1.0)
+0120 <span class="comment">% add warning for intermittent streams</span>
+0121 <span class="keyword">if</span> length(Q_tmp(Q_tmp==0)) &gt; length(Q_tmp)*0.05
+0122     error_flag = 2;
+0123     error_str = [<span class="string">'Warning: Flow is zero at least 5% of the time (intermittent flow). '</span>, error_str];
+0124 <span class="keyword">end</span>
+0125 
+0126 <span class="comment">% optional plotting</span>
+0127 <span class="keyword">if</span> plot_results
+0128     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
+0129     <span class="keyword">if</span> fitLogSpace
+0130         plot(FDC,log(Q_sorted./Q_median),<span class="string">'linewidth'</span>,1.0)
 0131         x = FDC(bound_low):0.001:FDC(bound_upp);
-0132         c = (Q_sorted(bound_low)./Q_median) - FDC_slope.*FDC(bound_low);
+0132         c = log(Q_sorted(bound_low)./Q_median) - FDC_slope.*FDC(bound_low);
 0133         y = FDC_slope.*x + c;
-0134         ylabel(<span class="string">'Q/median(Q) [-]'</span>)
-0135     <span class="keyword">end</span>
-0136     plot(x,y,<span class="string">'--'</span>,<span class="string">'linewidth'</span>,2)
-0137     legend(<span class="string">'FDC'</span>,<span class="string">'Fitted slope'</span>)
-0138     xlabel(<span class="string">'Exceedance probability [-]'</span>)
-0139     fig_handles.FDC_slope = fig;
-0140 <span class="keyword">end</span>
-0141 
-0142 <span class="keyword">end</span>
-0143</pre></div>
-<hr><address>Generated on Tue 19-Jan-2021 15:20:26 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0134         ylabel(<span class="string">'log(Q/median(Q)) [-]'</span>)
+0135     <span class="keyword">else</span>
+0136         plot(FDC,(Q_sorted./Q_median),<span class="string">'linewidth'</span>,1.0)
+0137         x = FDC(bound_low):0.001:FDC(bound_upp);
+0138         c = (Q_sorted(bound_low)./Q_median) - FDC_slope.*FDC(bound_low);
+0139         y = FDC_slope.*x + c;
+0140         ylabel(<span class="string">'Q/median(Q) [-]'</span>)
+0141     <span class="keyword">end</span>
+0142     plot(x,y,<span class="string">'--'</span>,<span class="string">'linewidth'</span>,2)
+0143     legend(<span class="string">'FDC'</span>,<span class="string">'Fitted slope'</span>)
+0144     xlabel(<span class="string">'Exceedance probability [-]'</span>)
+0145     fig_handles.FDC_slope = fig;
+0146 <span class="keyword">end</span>
+0147 
+0148 <span class="keyword">end</span>
+0149</pre></div>
+<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

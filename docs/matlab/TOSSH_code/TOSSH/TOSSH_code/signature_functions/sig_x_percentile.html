@@ -138,9 +138,9 @@ This function is called by:
 0064 p = 1 - x./100; <span class="comment">% transform to get exceedance probability</span>
 0065 
 0066 <span class="comment">% get ranks as a proxy for exceedance probabilities</span>
-0067 Q = Q(~isnan(Q)); <span class="comment">% remove NaN values</span>
-0068 Q_sorted = sort(Q);
-0069 Q_ranked = [1:length(Q)]'; <span class="comment">% give unique (random) rank to every measurement</span>
+0067 Q_tmp = Q(~isnan(Q)); <span class="comment">% remove NaN values</span>
+0068 Q_sorted = sort(Q_tmp);
+0069 Q_ranked = [1:length(Q_tmp)]'; <span class="comment">% give unique (random) rank to every measurement</span>
 0070 FDC = 1 - Q_ranked./length(Q_ranked); <span class="comment">% flow duration curve</span>
 0071 
 0072 <span class="comment">% find x-th flow percentile</span>
@@ -156,8 +156,14 @@ This function is called by:
 0082 
 0083 Q_x = NaN(size(p)); 
 0084 Q_x(~isnan(bound_x)) = Q_sorted(bound_x(~isnan(bound_x)));
-0085     
-0086 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Tue 19-Jan-2021 15:20:26 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0085 
+0086 <span class="comment">% add warning for intermittent streams</span>
+0087 <span class="keyword">if</span> length(Q_tmp(Q_tmp==0)) &gt; length(Q_tmp)*0.05
+0088     error_flag = 2;
+0089     error_str = [<span class="string">'Warning: Flow is zero at least 5% of the time (intermittent flow). '</span>, error_str];
+0090 <span class="keyword">end</span>
+0091     
+0092 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

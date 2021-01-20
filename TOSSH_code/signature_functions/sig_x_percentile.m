@@ -64,9 +64,9 @@ end
 p = 1 - x./100; % transform to get exceedance probability
 
 % get ranks as a proxy for exceedance probabilities   
-Q = Q(~isnan(Q)); % remove NaN values 
-Q_sorted = sort(Q);
-Q_ranked = [1:length(Q)]'; % give unique (random) rank to every measurement
+Q_tmp = Q(~isnan(Q)); % remove NaN values 
+Q_sorted = sort(Q_tmp);
+Q_ranked = [1:length(Q_tmp)]'; % give unique (random) rank to every measurement
 FDC = 1 - Q_ranked./length(Q_ranked); % flow duration curve
 
 % find x-th flow percentile
@@ -82,5 +82,11 @@ end
 
 Q_x = NaN(size(p)); 
 Q_x(~isnan(bound_x)) = Q_sorted(bound_x(~isnan(bound_x)));
+
+% add warning for intermittent streams
+if length(Q_tmp(Q_tmp==0)) > length(Q_tmp)*0.05
+    error_flag = 2;
+    error_str = ['Warning: Flow is zero at least 5% of the time (intermittent flow). ', error_str];
+end
     
 end
