@@ -16,6 +16,7 @@ function [AverageStorage, error_flag, error_str, fig_handles] = ...
 %   P: precipitation [mm/timestep]
 %   PET: potential evapotranspiration [mm/timestep]
 %   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)
 %   field_capacity: field capacity [mm]
 %   plot_results: whether to plot results, default = false
 %
@@ -68,10 +69,13 @@ addRequired(ip, 'P', @(P) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 addRequired(ip, 'PET', @(PET) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 
 % optional input arguments
+validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && floor(x)==x;
+addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start? Default: 10
 addParameter(ip, 'field_capacity', [], @isnumeric) % field capacity for scaling PET to AET
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q, t, P, PET, varargin{:})
+start_water_year = ip.Results.start_water_year;
 field_capacity = ip.Results.field_capacity;
 plot_results = ip.Results.plot_results;
 
@@ -132,11 +136,11 @@ end
 storage_discharge = storage_discharge(good_points,:);
 storage_discharge_datetime = storage_discharge_datetime(good_points,:);
 
-[water_year] = util_WaterYear(storage_discharge_datetime(:,1), 'WY_start_month', 10);
+[water_year] = util_WaterYear(storage_discharge_datetime(:,1), 'WY_start_month', start_water_year);
 
 % fit baseflow-storage relationship for combined water years, each with
 % different intercept but a single slope
-% S=m*LN(Q) + b
+% S = m*ln(Q) + b
 WY_unique = unique(water_year);
 p_mat = zeros(length(storage_discharge),length(WY_unique));
 for i = 1:length(storage_discharge)

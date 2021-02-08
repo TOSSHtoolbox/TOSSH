@@ -38,7 +38,7 @@
    Q: streamflow [mm/timestep]
    t: time [Matlab datenum]
    OPTIONAL
-   start_month: starting month, default = 10 (October)
+   start_water_year: first month of water year, default = 10 (October)
 
    OUTPUT
    HFI_mean: mean half flow interval [days]
@@ -52,7 +52,7 @@
    Q = data.Q; 
    t = data.t;
    HFI_mean = sig_HFI_mean(Q,t);
-   HFI_mean = sig_HFI_mean(Q,t,'start_month',1);
+   HFI_mean = sig_HFI_mean(Q,t,'start_water_year',1);
 
    References
    Court, A., 1962. Measures of streamflow timing. Journal of Geophysical 
@@ -87,7 +87,7 @@ This function is called by:
 0010 <span class="comment">%   Q: streamflow [mm/timestep]</span>
 0011 <span class="comment">%   t: time [Matlab datenum]</span>
 0012 <span class="comment">%   OPTIONAL</span>
-0013 <span class="comment">%   start_month: starting month, default = 10 (October)</span>
+0013 <span class="comment">%   start_water_year: first month of water year, default = 10 (October)</span>
 0014 <span class="comment">%</span>
 0015 <span class="comment">%   OUTPUT</span>
 0016 <span class="comment">%   HFI_mean: mean half flow interval [days]</span>
@@ -101,7 +101,7 @@ This function is called by:
 0024 <span class="comment">%   Q = data.Q;</span>
 0025 <span class="comment">%   t = data.t;</span>
 0026 <span class="comment">%   HFI_mean = sig_HFI_mean(Q,t);</span>
-0027 <span class="comment">%   HFI_mean = sig_HFI_mean(Q,t,'start_month',1);</span>
+0027 <span class="comment">%   HFI_mean = sig_HFI_mean(Q,t,'start_water_year',1);</span>
 0028 <span class="comment">%</span>
 0029 <span class="comment">%   References</span>
 0030 <span class="comment">%   Court, A., 1962. Measures of streamflow timing. Journal of Geophysical</span>
@@ -126,66 +126,63 @@ This function is called by:
 0049 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1)) 
 0050 
 0051 <span class="comment">% optional input arguments</span>
-0052 addParameter(ip, <span class="string">'start_month'</span>, 10, @(month) isnumeric(month) &amp;&amp; numel(month)==1) 
-0053 
-0054 parse(ip, Q, t, varargin{:})
-0055 start_month = ip.Results.start_month;
-0056 
-0057 <span class="comment">% data checks</span>
-0058 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
-0059 <span class="keyword">if</span> error_flag == 2
-0060     HFI_mean = NaN;
-0061     <span class="keyword">return</span>
-0062 <span class="keyword">end</span>
-0063 timestep_days = days(timestep); <span class="comment">% adjust for timestep</span>
-0064 
-0065 <span class="keyword">if</span> any(start_month&lt;1 | start_month&gt;12) || any(floor(start_month)~=start_month)
-0066     error(<span class="string">'Month has to be a vector containing integers between 1 and 12.'</span>)
-0067 <span class="keyword">end</span>
-0068 
-0069 <span class="comment">% calculate signature</span>
-0070 <span class="comment">% get individual years</span>
-0071 [year_vec, month_vec, day_vec] = ymd(t);
-0072 year_start = min(year_vec);
-0073 year_end = max(year_vec);
-0074 year_list = [year_start:year_end]';
-0075 
-0076 Q_temp = Q;
-0077 <span class="comment">% Q_annual = NaN(year_end-year_start,1);</span>
-0078 <span class="comment">% Q_daily = NaN(365,year_end-year_start);</span>
-0079 HFI = NaN(year_end-year_start,1);
-0080 
-0081 <span class="comment">% extract years</span>
-0082 error_tmp = false;
-0083 <span class="keyword">for</span> y = 2:length(year_list) <span class="comment">% since we use water years, we always start in the &quot;2nd year&quot;</span>
-0084     year = year_list(y);
-0085     Q_water_year = <span class="keyword">...</span>
-0086         [Q_temp(year_vec==year-1 &amp; month_vec&gt;=start_month); <span class="keyword">...</span>
-0087         Q_temp(year_vec==year &amp; month_vec&lt;start_month)];
-0088     Q_25_sum = 0.25*sum(Q_water_year);
-0089     Q_75_sum = 0.75*sum(Q_water_year);
-0090     Q_cumsum = cumsum(Q_water_year);
-0091     aux_index = 1:length(Q_water_year);
-0092     HFI_aux_25 = aux_index(Q_cumsum&gt;Q_25_sum);
-0093     HFI_aux_75 = aux_index(Q_cumsum&gt;Q_75_sum);    
-0094     <span class="keyword">if</span> isempty(HFI_aux_25) || isempty(HFI_aux_75) <span class="comment">% if there is no flow</span>
-0095         error_tmp = true;        
-0096     <span class="keyword">else</span>
-0097         HFI_25 = HFI_aux_25(1);
-0098         HFI_75 = HFI_aux_75(1);
-0099         HFI(y-1) = HFI_75 - HFI_25;
-0100     <span class="keyword">end</span>
-0101 <span class="keyword">end</span>
-0102 
-0103 <span class="keyword">if</span> error_tmp
-0104     error_flag = 1;
-0105     error_str = [<span class="string">'Warning: Some years have no flow. '</span>, error_str];
-0106 <span class="keyword">end</span>
+0052 validationFcn = @(x) isnumeric(x) &amp;&amp; isscalar(x) &amp;&amp; (x &gt;= 1) &amp;&amp; (x &lt;= 12) &amp;&amp; floor(x)==x;
+0053 addParameter(ip, <span class="string">'start_water_year'</span>, 10, validationFcn) <span class="comment">% when does the water year start? Default: 10</span>
+0054 
+0055 parse(ip, Q, t, varargin{:})
+0056 start_water_year = ip.Results.start_water_year;
+0057 
+0058 <span class="comment">% data checks</span>
+0059 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0060 <span class="keyword">if</span> error_flag == 2
+0061     HFI_mean = NaN;
+0062     <span class="keyword">return</span>
+0063 <span class="keyword">end</span>
+0064 timestep_days = days(timestep); <span class="comment">% adjust for timestep</span>
+0065 
+0066 <span class="comment">% calculate signature</span>
+0067 <span class="comment">% get individual years</span>
+0068 [year_vec, month_vec, day_vec] = ymd(t);
+0069 year_start = min(year_vec);
+0070 year_end = max(year_vec);
+0071 year_list = [year_start:year_end]';
+0072 
+0073 Q_temp = Q;
+0074 <span class="comment">% Q_annual = NaN(year_end-year_start,1);</span>
+0075 <span class="comment">% Q_daily = NaN(365,year_end-year_start);</span>
+0076 HFI = NaN(year_end-year_start,1);
+0077 
+0078 <span class="comment">% extract years</span>
+0079 error_tmp = false;
+0080 <span class="keyword">for</span> y = 2:length(year_list) <span class="comment">% since we use water years, we always start in the &quot;2nd year&quot;</span>
+0081     year = year_list(y);
+0082     Q_water_year = <span class="keyword">...</span>
+0083         [Q_temp(year_vec==year-1 &amp; month_vec&gt;=start_water_year); <span class="keyword">...</span>
+0084         Q_temp(year_vec==year &amp; month_vec&lt;start_water_year)];
+0085     Q_25_sum = 0.25*sum(Q_water_year);
+0086     Q_75_sum = 0.75*sum(Q_water_year);
+0087     Q_cumsum = cumsum(Q_water_year);
+0088     aux_index = 1:length(Q_water_year);
+0089     HFI_aux_25 = aux_index(Q_cumsum&gt;Q_25_sum);
+0090     HFI_aux_75 = aux_index(Q_cumsum&gt;Q_75_sum);    
+0091     <span class="keyword">if</span> isempty(HFI_aux_25) || isempty(HFI_aux_75) <span class="comment">% if there is no flow</span>
+0092         error_tmp = true;        
+0093     <span class="keyword">else</span>
+0094         HFI_25 = HFI_aux_25(1);
+0095         HFI_75 = HFI_aux_75(1);
+0096         HFI(y-1) = HFI_75 - HFI_25;
+0097     <span class="keyword">end</span>
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="keyword">if</span> error_tmp
+0101     error_flag = 1;
+0102     error_str = [<span class="string">'Warning: Some years have no flow. '</span>, error_str];
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">% get mean half flow interval (ignoring NaNs)</span>
+0106 HFI_mean = mean(HFI,<span class="string">'omitnan'</span>)*timestep_days;
 0107 
-0108 <span class="comment">% get mean half flow interval (ignoring NaNs)</span>
-0109 HFI_mean = mean(HFI,<span class="string">'omitnan'</span>)*timestep_days;
-0110 
-0111 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0108 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

@@ -7,10 +7,10 @@ nav: false
 
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/TOSSHtoolbox/TOSSH/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4451846.svg)](https://doi.org/10.5281/zenodo.4451846)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4313275.svg)](https://doi.org/10.5281/zenodo.4313275)
 
 
-This documentation gives a technical overview of TOSSH: A Toolbox for Streamflow Signatures in Hydrology (Gnann et al., submitted).
+This documentation gives a technical overview of TOSSH: A Toolbox for Streamflow Signatures in Hydrology (Gnann et al., 2021).
 TOSSH is a Matlab toolbox that provides accessible, standardised signature calculations, with clear information on methodological decisions and recommended parameter values.
 
 
@@ -29,7 +29,8 @@ TOSSH is a Matlab toolbox that provides accessible, standardised signature calcu
  
  
 ## Credits
-Gnann, S.J. , Coxon, G., Woods, R.A., Howden, N.J.K., McMillan H.K., submitted. TOSSH: A Toolbox for Streamflow Signatures in Hydrology.
+Gnann, S.J., Coxon, G., Woods, R.A., Howden, N.J.K., McMillan H.K., 2021. TOSSH: A Toolbox for Streamflow Signatures in Hydrology. Environmental Modelling & Software.
+<a href="https://doi.org/10.1016/j.envsoft.2021.104983" target="_blank">https://doi.org/10.1016/j.envsoft.2021.104983</a> 
 
 
 ## License

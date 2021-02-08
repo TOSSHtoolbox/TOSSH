@@ -12,6 +12,9 @@ function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, var
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
+%   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)  
+%   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -54,13 +57,12 @@ addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 addRequired(ip, 'PET_mat', @(PET_mat) iscell(PET_mat))
 
 % optional input arguments
+addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 
 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
-
+start_water_year = ip.Results.start_water_year;
 plot_results = ip.Results.plot_results;
-
-% calculate signatures
 
 % initialise arrays
 
@@ -139,7 +141,8 @@ for i = 1:size(Q_mat,1)
     
     % Section: Groundwater
     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
-    [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i});
+    [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i}, ...
+        'summer_start', start_water_year-6);
     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = ...
         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
@@ -148,7 +151,7 @@ for i = 1:size(Q_mat,1)
     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = ...
         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},'eps',median(Q_mat{i},'omitnan')*0.001,'plot_results',plot_results);
     [AverageStorage(i),~,AverageStorage_error_str(i)] = ...
-        sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'plot_results',plot_results);
+        sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'start_water_year',start_water_year,'plot_results',plot_results);
     [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = ...
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',false,'plot_results',plot_results);
     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = ...

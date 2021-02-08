@@ -135,67 +135,65 @@ This function is called by:
 0055 
 0056 parse(ip, Q_mat, t_mat)
 0057 
-0058 <span class="comment">% calculate signatures</span>
-0059 
-0060 <span class="comment">% initialise arrays</span>
-0061 AC1 = NaN(size(Q_mat,1),1);
-0062 AC1_error_str = strings(size(Q_mat,1),1);
-0063 AC1_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
-0064 AC1_low_error_str = strings(size(Q_mat,1),1);
-0065 RLD = NaN(size(Q_mat,1),1);
-0066 RLD_error_str = strings(size(Q_mat,1),1);
-0067 PeakDistribution = NaN(size(Q_mat,1),1);
-0068 PeakDistribution_error_str = strings(size(Q_mat,1),1);
-0069 PeakDistribution_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
-0070 PeakDistribution_low_error_str = strings(size(Q_mat,1),1);
-0071 FDC = cell(size(Q_mat,1),1); <span class="comment">% they use the total FDC to evaluate models</span>
-0072 FDC_error_str = strings(size(Q_mat,1),1);
-0073 FDC_low = cell(size(Q_mat,1),1); <span class="comment">% low flow season</span>
-0074 FDC_low_error_str = strings(size(Q_mat,1),1);
-0075 FDC_high = cell(size(Q_mat,1),1); <span class="comment">% high flow season</span>
-0076 FDC_high_error_str = strings(size(Q_mat,1),1);
-0077 
-0078 low_flow_season = [5:9]; <span class="comment">% May to September</span>
-0079 high_flow_season = [11:12, 1:4]; <span class="comment">% November to April</span>
-0080 
-0081 <span class="comment">% loop over all catchments</span>
-0082 <span class="keyword">for</span> i = 1:size(Q_mat,1)
-0083     
-0084     [Q_low, t_low] = <span class="keyword">...</span>
-0085         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, low_flow_season);
-0086     [Q_high, t_high] = <span class="keyword">...</span>
-0087         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, high_flow_season);
-0088     
-0089     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i},<span class="string">'lag'</span>,1);
-0090     [AC1_low(i),~,AC1_low_error_str(i)] = sig_Autocorrelation(Q_low,t_low,<span class="string">'lag'</span>,1);
-0091     [RLD(i),~,RLD_error_str(i)] = sig_RisingLimbDensity(Q_mat{i},t_mat{i});
-0092     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
-0093     [PeakDistribution_low(i),~,PeakDistribution_low_error_str(i)] = sig_PeakDistribution(Q_low,t_low);
-0094     [FDC{i}(:,1),FDC{i}(:,2),~,FDC_error_str(i)] = sig_FDC(Q_mat{i},t_mat{i});
-0095     [FDC_low{i}(:,1),FDC_low{i}(:,2),~,FDC_low_error_str(i)] = sig_FDC(Q_low,t_low);
-0096     [FDC_high{i}(:,1),FDC_high{i}(:,2),~,FDC_high_error_str(i)] = sig_FDC(Q_high,t_high);
-0097     
-0098 <span class="keyword">end</span>
-0099 
-0100 <span class="comment">% add results to struct array</span>
-0101 results.AC1 = AC1;
-0102 results.AC1_error_str = AC1_error_str;
-0103 results.AC1_low = AC1_low;
-0104 results.AC1_low_error_str = AC1_low_error_str;
-0105 results.RLD = RLD;
-0106 results.RLD_error_str = RLD_error_str;
-0107 results.PeakDistribution = PeakDistribution;
-0108 results.PeakDistribution_error_str = PeakDistribution_error_str;
-0109 results.PeakDistribution_low = PeakDistribution_low;
-0110 results.PeakDistribution_low_error_str = PeakDistribution_low_error_str;
-0111 results.FDC = FDC;
-0112 results.FDC_error_str = FDC_error_str;
-0113 results.FDC_low = FDC_low;
-0114 results.FDC_low_error_str = FDC_low_error_str;
-0115 results.FDC_high = FDC_high;
-0116 results.FDC_high_error_str = FDC_high_error_str;
-0117 
-0118 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0058 <span class="comment">% initialise arrays</span>
+0059 AC1 = NaN(size(Q_mat,1),1);
+0060 AC1_error_str = strings(size(Q_mat,1),1);
+0061 AC1_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0062 AC1_low_error_str = strings(size(Q_mat,1),1);
+0063 RLD = NaN(size(Q_mat,1),1);
+0064 RLD_error_str = strings(size(Q_mat,1),1);
+0065 PeakDistribution = NaN(size(Q_mat,1),1);
+0066 PeakDistribution_error_str = strings(size(Q_mat,1),1);
+0067 PeakDistribution_low = NaN(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0068 PeakDistribution_low_error_str = strings(size(Q_mat,1),1);
+0069 FDC = cell(size(Q_mat,1),1); <span class="comment">% they use the total FDC to evaluate models</span>
+0070 FDC_error_str = strings(size(Q_mat,1),1);
+0071 FDC_low = cell(size(Q_mat,1),1); <span class="comment">% low flow season</span>
+0072 FDC_low_error_str = strings(size(Q_mat,1),1);
+0073 FDC_high = cell(size(Q_mat,1),1); <span class="comment">% high flow season</span>
+0074 FDC_high_error_str = strings(size(Q_mat,1),1);
+0075 
+0076 low_flow_season = [5:9]; <span class="comment">% May to September</span>
+0077 high_flow_season = [11:12, 1:4]; <span class="comment">% November to April</span>
+0078 
+0079 <span class="comment">% loop over all catchments</span>
+0080 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0081     
+0082     [Q_low, t_low] = <span class="keyword">...</span>
+0083         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, low_flow_season);
+0084     [Q_high, t_high] = <span class="keyword">...</span>
+0085         util_ExtractSubPeriod(Q_mat{i}, t_mat{i}, high_flow_season);
+0086     
+0087     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i},<span class="string">'lag'</span>,1);
+0088     [AC1_low(i),~,AC1_low_error_str(i)] = sig_Autocorrelation(Q_low,t_low,<span class="string">'lag'</span>,1);
+0089     [RLD(i),~,RLD_error_str(i)] = sig_RisingLimbDensity(Q_mat{i},t_mat{i});
+0090     [PeakDistribution(i),~,PeakDistribution_error_str(i)] = sig_PeakDistribution(Q_mat{i},t_mat{i});
+0091     [PeakDistribution_low(i),~,PeakDistribution_low_error_str(i)] = sig_PeakDistribution(Q_low,t_low);
+0092     [FDC{i}(:,1),FDC{i}(:,2),~,FDC_error_str(i)] = sig_FDC(Q_mat{i},t_mat{i});
+0093     [FDC_low{i}(:,1),FDC_low{i}(:,2),~,FDC_low_error_str(i)] = sig_FDC(Q_low,t_low);
+0094     [FDC_high{i}(:,1),FDC_high{i}(:,2),~,FDC_high_error_str(i)] = sig_FDC(Q_high,t_high);
+0095     
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">% add results to struct array</span>
+0099 results.AC1 = AC1;
+0100 results.AC1_error_str = AC1_error_str;
+0101 results.AC1_low = AC1_low;
+0102 results.AC1_low_error_str = AC1_low_error_str;
+0103 results.RLD = RLD;
+0104 results.RLD_error_str = RLD_error_str;
+0105 results.PeakDistribution = PeakDistribution;
+0106 results.PeakDistribution_error_str = PeakDistribution_error_str;
+0107 results.PeakDistribution_low = PeakDistribution_low;
+0108 results.PeakDistribution_low_error_str = PeakDistribution_low_error_str;
+0109 results.FDC = FDC;
+0110 results.FDC_error_str = FDC_error_str;
+0111 results.FDC_low = FDC_low;
+0112 results.FDC_low_error_str = FDC_low_error_str;
+0113 results.FDC_high = FDC_high;
+0114 results.FDC_high_error_str = FDC_high_error_str;
+0115 
+0116 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

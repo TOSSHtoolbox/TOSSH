@@ -1,4 +1,4 @@
-function [results] = calc_BasicSet(Q_mat, t_mat)
+function [results] = calc_BasicSet(Q_mat, t_mat, varargin)
 %calc_BasicSet calculates basic set of signatures.
 %   The basic set of signatures are designed to cover the five components 
 %   of a natural streamflow regime as defined by Poff et al. (1997) and 
@@ -11,6 +11,9 @@ function [results] = calc_BasicSet(Q_mat, t_mat)
 %   INPUT
 %   Q_mat: streamflow [mm/timestep] matrix (cell array)
 %   t_mat: time [Matlab datenum] matrix (cell array)
+%   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)
+%   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -51,9 +54,13 @@ ip.CaseSensitive = true;
 addRequired(ip, 'Q_mat', @(Q_mat) iscell(Q_mat))
 addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 
-parse(ip, Q_mat, t_mat)
+% optional input arguments
+addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
 
-% calculate signatures
+parse(ip, Q_mat, t_mat, varargin{:})
+start_water_year = ip.Results.start_water_year;
+plot_results = ip.Results.plot_results;
 
 % initialise arrays
 Q_mean = NaN(size(Q_mat,1),1);
@@ -97,11 +104,12 @@ for i = 1:size(Q_mat,1)
     [CoV(i),~,CoV_error_str(i)] = sig_Q_CoV(Q_mat{i},t_mat{i});
     [x_Q_frequency(i),~,x_Q_frequency_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},'low');
     [x_Q_duration(i),~,x_Q_duration_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},'low');
-    [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i});
-    [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i});
+    [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i},'start_water_year',start_water_year);
+    [HFI_mean(i),~,HFI_mean_error_str(i)] = sig_HFI_mean(Q_mat{i},t_mat{i},'start_water_year',start_water_year);
     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i},'lag',1);
     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});
-    [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan'));
+    [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = sig_BaseflowRecessionK(...
+        Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan'));
     
 end
 

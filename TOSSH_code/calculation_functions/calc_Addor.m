@@ -1,4 +1,4 @@
-function [results] = calc_Addor(Q_mat, t_mat, P_mat)
+function [results] = calc_Addor(Q_mat, t_mat, P_mat, varargin)
 %calc_Addor calculates signatures from Addor et al. (2018).
 %   Addor et al. (2018) use 15 signatures that "characterize different
 %   parts of the hydrograph, and [...] are sensitive to processes occurring
@@ -10,7 +10,9 @@ function [results] = calc_Addor(Q_mat, t_mat, P_mat)
 %   Q_mat: streamflow [mm/timestep] matrix (cell array)
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
-%   
+%   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)
+%
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
 %       series and associated error strings)
@@ -50,9 +52,11 @@ addRequired(ip, 'Q_mat', @(Q_mat) iscell(Q_mat))
 addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 
-parse(ip, Q_mat, t_mat, P_mat)
+% optional input arguments
+addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
 
-% calculate signatures
+parse(ip, Q_mat, t_mat, P_mat, varargin{:})
+start_water_year = ip.Results.start_water_year;
 
 % initialise arrays
 Q_mean = NaN(size(Q_mat,1),1);
@@ -88,10 +92,10 @@ for i = 1:size(Q_mat,1)
     [Q_mean(i),~,Q_mean_error_str(i)] = sig_Q_mean(Q_mat{i},t_mat{i});
     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
     [QP_elasticity(i),~,QP_elasticity_error_str(i)] = ...
-        sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i},'method','Sanka','start_water_year',10); %,'start_water_year',4 in Southern Hemisphere
+        sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i},'method','Sanka','start_water_year',start_water_year); 
     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});
     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','Lyne_Hollick','parameters',[0.925 3]);
-    [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i},'start_month',10); %,'start_month',4 in Southern Hemisphere
+    [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i},'start_water_year',start_water_year); 
     [Q5(i),~,Q5_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},5);
     [Q95(i),~,Q95_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},95);
     [high_Q_freq(i),~,high_Q_freq_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},'high');

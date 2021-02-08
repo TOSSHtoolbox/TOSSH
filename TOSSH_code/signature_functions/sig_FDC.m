@@ -65,9 +65,9 @@ Q_ranked = [1:length(Q_tmp)]'; % give unique (random) rank to every measurement
 FDC = 1 - Q_ranked./length(Q_ranked); % flow duration curve with unique ranks
 
 % add warning for intermittent streams
-if length(Q_tmp(Q_tmp==0)) > length(Q_tmp)*0.05
+if ~isempty(Q_tmp(Q_tmp==0))
     error_flag = 2;
-    error_str = ['Warning: Flow is zero at least 5% of the time (intermittent flow). ', error_str];
+    error_str = ['Warning: Flow is zero at least once (intermittent flow). ', error_str];
 end
 
 % optional plotting

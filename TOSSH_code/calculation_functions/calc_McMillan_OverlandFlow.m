@@ -12,6 +12,8 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, va
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
+%   OPTIONAL
+%   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -54,10 +56,9 @@ addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 addRequired(ip, 'PET_mat', @(PET_mat) iscell(PET_mat))
 
 % optional input arguments
-addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results
 
 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
-
 plot_results = ip.Results.plot_results;
 
 % initialise arrays

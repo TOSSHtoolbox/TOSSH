@@ -1,4 +1,4 @@
-function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat)
+function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat, varargin)
 %calc_All calculates all signatures in the toolbox.
 %   If a signature function can calculate multiple signatures
 %   (e.g. sig_x_percentile) only one signature is calculated (e.g. Q95).
@@ -10,6 +10,9 @@ function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
 %   T_mat: temperature [degC] matrix (cell array)
+%   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)
+%   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -49,9 +52,13 @@ addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 addRequired(ip, 'PET_mat', @(PET_mat) iscell(PET_mat))
 addRequired(ip, 'T_mat', @(T_mat) iscell(T_mat))
 
-parse(ip, Q_mat, t_mat, P_mat, PET_mat, T_mat)
+% optional input arguments
+addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
 
-% calculate signatures
+parse(ip, Q_mat, t_mat, P_mat, PET_mat, T_mat, varargin{:})
+start_water_year = ip.Results.start_water_year;
+plot_results = ip.Results.plot_results;
 
 % initialise arrays
 AC1 = NaN(size(Q_mat,1),1);
@@ -133,8 +140,6 @@ high_Q_duration_error_str = strings(size(Q_mat,1),1);
 high_Q_frequency = NaN(size(Q_mat,1),1);
 high_Q_frequency_error_str = strings(size(Q_mat,1),1);
 
-% warning('off','all')
-
 % loop over all catchments
 for i = 1:size(Q_mat,1)
     
@@ -196,8 +201,6 @@ for i = 1:size(Q_mat,1)
     [high_Q_frequency(i),~,high_Q_frequency_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},'high');
     
 end
-
-% warning('on','all')
 
 % add results to struct array
 results.AC1 = AC1;

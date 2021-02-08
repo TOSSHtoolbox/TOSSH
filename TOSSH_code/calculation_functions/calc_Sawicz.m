@@ -1,4 +1,4 @@
-function [results] = calc_Sawicz(Q_mat, t_mat, P_mat, T_mat)
+function [results] = calc_Sawicz(Q_mat, t_mat, P_mat, T_mat, varargin)
 %calc_Sawicz calculates signatures from Sawicz et al. (2011).
 %   Sawicz et al. (2011) use 6 signatures drawn largely from Yadav et al. 
 %   (2007), that are chosen to be uncorrelated and to be linked to 
@@ -11,6 +11,8 @@ function [results] = calc_Sawicz(Q_mat, t_mat, P_mat, T_mat)
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   T_mat: temperature [degC] matrix (cell array)
+%   OPTIONAL
+%   start_water_year: first month of water year, default = 10 (October)
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -33,7 +35,7 @@ function [results] = calc_Sawicz(Q_mat, t_mat, P_mat, T_mat)
 %   and Earth System Sciences, 15(9), pp.2895-2911.
 %   Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of 
 %   constraints on expected watershed response behavior for improved
-%   predictions in ungauged basins. Advances in water resources, 30(8), 
+%   predictions in ungauged basins. Advances in Water Resources, 30(8), 
 %   pp.1756-1774.
 %
 %   Copyright (C) 2020
@@ -58,9 +60,11 @@ addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 addRequired(ip, 'T_mat', @(T_mat) iscell(T_mat))
 
-parse(ip, Q_mat, t_mat, P_mat, T_mat)
+% optional input arguments
+addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
 
-% calculate signatures
+parse(ip, Q_mat, t_mat, P_mat, T_mat, varargin{:})
+start_water_year = ip.Results.start_water_year;
 
 % initialise arrays
 Total_RR = NaN(size(Q_mat,1),1);
@@ -82,8 +86,10 @@ for i = 1:size(Q_mat,1)
     [Total_RR(i),~,Total_RR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});    
     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});    
     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i});    
-    [QP_elasticity(i),~,QP_elasticity_error_str(i)] = sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i});    
-    [SnowDayRatio(i),~,SnowDayRatio_error_str(i)] = sig_SnowDayRatio(Q_mat{i},t_mat{i},P_mat{i},T_mat{i});    
+    [QP_elasticity(i),~,QP_elasticity_error_str(i)] = sig_QP_elasticity(...
+        Q_mat{i},t_mat{i},P_mat{i},'start_water_year',start_water_year);    
+    [SnowDayRatio(i),~,SnowDayRatio_error_str(i)] = sig_SnowDayRatio(...
+        Q_mat{i},t_mat{i},P_mat{i},T_mat{i});    
     [RLD(i),~,RLD_error_str(i)] = sig_RisingLimbDensity(Q_mat{i},t_mat{i});
     
 end

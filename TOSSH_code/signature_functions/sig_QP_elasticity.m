@@ -58,7 +58,7 @@ addRequired(ip, 'P', @(P) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 
 % optional input arguments
 validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && floor(x)==x;
-addParameter(ip, 'start_water_year', 10, validationFcn) % When does the water year start? Default: 10
+addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start? Default: 10
 addParameter(ip, 'method', 'Sanka', @ischar) % which method? Default: Sanka
 
 parse(ip, Q, t, P, varargin{:})

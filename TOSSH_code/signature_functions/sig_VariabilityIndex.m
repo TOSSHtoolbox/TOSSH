@@ -72,6 +72,12 @@ flow_percs = Q_sorted(indices_percs);
 % stream - exclude these from the calculation
 recs = flow_percs > 0;
 
+% add warning for intermittent streams
+if ~isempty(Q(Q==0))
+    error_flag = 2;
+    error_str = ['Warning: Zero flows excluded from calculation. ', error_str];
+end
+    
 % VI is the standard deviation of the common logarithms of discharge 
 % determined at 10% intervals from 10% to 90% of the cumulative frequency 
 % distribution

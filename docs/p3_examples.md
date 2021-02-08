@@ -7,7 +7,7 @@ nav: true
 {:toc}
 
 This workflow shows basic functionalities of TOSSH with example data from one catchment. 
-The example data used in this workflow are taken from CAMELS-GB (Coxon et al., 2020), 
+The example data used in this workflow are taken from CAMELS GB (Coxon et al., 2020), 
 see 
 <a href="README_example_data.txt" target="_blank">README_example_data.txt</a>
 for more information on the data sources.
@@ -244,4 +244,4 @@ If any of the examples, errors or warnings are unclear, please [contact](./p4_co
 
 ### References
 
-Coxon, G., Addor, N., Bloomfield, J.P., Freer, J., Fry, M., Hannaford, J., Howden, N.J., Lane, R., Lewis, M., Robinson, E.L. and Wagener, T., 2020. CAMELS-GB: Hydrometeorological time series and landscape attributes for 671 catchments in Great Britain. Earth System Science Data Discussions, pp.1-34.
+Coxon, G., Addor, N., Bloomfield, J.P., Freer, J., Fry, M., Hannaford, J., Howden, N.J., Lane, R., Lewis, M., Robinson, E.L. and Wagener, T., 2020. CAMELS-GB: hydrometeorological time series and landscape attributes for 671 catchments in Great Britain. Earth System Science Data, 12(4), pp.2459-2483.

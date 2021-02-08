@@ -106,7 +106,7 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %   Tani, M., 1997. Runoff generation processes estimated from hydrological
 %   observations on a steep forested hillslope with a thin soil layer.
 %   Journal of Hydrology, 200(1-4), pp.84-109.
-%   Wrede, S., Fenicia, F., Mart√≠nez‚Ä?Carreras, N., Juilleret, J., Hissler,
+%   Wrede, S., Fenicia, F., Martinez-Carreras, N., Juilleret, J., Hissler,
 %   C., Krein, A., Savenije, H.H., Uhlenbrook, S., Kavetski, D. and
 %   Pfister, L., 2015. Towards more systematic perceptual model
 %   development: a case study using 3 Luxembourgish catchments.

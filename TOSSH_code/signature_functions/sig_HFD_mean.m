@@ -8,7 +8,7 @@ function [HFD_mean, error_flag, error_str] = sig_HFD_mean(Q, t, varargin)
 %   Q: streamflow [mm/timestep]
 %   t: time [Matlab datetime]
 %   OPTIONAL
-%   start_month: starting month, default = 10 (October)
+%   start_water_year: first month of water year, default = 10 (October)
 %
 %   OUTPUT
 %   HFD_mean: mean half flow date [day since start of water year]
@@ -22,7 +22,7 @@ function [HFD_mean, error_flag, error_str] = sig_HFD_mean(Q, t, varargin)
 %   Q = data.Q; 
 %   t = data.t;
 %   HFD_mean = sig_HFD_mean(Q,t);
-%   HFD_mean = sig_HFD_mean(Q,t,'start_month',1);
+%   HFD_mean = sig_HFD_mean(Q,t,'start_water_year',1);
 %
 %   References
 %   Court, A., 1962. Measures of streamflow timing. Journal of Geophysical
@@ -47,10 +47,11 @@ addRequired(ip, 'Q', @(Q) isnumeric(Q) && (size(Q,1)==1 || size(Q,2)==1))
 addRequired(ip, 't', @(t) (isnumeric(t) || isdatetime(t)) && (size(t,1)==1 || size(t,2)==1)) 
 
 % optional input arguments
-addParameter(ip, 'start_month', 10, @(month) isnumeric(month) && numel(month)==1) 
+validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && floor(x)==x;
+addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start? Default: 10
 
 parse(ip, Q, t, varargin{:})
-start_month = ip.Results.start_month;
+start_water_year = ip.Results.start_water_year;
 
 % data checks
 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
@@ -59,10 +60,6 @@ if error_flag == 2
     return
 end
 timestep_days = days(timestep); % adjust for timestep
-
-if any(start_month<1 | start_month>12) || any(floor(start_month)~=start_month)
-    error('Month has to be a vector containing integers between 1 and 12.')
-end
 
 % calculate signature
 % get individual years
@@ -82,8 +79,8 @@ for y = 2:length(year_list) % since we use water years, we always start in the "
     try
         year = year_list(y);
         Q_water_year = ...
-            [Q_temp(year_vec==year-1 & month_vec>=start_month); ...
-            Q_temp(year_vec==year & month_vec<start_month)];
+            [Q_temp(year_vec==year-1 & month_vec>=start_water_year); ...
+            Q_temp(year_vec==year & month_vec<start_water_year)];
         Q_half_sum = 0.5*sum(Q_water_year);
         Q_cumsum = cumsum(Q_water_year);
         aux_index = 1:length(Q_water_year);

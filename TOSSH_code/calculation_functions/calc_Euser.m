@@ -55,8 +55,6 @@ addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 
 parse(ip, Q_mat, t_mat)
 
-% calculate signatures
-
 % initialise arrays
 AC1 = NaN(size(Q_mat,1),1);
 AC1_error_str = strings(size(Q_mat,1),1);

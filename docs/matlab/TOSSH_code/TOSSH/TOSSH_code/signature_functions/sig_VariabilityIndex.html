@@ -146,13 +146,19 @@ This function is called by:
 0072 <span class="comment">% stream - exclude these from the calculation</span>
 0073 recs = flow_percs &gt; 0;
 0074 
-0075 <span class="comment">% VI is the standard deviation of the common logarithms of discharge</span>
-0076 <span class="comment">% determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
-0077 <span class="comment">% distribution</span>
-0078 VariabilityIndex = std(log10(flow_percs(recs)));
-0079 
-0080 <span class="keyword">end</span>
-0081</pre></div>
-<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+0075 <span class="comment">% add warning for intermittent streams</span>
+0076 <span class="keyword">if</span> ~isempty(Q(Q==0))
+0077     error_flag = 2;
+0078     error_str = [<span class="string">'Warning: Zero flows excluded from calculation. '</span>, error_str];
+0079 <span class="keyword">end</span>
+0080     
+0081 <span class="comment">% VI is the standard deviation of the common logarithms of discharge</span>
+0082 <span class="comment">% determined at 10% intervals from 10% to 90% of the cumulative frequency</span>
+0083 <span class="comment">% distribution</span>
+0084 VariabilityIndex = std(log10(flow_percs(recs)));
+0085 
+0086 <span class="keyword">end</span>
+0087</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

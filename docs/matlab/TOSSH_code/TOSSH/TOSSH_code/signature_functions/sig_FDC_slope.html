@@ -201,9 +201,9 @@ This function is called by:
 0118 <span class="keyword">end</span>
 0119 
 0120 <span class="comment">% add warning for intermittent streams</span>
-0121 <span class="keyword">if</span> length(Q_tmp(Q_tmp==0)) &gt; length(Q_tmp)*0.05
+0121 <span class="keyword">if</span> ~isempty(Q_tmp(Q_tmp==0))
 0122     error_flag = 2;
-0123     error_str = [<span class="string">'Warning: Flow is zero at least 5% of the time (intermittent flow). '</span>, error_str];
+0123     error_str = [<span class="string">'Warning: Flow is zero at least once (intermittent flow). '</span>, error_str];
 0124 <span class="keyword">end</span>
 0125 
 0126 <span class="comment">% optional plotting</span>
@@ -230,6 +230,6 @@ This function is called by:
 0147 
 0148 <span class="keyword">end</span>
 0149</pre></div>
-<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

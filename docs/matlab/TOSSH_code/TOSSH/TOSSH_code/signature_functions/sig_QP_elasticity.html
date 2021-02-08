@@ -141,7 +141,7 @@ This function is called by:
 0058 
 0059 <span class="comment">% optional input arguments</span>
 0060 validationFcn = @(x) isnumeric(x) &amp;&amp; isscalar(x) &amp;&amp; (x &gt;= 1) &amp;&amp; (x &lt;= 12) &amp;&amp; floor(x)==x;
-0061 addParameter(ip, <span class="string">'start_water_year'</span>, 10, validationFcn) <span class="comment">% When does the water year start? Default: 10</span>
+0061 addParameter(ip, <span class="string">'start_water_year'</span>, 10, validationFcn) <span class="comment">% when does the water year start? Default: 10</span>
 0062 addParameter(ip, <span class="string">'method'</span>, <span class="string">'Sanka'</span>, @ischar) <span class="comment">% which method? Default: Sanka</span>
 0063 
 0064 parse(ip, Q, t, P, varargin{:})
@@ -184,6 +184,6 @@ This function is called by:
 0101 QP_elasticity = median((dQ./dP)*(mean(P,<span class="string">'omitnan'</span>)/mean(Q,<span class="string">'omitnan'</span>)),<span class="string">'omitnan'</span>);
 0102 
 0103 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 20-Jan-2021 09:16:59 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

@@ -201,11 +201,11 @@ Richter, B.D., Baumgartner, J.V., Powell, J. and Braun, D.P., 1996. A method for
 
 Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and Clark, M.P., 2018. A ranking of hydrological signatures based on their predictability in space. Water Resources Research, 54(11), pp.8792-8812.
 
-Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G., 2011. Catchment classification: empirical analysis of hydrologic similarity based on catchment function in the eastern USA. Hydrology & Earth System Sciences Discussions, 8(3).
+Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G., 2011. Catchment classification: empirical analysis of hydrologic similarity based on catchment function in the eastern USA. Hydrology and Earth System Sciences, 15(9), pp.2895-2911.
 
-Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of constraints on expected catchment response behavior for improved predictions in ungauged basins. Advances in water resources, 30(8), pp.1756-1774.
+Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of constraints on expected catchment response behavior for improved predictions in ungauged basins. Advances in Water Resources, 30(8), pp.1756-1774.
 
-Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S. and Savenije, H.H.G., 2013. A framework to assess the realism of model structures using hydrological signatures. Hydrology and Earth System Sciences, 17 (5), 2013.
+Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S. and Savenije, H.H.G., 2013. A framework to assess the realism of model structures using hydrological signatures. Hydrology and Earth System Sciences, 17(5), pp.1893-1912.
 
-McMillan, H., 2020. Linking hydrologic signatures to hydrologic processes: A review. Hydrological Processes, 34(6), pp.1393-1409.
+McMillan, H.K., 2020. Linking hydrologic signatures to hydrologic processes: A review. Hydrological Processes, 34(6), pp.1393-1409.
 
