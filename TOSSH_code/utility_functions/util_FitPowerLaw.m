@@ -91,7 +91,6 @@ elseif strcmp(fitting_type, 'slope2') % linear regression in log log space with 
     b = 2;
     B = log(-dQdt_rec) - b*log(Q_rec);
     a = exp((weights.*A)\(weights.*B));
-    
 else
     error('Invalid fitting type.')
 end

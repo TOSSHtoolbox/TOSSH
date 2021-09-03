@@ -162,6 +162,9 @@ if RMS_errors(2)<seg_test*RMS_errors(1)
         MRC_num_segments=3;
         Segment_slopes = slopes_b2;
     end
+elseif RMS_errors(3)<(seg_test.^2)*RMS_errors(1)
+    MRC_num_segments=3;
+    Segment_slopes = slopes_b2;
 end
 
 Segment_slopes = -Segment_slopes; % convert slope to recession rate

@@ -138,6 +138,10 @@ if ~isreal(BaseflowRecessionK)
     return
 end
 
+%If timestep is not daily, convert units of BaseflowRecessionK to 1/day
+
+
+
 % optional plotting
 if plot_results
     fig = figure('Position',[100 100 750 300]);

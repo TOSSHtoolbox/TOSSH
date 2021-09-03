@@ -59,10 +59,17 @@ addRequired(ip, 'PET_mat', @(PET_mat) iscell(PET_mat))
 % optional input arguments
 addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
+addParameter(ip, 'recession_length', 5, @isnumeric) % length of recessions to find (days)
+addParameter(ip, 'n_start', 1, @isnumeric) % time after peak to start recession (days)
+addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
+
 
 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
 start_water_year = ip.Results.start_water_year;
 plot_results = ip.Results.plot_results;
+recession_length = ip.Results.recession_length;
+n_start = ip.Results.n_start;
+eps = ip.Results.eps;
 
 % initialise arrays
 
@@ -95,7 +102,7 @@ AverageStorage = NaN(size(Q_mat,1),1);
 AverageStorage_error_str = strings(size(Q_mat,1),1);
 % Recession analysis parameters approximate storage-discharge relationship.
 % This fits a single relationship to the point cloud.
-RecessionParameters = NaN(size(Q_mat,1),2);
+RecessionParameters = NaN(size(Q_mat,1),3);
 RecessionParameters_error_str = strings(size(Q_mat,1),1);
 % Changes of slope in a master recession curve (MRC) or recession analysis 
 % plot indicate multiple linear reservoirs.
@@ -149,25 +156,31 @@ for i = 1:size(Q_mat,1)
     
     % Section: Storage (especially groundwater)
     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = ...
-        sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},'eps',median(Q_mat{i},'omitnan')*0.001,'plot_results',plot_results);
+        sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'plot_results',plot_results,'n_start',n_start);
     [AverageStorage(i),~,AverageStorage_error_str(i)] = ...
-        sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'start_water_year',start_water_year,'plot_results',plot_results);
-    [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = ...
-        sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',false,'plot_results',plot_results);
+        sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'start_water_year',start_water_year,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
+    [RecessionParametersTemp,~,~,RecessionParameters_error_str_temp] = ...
+        sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',true,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
+    RecessionParameters(i,1) = median((RecessionParametersTemp(:,1)),'omitnan');
+    RecessionParameters(i,2) = median(RecessionParametersTemp(:,2),'omitnan');  
+    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i},'omitnan').^(RecessionParametersTemp(:,2)-1));
+    ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
+    RecessionParameters(i,3) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
+    RecessionParameters_error_str(i) = RecessionParameters_error_str_temp;
     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = ...
-        sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'plot_results',plot_results,'eps',0.001*median(Q_mat{i},'omitnan'));
+        sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'plot_results',plot_results,'eps',eps,'recession_length',recession_length,'n_start',n_start);
     First_Recession_Slope(i) = Segment_slopes(1);
     if length(Segment_slopes) >= 2
         Mid_Recession_Slope(i) = Segment_slopes(2);
     end
-    [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
+    [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start);
     EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
     
     % Section: Baseflow
-    [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','UKIH','parameters',5);
+    [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','UKIH');
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...
-        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan')); 
+        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start); 
     
 end
 

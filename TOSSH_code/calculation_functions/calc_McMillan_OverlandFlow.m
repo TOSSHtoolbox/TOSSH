@@ -1,4 +1,4 @@
-function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, varargin)
+function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, varargin)
 %calc_McMillan_OverlandFlow calculates various overland flow signatures.
 %   Calculates 10 overland flow (infiltration excess and saturation excess)
 %   signatures from McMillan (2020). These signatures come from previous
@@ -11,7 +11,6 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, va
 %   Q_mat: streamflow [mm/timestep] matrix (cell array)
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
-%   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
 %   OPTIONAL
 %   plot_results: whether to plot results, default = false
 %
@@ -26,8 +25,7 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, va
 %   Q_mat = {data.Q};
 %   t_mat = {data.t};
 %   P_mat = {data.P};
-%   PET_mat = {data.PET};
-%   results = calc_McMillan_OverlandFlow(Q_mat,t_mat,P_mat,PET_mat);
+%   results = calc_McMillan_OverlandFlow(Q_mat,t_mat,P_mat);
 %
 %   References
 %   McMillan, H., 2020. Linking hydrologic signatures to hydrologic
@@ -38,7 +36,7 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, va
 %   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
 
 % check input parameters
-if nargin < 4
+if nargin < 3
     error('Not enough input arguments.')
 end
 
@@ -53,13 +51,16 @@ ip.CaseSensitive = true;
 addRequired(ip, 'Q_mat', @(Q_mat) iscell(Q_mat))
 addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
-addRequired(ip, 'PET_mat', @(PET_mat) iscell(PET_mat))
 
 % optional input arguments
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results
+addParameter(ip, 'PET_mat', {}, @(PET_mat) iscell(PET_mat))
+addParameter(ip, 'max_recessiondays', 1, @isnumeric) % maximum number of days to allow recession after rain
 
-parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
+parse(ip, Q_mat, t_mat, P_mat, varargin{:})
 plot_results = ip.Results.plot_results;
+PET_mat = ip.Results.PET_mat;
+max_recessiondays = ip.Results.max_recessiondays;
 
 % initialise arrays
 
@@ -105,7 +106,8 @@ for i = 1:size(Q_mat,1)
     [IE_effect(i),SE_effect(i),IE_thresh_signif(i),IE_thresh(i), ...
         SE_thresh_signif(i),SE_thresh(i),SE_slope(i),Storage_thresh(i), ...
         Storage_thresh_signif(i),min_Qf_perc(i),~,OF_error_str(i)] ...
-        = sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i},'plot_results',plot_results);
+        = sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i},...
+        'plot_results',plot_results,'max_recessiondays',max_recessiondays);
     
 end
 

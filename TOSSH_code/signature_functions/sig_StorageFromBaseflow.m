@@ -73,11 +73,17 @@ validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && flo
 addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start? Default: 10
 addParameter(ip, 'field_capacity', [], @isnumeric) % field capacity for scaling PET to AET
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
+addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing
+addParameter(ip, 'n_start', 1, @isnumeric) % days to be removed at beginning of recession
+addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 
 parse(ip, Q, t, P, PET, varargin{:})
 start_water_year = ip.Results.start_water_year;
 field_capacity = ip.Results.field_capacity;
 plot_results = ip.Results.plot_results;
+recession_length = ip.Results.recession_length;
+n_start = ip.Results.n_start;
+eps = ip.Results.eps;
 
 % create empty figure handle
 fig_handles = [];
@@ -103,7 +109,7 @@ PET(isnan(PET)) = median(PET,'omitnan'); % PET NaNs are set to median PET
 error_flag_tmp = error_flag; % temporarily store error flag from data check
 error_str_tmp = error_str;
 [flow_section, error_flag, error_str] = util_RecessionSegments(Q, t, ...
-    'recession_length', 5, 'n_start', 1, 'eps', mean(Q,'omitnan')*0.01);
+    'recession_length', recession_length, 'n_start', n_start, 'eps', eps);
 if error_flag == 3
     AverageStorage = NaN;
     return

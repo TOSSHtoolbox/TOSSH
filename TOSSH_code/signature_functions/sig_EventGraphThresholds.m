@@ -368,6 +368,28 @@ Storage_thresh = thresh_st_qf;
 %% optional plotting
 if plot_results
     
+    % plot flow, baseflow and events
+    fig_events = figure('Position',[100 100 700 250]);
+    title(['Flow, Baseflow and Event Separation'])
+    dates_dt = t;%datetime(dates,'ConvertFrom','datenum');
+    P_max = max(Q);
+    hold on
+    for i = 1:size(stormarray,1)
+        p3=fill([dates_dt(stormarray(i,1)),dates_dt(stormarray(i,1)),...
+            dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2))],...
+            [0, P_max, P_max, 0],'b','LineStyle','none');
+        p4=fill([dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2)),...
+            dates_dt(stormarray(i,3)),dates_dt(stormarray(i,3))],...
+            [0, P_max, P_max, 0],'c','LineStyle','none');
+    end
+    p1 = plot(t,Q,'r-');
+    p2 = plot(t,B,'g-');
+    p5=plot(dates_dt(:),P(:)./50,'k-','linewidth',1);
+
+    xlabel('Time')
+    ylabel('Flow [mm]')
+    legend([p1, p2, p3, p4, p5],{'Flow','Baseflow','Events','Recessions','Rainfall/50'},'location','best')
+
     % plot total precip against quickflow, with threshold
     fig = figure('Position',[100 100 900 250]);
     subplot(1,3,1)
@@ -378,7 +400,7 @@ if plot_results
         [min(event_array(:,1)),max(event_array(:,1))].*slope_linear_tp_qf,'k-');
     plot([0 thresh_tp_qf],[0 0],'g-')
     p3 = plot([thresh_tp_qf max(event_array(:,1))],...
-        [0 max(event_array(:,1)).*slope_tp_qf],'g-');
+        [0 (max(event_array(:,1))-thresh_tp_qf).*slope_tp_qf],'g-');
     xlabel('Event precipitation [mm]')
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
@@ -392,7 +414,7 @@ if plot_results
         [min(event_array(:,3)),max(event_array(:,3))].*slope_linear_mi_qf,'k-');
     plot([0 thresh_mi_qf],[0 0],'g-')
     p3 = plot([thresh_mi_qf max(event_array(:,3))],...
-        [0 max(event_array(:,3)).*slope_mi_qf],'g-');
+        [0 (max(event_array(:,3))-thresh_mi_qf).*slope_mi_qf],'g-');
     xlabel('Event maximum intensity [mm/timestep]')
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
@@ -405,7 +427,7 @@ if plot_results
     p1 = plot(x_val,event_array(:,7),'bo');
     p2 = plot([min(x_val),max(x_val)],[min(x_val),max(x_val)].*slope_linear_st_qf,'k-');
     plot([0 thresh_st_qf],[0 0],'g-')
-    p3 = plot([thresh_st_qf max(x_val)],[0 max(x_val).*slope_st_qf],'g-');
+    p3 = plot([thresh_st_qf max(x_val)],[0 (max(x_val)-thresh_st_qf).*slope_st_qf],'g-');
     xlabel('Event API + precipitation [mm]')
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
