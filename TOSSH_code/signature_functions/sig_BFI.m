@@ -12,6 +12,7 @@ function [BFI, error_flag, error_str, fig_handles] = sig_BFI(Q, t, varargin)
 %       ('Lyne_Hollick','UKIH'), default = 'UKIH'
 %   parameters: specify filter parameters ([filter_parameter nr_passes] for 
 %       Lyne Hollick, default = [0.925 3]; [n_days] for UKIH, default = 5)
+%       filter_parameter assumed to be in days and converted accordingly
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
@@ -100,7 +101,10 @@ switch method
             filter_parameter = exp(log(0.925)/timestep_factor);
             parameters = [filter_parameter, 3];
         elseif length(parameters) == 1
+            parameters(1) = exp(log(parameters(1))/timestep_factor);
             parameters(2) = 3;
+        elseif length(parameters) == 2
+            parameters(1) = exp(log(parameters(1))/timestep_factor);        
         elseif length(parameters) > 2
             error('Too many filter parameters.')
         end
@@ -117,6 +121,8 @@ switch method
     case 'UKIH'
         if isempty(parameters)
             parameters = 5*timestep_factor;
+        elseif length(parameters) == 1
+            parameters(1) = parameters(1)*timestep_factor;
         elseif length(parameters) > 1
             error('Too many filter parameters.')
         end

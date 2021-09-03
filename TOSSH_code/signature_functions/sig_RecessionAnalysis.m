@@ -143,8 +143,9 @@ else
     Recession_Parameters = NaN(size(flow_section,1),2);
     for i = 1:size(flow_section,1)
         rec = [flow_section(i,1):flow_section(i,2)]'; % get recession
+        goodrec = ~isnan(Qm(rec));
         [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = ...
-            util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
+            util_FitPowerLaw(Qm(rec(goodrec)), dQdt(rec(goodrec)), fitting_type, R2(rec(goodrec)));
     end
 end
 

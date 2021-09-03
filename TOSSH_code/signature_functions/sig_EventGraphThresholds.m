@@ -133,7 +133,7 @@ addRequired(ip, 't', @(t) ((isnumeric(t) || isdatetime(t))) && ((size(t,1)==1 ||
 addRequired(ip, 'P', @(P) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 
 % optional input arguments
-addParameter(ip, 'min_termination', 8, @isnumeric) % minimum termination time
+addParameter(ip, 'min_termination', 24, @isnumeric) % minimum termination time
 % (time between storms) in hours
 addParameter(ip, 'min_duration', 5, @isnumeric) % minimum duration of storm in hour
 addParameter(ip, 'min_intensity_hour', 2, @isnumeric) % minimum hourly rainfall (per hour)
@@ -174,6 +174,7 @@ if error_flag == 2
     min_Qf_perc = NaN;
     return
 end
+timestep_factor = 1/days(timestep); % adjust for timestep
 timestep = hours(timestep);
 
 %% separate P and Q series into events
@@ -212,7 +213,8 @@ stormarray = stormarray(storm_array_check,:);
 
 %% separate flow series into baseflow and quickflow
 % create baseflow array
-B = util_LyneHollickFilter(Q, 'filter_parameter', 0.925, 'nr_passes', 3);
+filter_parameter = exp(log(0.925)/timestep_factor);
+B = util_LyneHollickFilter(Q, 'filter_parameter', filter_parameter, 'nr_passes', 3);
 
 %% calculate P and Q characteristics for each storm
 % cycle through storms and calculate the required storm characteristics

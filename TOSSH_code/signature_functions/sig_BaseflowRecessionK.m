@@ -139,8 +139,8 @@ if ~isreal(BaseflowRecessionK)
 end
 
 %If timestep is not daily, convert units of BaseflowRecessionK to 1/day
-
-
+timestep_factor = days(1)/timestep;
+BaseflowRecessionK = BaseflowRecessionK * timestep_factor;
 
 % optional plotting
 if plot_results
