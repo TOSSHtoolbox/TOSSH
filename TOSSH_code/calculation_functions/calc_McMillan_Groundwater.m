@@ -15,6 +15,9 @@ function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, var
 %   OPTIONAL
 %   start_water_year: first month of water year, default = 10 (October)  
 %   plot_results: whether to plot results, default = false
+%   recession_length: min. length of recessions [days], default = 15
+%   n_start: days to be removed after start of recession
+%   eps: allowed increase in flow during recession period, default = 0
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -141,10 +144,6 @@ BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
 
 % loop over all catchments
 for i = 1:size(Q_mat,1)
-
-        if mod(i,1) == 0 % check progress
-        fprintf('%.0f/%.0f\n',i,size(Q_mat,1))
-        end
     
     % Section: Groundwater
     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});

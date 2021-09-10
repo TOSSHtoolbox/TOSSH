@@ -2,7 +2,8 @@ function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat, varargin)
 %calc_All calculates all signatures in the toolbox.
 %   If a signature function can calculate multiple signatures
 %   (e.g. sig_x_percentile) only one signature is calculated (e.g. Q95).
-%   Note: This function is primarily intended to test all signatures.
+%   Note: This function is primarily intended to test all signatures and 
+%   not all functionalities are used (e.g. plotting).
 %
 %   INPUT
 %   Q_mat: streamflow [mm/timestep] matrix (cell array)
@@ -142,10 +143,6 @@ high_Q_frequency_error_str = strings(size(Q_mat,1),1);
 
 % loop over all catchments
 for i = 1:size(Q_mat,1)
-    
-    if mod(i,1) == 0 % check progress
-        fprintf('%.0f/%.0f\n',i,size(Q_mat,1))
-    end
     
     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i});
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...

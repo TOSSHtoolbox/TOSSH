@@ -13,6 +13,9 @@ function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, varargin)
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   OPTIONAL
 %   plot_results: whether to plot results, default = false
+%   max_recessiondays: maximum length of recession period after rainfall
+%       [days] deemed to be part of the preceeding event (shorter if
+%       another event starts), default = 1
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -54,12 +57,10 @@ addRequired(ip, 'P_mat', @(P_mat) iscell(P_mat))
 
 % optional input arguments
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results
-addParameter(ip, 'PET_mat', {}, @(PET_mat) iscell(PET_mat))
 addParameter(ip, 'max_recessiondays', 1, @isnumeric) % maximum number of days to allow recession after rain
 
 parse(ip, Q_mat, t_mat, P_mat, varargin{:})
 plot_results = ip.Results.plot_results;
-PET_mat = ip.Results.PET_mat;
 max_recessiondays = ip.Results.max_recessiondays;
 
 % initialise arrays
