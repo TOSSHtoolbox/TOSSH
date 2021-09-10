@@ -19,6 +19,11 @@ function [AverageStorage, error_flag, error_str, fig_handles] = ...
 %   start_water_year: first month of water year, default = 10 (October)
 %   field_capacity: field capacity [mm]
 %   plot_results: whether to plot results, default = false
+%   recession_length: min. length of recessions (days), default = 5
+%   n_start: days to be removed after start of recession
+%   eps: allowed increase in flow during recession period, default = 0
+%       (note that large eps values can lead to problematic recession
+%       selection)
 %
 %   OUTPUT
 %   AverageStorage: storage [mm]
@@ -74,6 +79,7 @@ addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water ye
 addParameter(ip, 'field_capacity', [], @isnumeric) % field capacity for scaling PET to AET
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
 addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing
+% flow in days to be declared a recession
 addParameter(ip, 'n_start', 1, @isnumeric) % days to be removed at beginning of recession
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 

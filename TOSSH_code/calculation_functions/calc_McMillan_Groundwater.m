@@ -66,7 +66,6 @@ addParameter(ip, 'recession_length', 5, @isnumeric) % length of recessions to fi
 addParameter(ip, 'n_start', 1, @isnumeric) % time after peak to start recession (days)
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 
-
 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
 start_water_year = ip.Results.start_water_year;
 plot_results = ip.Results.plot_results;
