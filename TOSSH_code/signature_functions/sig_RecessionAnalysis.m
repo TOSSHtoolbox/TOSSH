@@ -133,6 +133,8 @@ date_tmp = datevec(t(floor(mean(flow_section,2))));
 recession_month = date_tmp(:,2);
 
 % calculate recession parameters
+error_flag_tmp = error_flag; % temporarily store error flag from data check
+error_str_tmp = error_str;
 if ~fit_individual
     rec = ~isnan(Qm);
     [Recession_Parameters(1), Recession_Parameters(2),error_flag,error_str] = ...
@@ -147,6 +149,14 @@ else
         [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = ...
             util_FitPowerLaw(Qm(rec(goodrec)), dQdt(rec(goodrec)), fitting_type, R2(rec(goodrec)));
     end
+end
+if error_flag == 3
+    Recession_Parameters = NaN(1,2);
+    recession_month = NaN;
+    return
+else
+    error_flag = max([error_flag_tmp, error_flag]);
+    error_str = [error_str_tmp, error_str];
 end
 
 % optional plotting
