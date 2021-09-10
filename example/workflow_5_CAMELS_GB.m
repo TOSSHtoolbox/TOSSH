@@ -55,7 +55,7 @@ fig_path = './example/results/images';
 % ./example/example_data/CAMELS_GB/data/timeseries/CAMELS_GB_hydromet*.csv 
 % (671 files; contain forcing and streamflow time series) 
 
-% Loading the datamight take a few minutes.
+% Loading the data might take a few minutes.
 CAMELS_GB_data = loadCAMELSGBstruct();
 % Note that you can also save the struct file to avoid loading the data
 % anew every time you want to work with them.
@@ -201,7 +201,7 @@ plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,EventRR,...
     'save_figure',true,'figure_path',fig_path,'figure_type','-dpng')
 
 % We can see a clear patterns for all three signatures. The event runoff 
-% mostly ratio follows climate arditiy. It is high along the very wet west
+% mostly ratio follows climate aridity. It is high along the very wet west
 % coast and low in the drier south east. The recession constant and the
 % recession exponent vary less smoothly in space as they are influenced 
 % more strongly by the underlying geology. In areas underlain by highly 
