@@ -260,7 +260,7 @@ end
 
 % calculate Becker and McDonnell (1998) signatures, minimum value of
 % quickflow as a percentage of precipitation
-min_Qf_perc = 100*(min(event_array(i,7)./event_array(i,1)));
+min_Qf_perc = 100*(min(event_array(:,7)./event_array(:,1),[],'omitnan'));
 
 % check if time series only consists of baseflow
 if all(event_array(:,6)==0) || all(event_array(:,7)==0) || all(event_array(:,8)==0)
