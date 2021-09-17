@@ -169,7 +169,7 @@ end
 
 Segment_slopes = -Segment_slopes; % convert slope to recession rate
 
-%If timestep is not daily, convert units of Segment_slopes to 1/day
+% if timestep is not daily, convert units of Segment_slopes to 1/day
 timestep_factor = days(1)/timestep;
 Segment_slopes = Segment_slopes * timestep_factor;
 

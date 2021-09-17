@@ -13,7 +13,6 @@ function [results] = calc_BasicSet(Q_mat, t_mat, varargin)
 %   t_mat: time [Matlab datenum] matrix (cell array)
 %   OPTIONAL
 %   start_water_year: first month of water year, default = 10 (October)
-%   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
 %   results: struc array with all results (each signature for each time
@@ -56,11 +55,9 @@ addRequired(ip, 't_mat', @(t_mat) iscell(t_mat))
 
 % optional input arguments
 addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
-addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
 
 parse(ip, Q_mat, t_mat, varargin{:})
 start_water_year = ip.Results.start_water_year;
-plot_results = ip.Results.plot_results;
 
 % initialise arrays
 Q_mean = NaN(size(Q_mat,1),1);

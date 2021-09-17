@@ -160,9 +160,8 @@ if ~isempty(PET)
     end
     
     if min(PET)<0
-        error_flag = 2;
-        error_str = ['Error: Negative values in potential evpotranspiration series. ', error_str];
-        return
+        error_flag = 1;
+        error_str = ['Warning: Negative values in potential evpotranspiration series. ', error_str];
     end
     
 end
