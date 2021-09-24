@@ -13,7 +13,7 @@ The online documentation for TOSSH can be found here: <https://TOSSHtoolbox.gith
 ## Contact
 If you have any questions or feedback, or if you spotted an error or bug, please create an issue on Github 
 (<a href="https://github.com/TOSSHtoolbox/TOSSH/issues" target="_blank">https://github.com/TOSSHtoolbox/TOSSH/issues</a>).
-Alternatively, email Hilary McMillan (<hmcmillan@sdsu.edu>) or Sebastian Gnann (<sebastian.gnann@bristol.ac.uk>).
+Alternatively, email Hilary McMillan (<hmcmillan@sdsu.edu>) or Sebastian Gnann (<gnann1@uni-potsdam.de>).
  
  
 ## Download 
