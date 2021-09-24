@@ -137,17 +137,20 @@ error_flag_tmp = error_flag; % temporarily store error flag from data check
 error_str_tmp = error_str;
 if ~fit_individual
     rec = ~isnan(Qm);
-    [Recession_Parameters(1), Recession_Parameters(2),error_flag,error_str] = ...
+    [Recession_Parameters(1), Recession_Parameters(2), error_flag, error_str] = ...
         util_FitPowerLaw(Qm(rec), dQdt(rec), fitting_type, R2(rec));
     recession_month = NaN; % no recession month since we only fit a single curve
-    
 else
     Recession_Parameters = NaN(size(flow_section,1),2);
     for i = 1:size(flow_section,1)
         rec = [flow_section(i,1):flow_section(i,2)]'; % get recession
         goodrec = ~isnan(Qm(rec));
-        [Recession_Parameters(i,1), Recession_Parameters(i,2),error_flag,error_str] = ...
+        [Recession_Parameters(i,1), Recession_Parameters(i,2), error_flag, error_str] = ...
             util_FitPowerLaw(Qm(rec(goodrec)), dQdt(rec(goodrec)), fitting_type, R2(rec(goodrec)));
+    % remove recessions with unrealistic (negative) parameter values
+    if Recession_Parameters(i,1) <= 0 || Recession_Parameters(i,2) <= 0
+       Recession_Parameters(i,:) = NaN;
+    end
     end
 end
 if error_flag == 3
@@ -177,8 +180,8 @@ if plot_results
         Q_tmp = Qm(rec);
         dQdt_tmp = dQdt(rec);
         if fit_individual
-            %         date_vec = datevec(t(rec));
-            %         ind = floor(mean(date_vec(:,2))); % get approx. month
+            % date_vec = datevec(t(rec));
+            % ind = floor(mean(date_vec(:,2))); % get approx. month
             ind = recession_month(i);
             plot(Q_tmp,-dQdt_tmp,'.','color',colour_mat_seasons(ind,:),'linewidth',2)
             plot(Q_tmp,Recession_Parameters(i,1).*Q_tmp.^Recession_Parameters(i,2),'color',colour_mat_seasons(ind,:))
@@ -197,8 +200,9 @@ if plot_results
         str = (sprintf('-dQ/dt = %.2f Q^{%.1f} \n',Recession_Parameters(1),Recession_Parameters(2)));
         title(str);
     else
-        [~, ind] = min(abs(Recession_Parameters(:,2) - median(Recession_Parameters(:,2),'omitnan'))); % find recession according to median exponent
-        str = (sprintf('median: -dQ/dt = %.3f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
+        tmp = median(Recession_Parameters(:,2),'omitnan');
+        ind = find(Recession_Parameters(:,2) == tmp, 1, 'first');
+        str = (sprintf('median: -dQ/dt = %.3f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));       
         title(str);
     end
     xlabel('Q [mm/timestep]')
