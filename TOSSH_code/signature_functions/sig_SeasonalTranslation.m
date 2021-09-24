@@ -86,10 +86,12 @@ if error_flag == 2
     return
 end
 
-% get rid of NaN values
-Q(isnan(Q)) = median(Q,'omitnan'); % Q NaNs are set to the median flow
-P(isnan(P)) = 0; % P NaNs are set to zero
-PET(isnan(PET)) = median(PET,'omitnan'); % PET NaNs are set to median PET
+% get rid of NaN values (temporarily)
+isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
+% replace NaN days with mean to have a roughly closed water balance
+Q(isn) = mean(Q,'omitnan'); 
+P(isn) = mean(P,'omitnan'); 
+PET(isn) = mean(PET,'omitnan'); 
 
 % calculate signature
 if useAET

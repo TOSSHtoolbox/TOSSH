@@ -150,7 +150,7 @@ for i = 1:size(Q_mat,1)
         'summer_start', start_water_year-6);
     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = ...
-        sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
+        sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'plot_results',plot_results);
     
     % Section: Storage (especially groundwater)
     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = ...

@@ -94,10 +94,11 @@ end
 % calculate signature
 
 % get rid of NaN values (temporarily)
-isn = isnan(Q); % store NaN indices
-Q(isnan(Q)) = median(Q,'omitnan'); % Q NaNs are set to the median flow
-P(isnan(P)) = 0; % P NaNs are set to zero
-PET(isnan(PET)) = median(PET,'omitnan'); % PET NaNs are set to median PET
+isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
+% replace NaN days with mean to have a roughly closed water balance
+Q(isn) = mean(Q,'omitnan'); 
+P(isn) = mean(P,'omitnan'); 
+PET(isn) = mean(PET,'omitnan'); 
 
 % estimate storage
 [S, ~] = util_StorageAndAET(Q, t, P, PET, 'field_capacity', field_capacity);
