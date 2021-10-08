@@ -27,7 +27,7 @@ function [BaseflowRecessionK, error_flag, error_str, fig_handles] = ...
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
-%   BaseflowRecessionK: Baseflow recession constant [1/timestep]
+%   BaseflowRecessionK: Baseflow recession constant [1/day]
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
