@@ -28,7 +28,7 @@ function [Recession_a_Seasonality, error_flag, error_str, fig_handles] ...
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
-%   Recession_a_Seasonality: seasonal change in recession alpha [1/mm]
+%   Recession_a_Seasonality: seasonal change in recession alpha [-]
 %       (y-intercept in recession plot assuming a slope of 2)
 %   recession_month: approx. month of recession
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
