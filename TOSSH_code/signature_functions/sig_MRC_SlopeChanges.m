@@ -23,7 +23,7 @@ function [MRC_num_segments, Segment_slopes, error_flag, error_str, fig_handles] 
 %   OUTPUT
 %   MRC_num_segments: number of different segments in MRC
 %   Segment_slopes: slopes of master recession curve segments in Q vs. 
-%       relative time plot [1/timestep]
+%       relative time plot [1/day]
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
