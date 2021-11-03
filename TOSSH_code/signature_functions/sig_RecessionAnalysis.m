@@ -200,9 +200,8 @@ if plot_results
         str = (sprintf('-dQ/dt = %.2f Q^{%.1f} \n',Recession_Parameters(1),Recession_Parameters(2)));
         title(str);
     else
-        tmp = median(Recession_Parameters(:,2),'omitnan');
-        ind = find(Recession_Parameters(:,2) == tmp, 1, 'first');
-        str = (sprintf('median: -dQ/dt = %.3f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));       
+        [~, ind] = min(abs(Recession_Parameters(:,2) - median(Recession_Parameters(:,2),'omitnan')));
+        str = (sprintf('median: -dQ/dt = %.2f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));       
         title(str);
     end
     xlabel('Q [mm/timestep]')
