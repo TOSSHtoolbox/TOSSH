@@ -161,7 +161,7 @@ for i = 1:size(Q_mat,1)
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',true,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
     RecessionParameters(i,1) = median((RecessionParametersTemp(:,1)),'omitnan');
     RecessionParameters(i,2) = median(RecessionParametersTemp(:,2),'omitnan');  
-    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i},'omitnan').^(RecessionParametersTemp(:,2)-1));
+    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
     ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
     RecessionParameters(i,3) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
     RecessionParameters_error_str(i) = RecessionParameters_error_str_temp;
