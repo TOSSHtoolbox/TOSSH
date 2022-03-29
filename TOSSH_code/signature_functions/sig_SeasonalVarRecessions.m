@@ -102,8 +102,8 @@ end
 % calculate signature
 
 % run recession analysis for individual recessions
-error_flag_tmp = error_flag; % temporarily store error flag from data check
-error_str_tmp = error_str;
+error_flag_tmp = 0; % reset error flag since data check will be performed again
+error_str_tmp = '';
 [para_mat, recession_month, error_flag, error_str, fig_handles] = ...
     sig_RecessionAnalysis(Q, t, ...
     'recession_length', recession_length, ...
