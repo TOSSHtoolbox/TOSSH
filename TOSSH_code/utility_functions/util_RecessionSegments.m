@@ -217,6 +217,7 @@ switch start_of_recession
         if size(flow_section,1)==0
             error_flag = 3;
             error_str = ['Error: No long enough baseflow recession periods, consider increasing filter_par parameter. ', error_str];
+            return
         elseif size(flow_section,1) < 10
             error_flag = 1;
             error_str = ['Warning: Fewer than 10 recession segments extracted, results might not be robust. ', error_str];
