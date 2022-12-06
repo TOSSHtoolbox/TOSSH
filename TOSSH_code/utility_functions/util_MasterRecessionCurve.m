@@ -181,6 +181,12 @@ switch fit_method
                  
         end
         
+        % check if any segments are left
+        if isempty(segments(~short_segs)) == 1
+            MRC = [NaN, NaN];
+            return 
+        end
+        
         %If some segments were rejected, recalculate flow values for
         %interpolation and flow value initialisations and counts
         if sum(short_segs) > 0
