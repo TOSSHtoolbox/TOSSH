@@ -60,3 +60,5 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
 }
+
+html_css_files = ["custom.css"]

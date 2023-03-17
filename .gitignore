@@ -15,4 +15,4 @@ example/example_data/old
 old/
 example/results/CAMELS_GB_TOSSH_signatures.mat
 example/results/CAMELS_TOSSH_signatures.mat
-docs/_build/
+_build/
