@@ -13,6 +13,7 @@ An overview of the toolbox structure is given below.
 .. figure:: _static/images/toolbox_structure.png
    :align: center
 
+|
 
 Signature functions 
 ^^^^^^^^^^^^^^^^^^^
