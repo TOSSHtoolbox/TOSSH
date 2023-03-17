@@ -12,6 +12,7 @@ signature_test_script_old
 example/example_data/CAMELS_v2.0
 example/example_data/CAMELS_GB
 example/example_data/old
-old
+old/
 example/results/CAMELS_GB_TOSSH_signatures.mat
 example/results/CAMELS_TOSSH_signatures.mat
+docs/build/

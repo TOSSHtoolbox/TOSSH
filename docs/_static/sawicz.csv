@@ -1,0 +1,7 @@
+Signature;Function (click for code);Unit;Description
+TotalRR;`sig_TotalRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html>`_ ;--;Total runoff ratio
+FDC_slope;`sig_FDC_slope.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html>`_ ;--;Slope of the flow duration curve
+BFI;`sig_BFI.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html>`_ ;--;Baseflow index
+QP_elasticity;`sig_QP_elasticity.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_QP_elasticity.html>`_ ;--;Streamflow-precipitation elasticity
+SnowDayRatio;`sig_SnowDayRatio.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowDayRatio.html>`_ ;--;Snow day ratio
+RLD;`sig_RisingLimbDensity.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RisingLimbDensity.html>`_ ;1/timestep;Rising limb density

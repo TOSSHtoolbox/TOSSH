@@ -1,4 +1,4 @@
-<img src="docs/images/TOSSH_logo.svg" alt="TOSSH logo" style="width:70%;" >
+<img src="docs/_static/images/TOSSH_logo.svg" alt="TOSSH logo" style="width:70%;" >
 
 
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/TOSSHtoolbox/TOSSH/blob/master/LICENSE)

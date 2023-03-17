@@ -1,47 +1,46 @@
----
-title: Overview
-nav: true
----
+.. _p1_overview:
 
-- 
-{:toc}
+Overview
+========
 
-## MATLAB functions 
+MATLAB functions 
+----------------
 
 TOSSH consists of different types of MATLAB functions.
 The three core types are: **signature functions**, **utility functions**, and **calculation functions**.
 An overview of the toolbox structure is given below.
 
-<img src="images/toolbox_structure.png" alt="TOSSH toolbox stucture" style="width:100%;" >
+.. figure:: _static/images/toolbox_structure.png
+   :align: center
 
 
-### Signature functions 
+Signature functions 
+^^^^^^^^^^^^^^^^^^^
 Signature functions (*sig_xxx.m*) calculate different hydrological signatures. 
 Note that some functions just call MATLAB functions (e.g. mean flow). 
 They, however, provide data checks and are included to ensure consistency.
 Signature functions start with a short description, perform input parameter checks, data checks, and calculate the signature.
-For example, a shortened version of the mean flow signature *sig_Q_mean.m* looks as follows.
+For example, a shortened version of the mean flow signature *sig_Q_mean.m* looks as follows::
 
-```
-function [Q_mean, error_flag, error_str] = sig_Q_mean(Q, t)
-%sig_Q_mean calculates mean flow of time series.
-[...]
+	function [Q_mean, error_flag, error_str] = sig_Q_mean(Q, t)
+	%sig_Q_mean calculates mean flow of time series.
+	[...]
 
-% check input parameters
-[...]
+	% check input parameters
+	[...]
 
-% data checks
-[error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
-if error_flag == 2
-    Q_mean = NaN;
-    return
-end
+	% data checks
+	[error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+	if error_flag == 2
+		Q_mean = NaN;
+		return
+	end
 
-% calculate signature
-Q_mean = mean(Q,'omitnan'); 
-    
-end
-```
+	% calculate signature
+	Q_mean = mean(Q,'omitnan'); 
+		
+	end
+
 
 Some signature functions return more than one signature and optionally create a plot (e.g. *sig_RecessionAnalysis.m*).
 Signature functions with plotting functionality optionally return a figure handle that allows to manipulate the figure. 
@@ -52,63 +51,71 @@ a basic template *sig_TemplateBasic.m* which only contains Q, t, and optional pa
 and an advanced template *sig_TemplateAdvanced.m* which contains all possible inputs (Q, t, P, PET, T, required parameters, and optional parameters).
 
 
-### Utility functions
+Utility functions
+^^^^^^^^^^^^^^^^^
 Utility functions (*util_xxx.m*) are used within some of the signature functions but are kept separate to enhance reusability.
-For example, the data are checked for certain problems using *util_DataCheck.m*.
+For example, the data are checked for certain problems using *util_DataCheck.m*::
 
-```
-function [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, varargin)
-%util_DataCheck checks data for various things.
-[...]
+	function [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, varargin)
+	%util_DataCheck checks data for various things.
+	[...]
 
-% check input parameters
-[...]
+	% check input parameters
+	[...]
 
-% default setting reads as good data
-error_flag = 0;
-error_str = '';
-[...]
+	% default setting reads as good data
+	error_flag = 0;
+	error_str = '';
+	[...]
 
-% data checks
-if min(Q)<0
-    error_flag = 2;
-    error_str = ['Error: Negative values in flow series. ', error_str];
-    return
-end
-[...]
+	% data checks
+	if min(Q)<0
+		error_flag = 2;
+		error_str = ['Error: Negative values in flow series. ', error_str];
+		return
+	end
+	[...]
 
-end
-```
+	end
 
-### Calculation functions
+
+Calculation functions
+^^^^^^^^^^^^^^^^^^^^^
 Signature calculation functions (*calc_xxx.m*) calculate sets of signatures for a given dataset. 
-The signature sets are described in the corresponding paper and [here](./p2_signatures.md/).
+The signature sets are described in the corresponding paper and :ref:`here <p2_signatures>`.
 
 
-### Other scripts and functions
+Other scripts and functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 There are a few other scripts and functions. 
-Most of them are workflow scripts (e.g. *workflow_1_basic.m*) which show how the toolbox can be used with some example data (see [here](./p3_examples.md/) for more information on workflow scripts).
+Most of them are workflow scripts (e.g. *workflow_1_basic.m*) which show how the toolbox can be used with some example data (see :ref:`here <p3_examples>` for more information on workflow scripts).
 The remaining functions are helper functions used to load data, to create plots, etc., and they are mainly used in the workflow scripts.
 
 
-## Input data
+Input data
+----------
 
-### Input time series 
+Input time series
+^^^^^^^^^^^^^^^^^
 Every signature function requires streamflow data (as a MATLAB vector, typically in mm/timestep) and corresponding dates (as a MATLAB datetime vector).
 Additionally, some signatures require precipitation, potential evapotranspiration (both in mm/timestep), or temperature data (in °C).
 
-### Input parameters
+Input parameters
+^^^^^^^^^^^^^^^^
 Most signatures that require parameter values will use default parameter values unless the parameters are specified in the inputs. 
 Some signatures always require parameter values to be specified. 
 This is explained in the function descriptions and in the workflow scripts.
 
-### Data checks
+Data checks
+^^^^^^^^^^^
 Every signature function performs data checks and either returns a warning or an error via an error string. We check for:
-- NaN values
-- Inconsistencies in the time vector, e.g. missing days
-- General problems with the input data, e.g. unrealistic values, time series of different lengths
 
-## Errors and warnings
+* NaN values
+* Inconsistencies in the time vector, e.g. missing days
+* General problems with the input data, e.g. unrealistic values, time series of different lengths
+
+Errors and warnings
+-------------------
 Every signature function optionally returns an error flag (a number describing the error type, e.g. 2 corresponds to a data check error) 
 and an error string (e.g. 'Error: Negative values in flow series.'). 
 These contain warnings and errors that might occur during the data check or during signature calculation.
@@ -120,24 +127,25 @@ There are still normal Matlab warnings and errors, for example if input paramete
 Such errors stop code execution but can be avoided if the functions are called with input data that are in the correct format.
 
 
-## Required MATLAB toolboxes
+Required MATLAB toolboxes
+-------------------------
 The toolbox was developed using Matlab R2020a.
 Some functions require MATLAB toolboxes, which are listed below:
 
-[comment]: <>  - 'MATLAB'	'9.4'
-[comment]: <> - Signal Processing Toolbox	v8.0 (xcorr)
+* Statistics and Machine Learning Toolbox v11.3
+* Optimization Toolbox v8.1 
 
-- Statistics and Machine Learning Toolbox v11.3 
-- Optimization Toolbox v8.1 
+..
+	[comment]: <>  - 'MATLAB'	'9.4'
+	[comment]: <> - Signal Processing Toolbox	v8.0 (xcorr)
+	[comment]: <> - Statistics and Machine Learning Toolbox v11.3  (skewness, fitnlm)
+	[comment]: <> - Optimization Toolbox v8.1 (nsqnonlin, fminbnd)
+	[comment]: <> - (tiedrank: Statistics and Machine Learning Toolbox)
+	[comment]: <> - (findpeaks: Signal Processing Toolbox)
 
-[comment]: <> - Statistics and Machine Learning Toolbox v11.3  (skewness, fitnlm)
-[comment]: <> - Optimization Toolbox v8.1 (nsqnonlin, fminbnd)
 
-[comment]: <> - (tiedrank: Statistics and Machine Learning Toolbox)
-[comment]: <> - (findpeaks: Signal Processing Toolbox)
-
-## Using the toolbox
-Example workflow scripts that show how to use the toolbox are provided [online](./p3_examples.md/) and can be found in *TOSSH/example/*.
+Using the toolbox
+-----------------
+Example workflow scripts that show how to use the toolbox are provided :ref:`here <p3_examples>` and can be found in *TOSSH/example/*.
 
 Note that the Mapping Toolbox is used for some plots in the workflow scripts, but it is not required for any signature calculation.
-
