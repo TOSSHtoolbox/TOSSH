@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_RecessionParts</title>
+  <meta name="keywords" content="sig_RecessionParts">
+  <meta name="description" content="sig_RecessionParts calculates recession constant for certain recession parts.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_RecessionParts.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_RecessionParts
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_RecessionParts calculates recession constant for certain recession parts.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [RecessionK_part, error_flag, error_str, fig_handles] =sig_RecessionParts(Q, t, part, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_RecessionParts calculates recession constant for certain recession parts.
+   Fits exponential function (Q(t) = Q(0)*exp(-k*t)) to certain recession
+   parts (e.g. early or late recessions; see Horner, 2020). Recessions
+   are extracted from smoothed streamflow time series (moving mean),
+   recession maxima need to be larger than a threshold (e.g. median flow),
+   and recessions need to have a minimum length (default 5 days).
+   Early recessions are from day 1 to day 5 of a recession. Late
+   recessions are from day 15 to day 30 of a recession.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   part: recession part, e.g early, late, or custom
+   OPTIONAL
+   recession_part: recession part for which recession constant is
+       calculated [recession_start min_recession_length
+       max_recession_length]
+   Q_threshold: threshold above which recession maxima have to be,
+       default = median(Q)
+   moving_window: moving window used to smooth time series for recession
+       selection, default = 3
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   RecessionK_part: median recession constant for certain recession parts 
+       (e.g. early recessions)
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   k_median_early = sig_RecessionParts(Q,t,'early','plot_results',true);
+   k_median_late = sig_RecessionParts(Q,t,'late','plot_results',true);
+   k_median_early_custom = sig_RecessionParts(Q,t,'custom','recession_part',[1 5 5]);
+
+   References
+   Horner, I., 2020. Design and evaluation of hydrological signatures for
+   the diagnostic and improvement of a process-based distributed
+   hydrological model (Doctoral dissertation, Universite Grenoble Alpes).
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [RecessionK_part, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     sig_RecessionParts(Q, t, part, varargin)
+0003 <span class="comment">%sig_RecessionParts calculates recession constant for certain recession parts.</span>
+0004 <span class="comment">%   Fits exponential function (Q(t) = Q(0)*exp(-k*t)) to certain recession</span>
+0005 <span class="comment">%   parts (e.g. early or late recessions; see Horner, 2020). Recessions</span>
+0006 <span class="comment">%   are extracted from smoothed streamflow time series (moving mean),</span>
+0007 <span class="comment">%   recession maxima need to be larger than a threshold (e.g. median flow),</span>
+0008 <span class="comment">%   and recessions need to have a minimum length (default 5 days).</span>
+0009 <span class="comment">%   Early recessions are from day 1 to day 5 of a recession. Late</span>
+0010 <span class="comment">%   recessions are from day 15 to day 30 of a recession.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   INPUT</span>
+0013 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0014 <span class="comment">%   t: time [Matlab datetime]</span>
+0015 <span class="comment">%   part: recession part, e.g early, late, or custom</span>
+0016 <span class="comment">%   OPTIONAL</span>
+0017 <span class="comment">%   recession_part: recession part for which recession constant is</span>
+0018 <span class="comment">%       calculated [recession_start min_recession_length</span>
+0019 <span class="comment">%       max_recession_length]</span>
+0020 <span class="comment">%   Q_threshold: threshold above which recession maxima have to be,</span>
+0021 <span class="comment">%       default = median(Q)</span>
+0022 <span class="comment">%   moving_window: moving window used to smooth time series for recession</span>
+0023 <span class="comment">%       selection, default = 3</span>
+0024 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   OUTPUT</span>
+0027 <span class="comment">%   RecessionK_part: median recession constant for certain recession parts</span>
+0028 <span class="comment">%       (e.g. early recessions)</span>
+0029 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0030 <span class="comment">%       (error in signature calculation)</span>
+0031 <span class="comment">%   error_str: string contraining error description</span>
+0032 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0033 <span class="comment">%       not requested)</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   EXAMPLE</span>
+0036 <span class="comment">%   % load example data</span>
+0037 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0038 <span class="comment">%   Q = data.Q;</span>
+0039 <span class="comment">%   t = data.t;</span>
+0040 <span class="comment">%   k_median_early = sig_RecessionParts(Q,t,'early','plot_results',true);</span>
+0041 <span class="comment">%   k_median_late = sig_RecessionParts(Q,t,'late','plot_results',true);</span>
+0042 <span class="comment">%   k_median_early_custom = sig_RecessionParts(Q,t,'custom','recession_part',[1 5 5]);</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%   References</span>
+0045 <span class="comment">%   Horner, I., 2020. Design and evaluation of hydrological signatures for</span>
+0046 <span class="comment">%   the diagnostic and improvement of a process-based distributed</span>
+0047 <span class="comment">%   hydrological model (Doctoral dissertation, Universite Grenoble Alpes).</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%   Copyright (C) 2020</span>
+0050 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0051 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0052 
+0053 <span class="comment">% check input parameters</span>
+0054 <span class="keyword">if</span> nargin &lt; 3
+0055     error(<span class="string">'Not enough input arguments.'</span>)
+0056 <span class="keyword">end</span>
+0057 
+0058 ip = inputParser;
+0059 ip.CaseSensitive = true;
+0060 
+0061 <span class="comment">% required input arguments</span>
+0062 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0063 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0064 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0065 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0066 <span class="comment">% part has to be char and only one word</span>
+0067 addRequired(ip, <span class="string">'part'</span>, @(part) ischar(part) &amp;&amp; size(part,1)==1)
+0068 
+0069 <span class="comment">% optional input arguments</span>
+0070 addParameter(ip, <span class="string">'recession_part'</span>, [], @isnumeric) <span class="comment">% flow threshold</span>
+0071 addParameter(ip, <span class="string">'Q_threshold'</span>, median(Q,<span class="string">'omitnan'</span>), @isnumeric) <span class="comment">% Q threshold below which recessions are discarded</span>
+0072 addParameter(ip, <span class="string">'moving_window'</span>, 3, @isnumeric) <span class="comment">% allowed increase in flow during recession period</span>
+0073 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results (2 graphs)</span>
+0074 
+0075 parse(ip, Q, t, part, varargin{:})
+0076 recession_part = ip.Results.recession_part;
+0077 Q_threshold = ip.Results.Q_threshold;
+0078 moving_window = ip.Results.moving_window;
+0079 plot_results = ip.Results.plot_results;
+0080 
+0081 <span class="comment">% create empty figure handle</span>
+0082 fig_handles = [];
+0083 
+0084 <span class="comment">% data checks</span>
+0085 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0086 <span class="keyword">if</span> error_flag == 2
+0087     RecessionK_part = NaN;
+0088     <span class="keyword">return</span>
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="comment">% specify recession part</span>
+0092 <span class="keyword">switch</span> part
+0093     <span class="keyword">case</span> <span class="string">'early'</span>
+0094         <span class="comment">% early recessions are from day 1 to day 5 of a recession</span>
+0095         recession_start = 1;
+0096         min_recession_length = 5;
+0097         max_recession_length = 5;
+0098         
+0099     <span class="keyword">case</span> <span class="string">'late'</span>
+0100         <span class="comment">% late recessions are from day 15 to day 30 of a recession and have</span>
+0101         <span class="comment">% to be at least 5 days long</span>
+0102         recession_start = 15;
+0103         min_recession_length = 5;
+0104         max_recession_length = 15;
+0105         
+0106     <span class="keyword">case</span> <span class="string">'custom'</span>
+0107         <span class="keyword">if</span> isempty(recession_part) || numel(recession_part) ~= 3
+0108             error(<span class="string">'No/wrong custom recession parts specified.'</span>)
+0109         <span class="keyword">end</span>
+0110         recession_start = recession_part(1);
+0111         min_recession_length = recession_part(2);
+0112         max_recession_length = recession_part(3);
+0113         
+0114     <span class="keyword">otherwise</span>
+0115         error(<span class="string">'Incorrect recession part specified.'</span>)
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">% calculate signature</span>
+0119 
+0120 <span class="comment">% get recession segments</span>
+0121 Q_tmp = movmean(Q,moving_window,<span class="string">'omitnan'</span>); <span class="comment">% smooth time series before recession extraction</span>
+0122 Q_tmp(isnan(Q)) = NaN;
+0123 error_flag_tmp = error_flag; <span class="comment">% temporarily store error flag from data check</span>
+0124 error_str_tmp = error_str;
+0125 [flow_section, error_flag, error_str, fig_handles] = <span class="keyword">...</span>
+0126     util_RecessionSegments(Q_tmp, t, <span class="string">'plot_results'</span>, plot_results, <span class="keyword">...</span>
+0127     <span class="string">'recession_length'</span>, min_recession_length, <span class="string">'n_start'</span>, recession_start - 1); <span class="comment">% discard all values before recession start</span>
+0128 <span class="keyword">if</span> error_flag == 3
+0129     RecessionK_part = NaN;
+0130     <span class="keyword">return</span>
+0131 <span class="keyword">else</span>
+0132     error_flag = max([error_flag_tmp, error_flag]);
+0133     error_str = [error_str_tmp, error_str];
+0134 <span class="keyword">end</span>
+0135 
+0136 <span class="comment">% remove recessions that have too low streamflow values</span>
+0137 below_threshold = false(size(flow_section,1),1);
+0138 <span class="keyword">for</span> i = 1:size(flow_section,1)
+0139     rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0140     <span class="keyword">if</span> max(Q(rec)) &lt; Q_threshold
+0141         below_threshold(i) = true;
+0142     <span class="keyword">end</span>
+0143 <span class="keyword">end</span>
+0144 flow_section(below_threshold,:) = [];
+0145 
+0146 <span class="comment">% truncate recessions if they are longer than maximum recession lengths</span>
+0147 <span class="keyword">for</span> i = 1:size(flow_section,1)
+0148     <span class="keyword">if</span> flow_section(i,1) + max_recession_length - 1 &lt; flow_section(i,2)
+0149         flow_section(i,2) = flow_section(i,1) + max_recession_length - 1;
+0150     <span class="keyword">end</span>
+0151 <span class="keyword">end</span>
+0152 
+0153 <span class="keyword">if</span> isempty(flow_section)
+0154     RecessionK_part = NaN;
+0155     error_flag = 3;
+0156     error_str = [<span class="string">'Error: No recession periods that match the recession selection criteria. '</span>, error_str];
+0157     <span class="keyword">return</span>
+0158 <span class="keyword">end</span>
+0159 
+0160 <span class="comment">% fit exponential to recessions</span>
+0161 k = NaN(size(flow_section,1),1);
+0162 <span class="keyword">for</span> i = 1:size(flow_section,1)
+0163     rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0164     <span class="comment">% default: linear fit in log log space for fast calculation</span>
+0165     k(i) = util_FitExponential(Q(rec),t(rec),<span class="string">'semilog'</span>); 
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="comment">% get median recession constant</span>
+0169 RecessionK_part = median(k,<span class="string">'omitnan'</span>);
+0170 
+0171 <span class="comment">% optional plotting</span>
+0172 <span class="keyword">if</span> plot_results
+0173     fig = figure(<span class="string">'Position'</span>,[100 100 700 250]); hold on
+0174     p1 = plot(t,Q,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1.5);
+0175     <span class="keyword">for</span> i = 1:size(flow_section,1)
+0176         rec = [flow_section(i,1):flow_section(i,2)]'; <span class="comment">% get recession</span>
+0177         t_rec = [0:length(rec)-1]';
+0178         Q_est = Q(rec(1))*exp(t_rec.*-k(i));
+0179         p2 = plot(t(rec),Q_est,<span class="string">'g'</span>,<span class="string">'linewidth'</span>,1.5);
+0180     <span class="keyword">end</span>
+0181     xlabel(<span class="string">'Date'</span>)
+0182     ylabel(<span class="string">'Flow [mm/timestep]'</span>)
+0183     title(<span class="string">'Exponential recessions fitted to certain recession parts'</span>)
+0184     legend([p1 p2],{<span class="string">'Streamflow'</span>,<span class="string">'Fitted recessions'</span>},<span class="string">'Location'</span>,<span class="string">'best'</span>)
+0185     <span class="comment">% set(gca,'yscale','log');</span>
+0186     fig_handles.RecessionParts = fig;
+0187 <span class="keyword">end</span>
+0188 
+0189 <span class="keyword">end</span>
+0190</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

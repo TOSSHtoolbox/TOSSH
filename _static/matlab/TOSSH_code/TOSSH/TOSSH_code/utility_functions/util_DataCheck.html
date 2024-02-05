@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_DataCheck</title>
+  <meta name="keywords" content="util_DataCheck">
+  <meta name="description" content="util_DataCheck checks data for various things.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_DataCheck.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_DataCheck
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_DataCheck checks data for various things.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_DataCheck checks data for various things.
+   Checks data for unrealistic values, NaN in time series, inconsistent
+   time series lenghts, etc., and returns warnings or errors.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   P: precipitation [mm/timestep]
+   PET: potential evapotranspiration [mm/timestep]
+   T: temperature [degC]
+
+   OUTPUT
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   timestep: (median) timestep of data
+   t: time in Matlab datetime format
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   P = data.P;
+   dataCheck = util_DataCheck(Q, t);
+   dataCheck = util_DataCheck(Q, t, 'P', P);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, varargin)</a>
+0002 <span class="comment">%util_DataCheck checks data for various things.</span>
+0003 <span class="comment">%   Checks data for unrealistic values, NaN in time series, inconsistent</span>
+0004 <span class="comment">%   time series lenghts, etc., and returns warnings or errors.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0008 <span class="comment">%   t: time [Matlab datetime]</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0011 <span class="comment">%   PET: potential evapotranspiration [mm/timestep]</span>
+0012 <span class="comment">%   T: temperature [degC]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   OUTPUT</span>
+0015 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0016 <span class="comment">%       (error in signature calculation)</span>
+0017 <span class="comment">%   error_str: string contraining error description</span>
+0018 <span class="comment">%   timestep: (median) timestep of data</span>
+0019 <span class="comment">%   t: time in Matlab datetime format</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   EXAMPLE</span>
+0022 <span class="comment">%   % load example data</span>
+0023 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0024 <span class="comment">%   Q = data.Q;</span>
+0025 <span class="comment">%   t = data.t;</span>
+0026 <span class="comment">%   P = data.P;</span>
+0027 <span class="comment">%   dataCheck = util_DataCheck(Q, t);</span>
+0028 <span class="comment">%   dataCheck = util_DataCheck(Q, t, 'P', P);</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Copyright (C) 2020</span>
+0031 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0032 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0033 
+0034 <span class="comment">% check input parameters</span>
+0035 <span class="keyword">if</span> nargin &lt; 2
+0036     error(<span class="string">'Not enough input arguments.'</span>)
+0037 <span class="keyword">end</span>
+0038 
+0039 ip = inputParser;
+0040 ip.CaseSensitive = true;
+0041 
+0042 <span class="comment">% required input arguments</span>
+0043 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0044 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0045 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0046 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0047 
+0048 <span class="comment">% optional input arguments</span>
+0049 <span class="comment">% P has to be numeric and either a (n,1) or a (1,n) vector</span>
+0050 addParameter(ip, <span class="string">'P'</span>, [], @(P) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0051 <span class="comment">% PET has to be numeric and either a (n,1) or a (1,n) vector</span>
+0052 addParameter(ip, <span class="string">'PET'</span>, [], @(PET) isnumeric(PET) &amp;&amp; (size(PET,1)==1 || size(PET,2)==1))
+0053 <span class="comment">% T has to be numeric and either a (n,1) or a (1,n) vector</span>
+0054 addParameter(ip, <span class="string">'T'</span>, [], @(T) isnumeric(T) &amp;&amp; (size(T,1)==1 || size(T,2)==1))
+0055 
+0056 parse(ip, Q, t, varargin{:})
+0057 P = ip.Results.P;
+0058 PET = ip.Results.PET;
+0059 T = ip.Results.T;
+0060 
+0061 <span class="comment">% default setting reads as good data</span>
+0062 error_flag = 0;
+0063 error_str = <span class="string">''</span>;
+0064 
+0065 <span class="comment">% timestep checks</span>
+0066 <span class="keyword">if</span> isnumeric(t)
+0067     error_flag = 1;
+0068     t = datetime(t,<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0069     error_str = [<span class="string">'Warning: Converted datenum to datetime. '</span>, error_str];
+0070 <span class="keyword">end</span>
+0071 
+0072 timesteps = diff(t);
+0073 timestep = median(timesteps);
+0074 <span class="keyword">if</span> any(diff(timesteps)~=0) 
+0075     error_flag = 1;
+0076     error_str = [<span class="string">'Warning: Record is not continuous (some timesteps are missing). '</span>, error_str];
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="comment">% data checks</span>
+0080 <span class="keyword">if</span> min(Q)&lt;0
+0081     error_flag = 2;
+0082     error_str = [<span class="string">'Error: Negative values in flow series. '</span>, error_str];
+0083     <span class="keyword">return</span>
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="keyword">if</span> all(Q==0)
+0087     error_flag = 2;
+0088     error_str = [<span class="string">'Error: Only zero flow in flow series. '</span>, error_str];
+0089     <span class="keyword">return</span>
+0090 <span class="keyword">end</span>
+0091 
+0092 <span class="keyword">if</span> length(Q) ~= length(t)
+0093     error_flag = 2;
+0094     error_str = [<span class="string">'Error: Flow series and time vector have different lengths. '</span>, error_str];
+0095     <span class="keyword">return</span>
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="keyword">if</span> any(isnan(Q))
+0099     error_flag = 1;
+0100     error_str = [<span class="string">'Warning: Ignoring NaNs in streamflow data. '</span>, error_str];
+0101 <span class="keyword">end</span>
+0102 
+0103 <span class="keyword">if</span> all(isnan(Q))
+0104     error_flag = 2;
+0105     error_str = [<span class="string">'Error: Only NaNs in streamflow data. '</span>, error_str];
+0106     <span class="keyword">return</span>
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="keyword">if</span> length(Q) &lt; 30
+0110     error_flag = 1;
+0111     error_str = [<span class="string">'Warning: Extremely short time series. '</span>, error_str];
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% optionally check P</span>
+0115 <span class="keyword">if</span> ~isempty(P)
+0116     
+0117     <span class="keyword">if</span> any(isnan(P))
+0118         error_flag = 1;
+0119         error_str = [<span class="string">'Warning: Ignoring NaNs in precipitation data. '</span>, error_str];
+0120     <span class="keyword">end</span>
+0121     
+0122     <span class="keyword">if</span> all(isnan(P))
+0123         error_flag = 2;
+0124         error_str = [<span class="string">'Error: Only NaNs in precipitation data. '</span>, error_str];
+0125         <span class="keyword">return</span>
+0126     <span class="keyword">end</span>
+0127     
+0128     <span class="keyword">if</span> length(Q) ~= length(P)
+0129         error_flag = 2;
+0130         error_str = [<span class="string">'Error: Precipitation and flow series have different lengths. '</span>, error_str];
+0131         <span class="keyword">return</span>
+0132     <span class="keyword">end</span>
+0133     
+0134     <span class="keyword">if</span> min(P)&lt;0
+0135         error_flag = 2;
+0136         error_str = [<span class="string">'Error: Negative values in precipitation series. '</span>, error_str];
+0137         <span class="keyword">return</span>
+0138     <span class="keyword">end</span>
+0139     
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">% optionally check PET</span>
+0143 <span class="keyword">if</span> ~isempty(PET)
+0144     
+0145     <span class="keyword">if</span> any(isnan(PET))
+0146         error_flag = 1;
+0147         error_str = [<span class="string">'Warning: Ignoring NaNs in potential evpotranspiration data. '</span>, error_str];
+0148     <span class="keyword">end</span>
+0149     
+0150     <span class="keyword">if</span> all(isnan(PET))
+0151         error_flag = 2;
+0152         error_str = [<span class="string">'Error: Only NaNs in potential evpotranspiration data. '</span>, error_str];
+0153         <span class="keyword">return</span>
+0154     <span class="keyword">end</span>
+0155     
+0156     <span class="keyword">if</span> length(Q) ~= length(PET)
+0157         error_flag = 2;
+0158         error_str = [<span class="string">'Error: Potential evpotranspiration and flow series have different lengths. '</span>, error_str];
+0159         <span class="keyword">return</span>
+0160     <span class="keyword">end</span>
+0161     
+0162     <span class="keyword">if</span> min(PET)&lt;0
+0163         error_flag = 2;
+0164         error_str = [<span class="string">'Error: Negative values in potential evpotranspiration series. '</span>, error_str];
+0165         <span class="keyword">return</span>
+0166     <span class="keyword">end</span>
+0167     
+0168 <span class="keyword">end</span>
+0169 
+0170 <span class="comment">% optionally check T</span>
+0171 <span class="keyword">if</span> ~isempty(T)
+0172     
+0173     <span class="keyword">if</span> any(isnan(T))
+0174         error_flag = 1;
+0175         error_str = [<span class="string">'Warning: Ignoring NaNs in temperature data. '</span>, error_str];
+0176     <span class="keyword">end</span>
+0177     
+0178     <span class="keyword">if</span> all(isnan(T))
+0179         error_flag = 2;
+0180         error_str = [<span class="string">'Error: Only NaNs in temperature data. '</span>, error_str];
+0181         <span class="keyword">return</span>
+0182     <span class="keyword">end</span>
+0183     
+0184     <span class="keyword">if</span> length(Q) ~= length(T)
+0185         error_flag = 2;
+0186         error_str = [<span class="string">'Error: Temperature and flow series have different lengths. '</span>, error_str];
+0187         <span class="keyword">return</span>
+0188     <span class="keyword">end</span>
+0189     
+0190     <span class="keyword">if</span> min(T) &lt; -273.15
+0191         error_flag = 2;
+0192         error_str = [<span class="string">'Error: Temperature cannot be less than the absolute minimum of -273.15 degC. '</span>, error_str];
+0193         <span class="keyword">return</span>
+0194     <span class="keyword">end</span>
+0195     
+0196 <span class="keyword">end</span>
+0197 
+0198 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

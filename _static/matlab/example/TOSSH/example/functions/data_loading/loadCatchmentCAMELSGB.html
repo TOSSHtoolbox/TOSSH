@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadCatchmentCAMELSGB</title>
+  <meta name="keywords" content="loadCatchmentCAMELSGB">
+  <meta name="description" content="loadCatchmentCAMELSGB Loads hydro-meteorological time series (P, PET, Q,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../../index.html">example</a> &gt; <a href="#">functions</a> &gt; <a href="index.html">data_loading</a> &gt; loadCatchmentCAMELSGB.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\functions\data_loading&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>loadCatchmentCAMELSGB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>loadCatchmentCAMELSGB Loads hydro-meteorological time series (P, PET, Q,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [P, PET, Q, T] = loadCatchmentCAMELSGB(ID,path) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">loadCatchmentCAMELSGB Loads hydro-meteorological time series (P, PET, Q, 
+   T) for CAMELS-GB format.
+
+   INPUT
+   ID: catchment ID
+   path: file path
+
+   OUTPUT
+   P: precipitation [mm/d]
+   PET: potential evapotranspiration (without interception correction) [mm/d]
+   Q: streamflow [mm/d]
+   T: T [degC]
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="loadCAMELSGBstruct.html" class="code" title="function [CAMELS_GB_data] = loadCAMELSGBstruct()">loadCAMELSGBstruct</a>	loadCAMELSstruct Creates struct file with CAMELS data.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [P, PET, Q, T] = loadCatchmentCAMELSGB(ID,path)</a>
+0002 <span class="comment">%loadCatchmentCAMELSGB Loads hydro-meteorological time series (P, PET, Q,</span>
+0003 <span class="comment">%   T) for CAMELS-GB format.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   INPUT</span>
+0006 <span class="comment">%   ID: catchment ID</span>
+0007 <span class="comment">%   path: file path</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   OUTPUT</span>
+0010 <span class="comment">%   P: precipitation [mm/d]</span>
+0011 <span class="comment">%   PET: potential evapotranspiration (without interception correction) [mm/d]</span>
+0012 <span class="comment">%   Q: streamflow [mm/d]</span>
+0013 <span class="comment">%   T: T [degC]</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Copyright (C) 2020</span>
+0016 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0017 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0018 
+0019 <span class="comment">% check input parameters</span>
+0020 <span class="keyword">if</span> nargin &lt; 2
+0021     error(<span class="string">'Not enough input arguments.'</span>)
+0022 <span class="keyword">end</span>
+0023 
+0024 file_ID = strcat(path,<span class="string">'CAMELS_GB_hydromet_timeseries_'</span>,num2str(ID),<span class="string">'_19701001-20150930.csv'</span>);
+0025 
+0026 <span class="comment">% date    precipitation    pet    temperature    discharge_spec    discharge_vol    peti    humidity    shortwave_rad    longwave_rad    windspeed</span>
+0027 data = readtable(file_ID);
+0028 
+0029 date = datenum(data.date);
+0030 Q_temp = data.discharge_spec;
+0031 P_temp = data.precipitation;
+0032 PET_temp = data.pet;
+0033 <span class="comment">% PET_temp = data.peti; % with interception correction</span>
+0034 T_temp = data.temperature;
+0035 
+0036 Q = [date Q_temp];
+0037 P = [date P_temp];
+0038 PET = [date PET_temp];
+0039 T = [date T_temp];
+0040 
+0041 <span class="keyword">end</span>
+0042</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:15 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

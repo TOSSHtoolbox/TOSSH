@@ -1,0 +1,24 @@
+Signature;Function (click for code);Unit;Description
+**Magnitude**;;;
+Q_mean;`sig_Q_mean.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean.html>`_ ;mm/timestep;Mean streamflow
+Q5;`sig_x_percentile.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html>`_ ;mm/timestep;5-th streamflow percentile
+Q95;`sig_x_percentile.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html>`_ ;mm/timestep;95-th streamflow percentile
+Q_mean_monthly :sup:`a`;`sig_Q_mean_monthly.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean_monthly.html>`_ ;mm/timestep;Mean monthly streamflow
+Q_7_day_min;`sig_Q_n_day_min.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_min.html>`_ ;mm/timestep;7-day minimum streamflow
+BFI;`sig_BFI.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html>`_ ;--;Baseflow index
+CoV;`sig_Q_CoV.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_CoV.html>`_ ;--;Coefficient of variation
+**Frequency**;;;
+high_Q_frequency;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;High flow frequency
+low_Q_frequency;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;Low flow frequency
+zero_Q_frequency;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;Zero flow frequency
+**Duration**;;;
+high_Q_duration;`sig_x_Q_duration.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html>`_ ;timestep;High flow duration
+low_Q_duration;`sig_x_Q_duration.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html>`_ ;timestep;Low flow duration
+zero_Q_duration;`sig_x_Q_duration.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html>`_ ;timestep;Zero flow duration
+**Timing**;;;
+HFD_mean;`sig_HFD_mean.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFD_mean.html>`_ ;day of year;Half flow date
+HFI_mean;`sig_HFI_mean.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFI_mean.html>`_ ;days;Half flow interval
+**Rate of change**;;;
+AC1;`sig_Autocorrelation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html>`_ ;--;Lag-1 autocorrelation
+FDC_slope;`sig_FDC_slope.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html>`_ ;--;Slope of the flow duration curve
+BaseflowRecessionK;`sig_BaseflowRecessionK.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html>`_ ;1/d;Exponential recession constant

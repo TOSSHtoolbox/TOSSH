@@ -1,0 +1,14 @@
+Signature;Function (click for code);Unit;Description
+Q_mean;`sig_Q_mean.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean.html>`_ ;mm/timestep;Mean streamflow
+TotalRR;`sig_TotalRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html>`_ ;--;Total runoff ratio
+QP_elasticity;`sig_QP_elasticity.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_QP_elasticity.html>`_ ;--;Streamflow-precipitation elasticity
+FDC_slope;`sig_FDC_slope.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html>`_ ;--;Slope of the flow duration curve
+BFI;`sig_BFI.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html>`_ ;--;Baseflow index
+HFD_mean;`sig_HFD_mean.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFD_mean.html>`_ ;day of year;Half flow date
+Q5;`sig_x_percentile.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html>`_ ;mm/timestep;5th streamflow percentile (low flows)
+Q95;`sig_x_percentile.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html>`_ ;mm/timestep;95th streamflow percentile (high flows)
+high_Q_freq;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;High flow frequency
+high_Q_dur;`sig_x_Q_duration.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html>`_ ;timestep;High flow duration
+low_Q_freq;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;Low flow frequency
+low_Q_dur;`sig_x_Q_duration.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html>`_ ;timestep;Low flow duration
+zero_Q_freq;`sig_x_Q_frequency.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html>`_ ;--;Zero flow frequency
