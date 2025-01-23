@@ -27,7 +27,8 @@ TOSSH is a Matlab toolbox that provides accessible, standardised signature calcu
    p1_overview
    p2_signatures
    p3_examples
-   p4_contact
+   p4_usage_notes
+   p5_contact
 
 
 
