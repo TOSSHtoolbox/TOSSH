@@ -1,0 +1,3 @@
+﻿flow,recession_length,n_start,eps,filter_par
+normal,5,0,0.08,0.925
+low,10,0,0.02,0.925
