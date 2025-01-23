@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_LyneHollickFilter</title>
+  <meta name="keywords" content="util_LyneHollickFilter">
+  <meta name="description" content="util_LyneHollickFilter estimates baseflow using the Lyne-Hollick filter.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_LyneHollickFilter.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_LyneHollickFilter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_LyneHollickFilter estimates baseflow using the Lyne-Hollick filter.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Q_b] = util_LyneHollickFilter(Q, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_LyneHollickFilter estimates baseflow using the Lyne-Hollick filter.
+   Estimates baseflow using the Lyne and Hollick recursive digital filter
+   (Lyne and Hollick, 1979).
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   OPTIONAL
+   filter_parameter: filter parameter, default = 0.925
+   nr_passes: number of passes (default = 1; forwards)
+   threshold_type: how to threshold resulting time series (default = at
+       end of all passes (end); other options are after each pass (pass), 
+       or after each timestep (timestep), or no thresholding (none))
+
+   OUTPUT
+   Q_b: baseflow [mm/timestep]
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t;
+   Q_b = util_LyneHollickFilter(Q);
+   Q_b1 = util_LyneHollickFilter(Q, 'filter_parameter', 0.925, 'nr_passes', 1);
+
+   References
+   Lyne, V. and Hollick, M., 1979. Stochastic time-variable
+   rainfall-runoff modelling. In Institute of Engineers Australia National
+   Conference (Vol. 1979, pp. 89-93). Barton, Australia: Institute of
+   Engineers Australia.
+   Su, C.H., Costelloe, J.F., Peterson, T.J. and Western, A.W., 2016. On
+   the structural limitations of recursive digital filters for base flow
+   estimation. Water Resources Research, 52(6), pp.4745-4764.
+   Ladson, A.R., Brown, R., Neal, B. and Nathan, R., 2013. A standard
+   approach to baseflow separation using the Lyne and Hollick filter.
+   Australasian Journal of Water Resources, 17(1), pp.25-34.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="util_RecessionSegments.html" class="code" title="function [flow_section, error_flag, error_str, fig_handles] =util_RecessionSegments(Q, t, varargin)">util_RecessionSegments</a>	util_RecessionSegments identifies all individual recession segments.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function Q_b = LyneHollickFilter(Q, filter_parameter, threshold_type)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Q_b] = util_LyneHollickFilter(Q, varargin)</a>
+0002 <span class="comment">%util_LyneHollickFilter estimates baseflow using the Lyne-Hollick filter.</span>
+0003 <span class="comment">%   Estimates baseflow using the Lyne and Hollick recursive digital filter</span>
+0004 <span class="comment">%   (Lyne and Hollick, 1979).</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0008 <span class="comment">%   OPTIONAL</span>
+0009 <span class="comment">%   filter_parameter: filter parameter, default = 0.925</span>
+0010 <span class="comment">%   nr_passes: number of passes (default = 1; forwards)</span>
+0011 <span class="comment">%   threshold_type: how to threshold resulting time series (default = at</span>
+0012 <span class="comment">%       end of all passes (end); other options are after each pass (pass),</span>
+0013 <span class="comment">%       or after each timestep (timestep), or no thresholding (none))</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   Q_b: baseflow [mm/timestep]</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   EXAMPLE</span>
+0019 <span class="comment">%   % load example data</span>
+0020 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0021 <span class="comment">%   Q = data.Q;</span>
+0022 <span class="comment">%   t = data.t;</span>
+0023 <span class="comment">%   Q_b = util_LyneHollickFilter(Q);</span>
+0024 <span class="comment">%   Q_b1 = util_LyneHollickFilter(Q, 'filter_parameter', 0.925, 'nr_passes', 1);</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   References</span>
+0027 <span class="comment">%   Lyne, V. and Hollick, M., 1979. Stochastic time-variable</span>
+0028 <span class="comment">%   rainfall-runoff modelling. In Institute of Engineers Australia National</span>
+0029 <span class="comment">%   Conference (Vol. 1979, pp. 89-93). Barton, Australia: Institute of</span>
+0030 <span class="comment">%   Engineers Australia.</span>
+0031 <span class="comment">%   Su, C.H., Costelloe, J.F., Peterson, T.J. and Western, A.W., 2016. On</span>
+0032 <span class="comment">%   the structural limitations of recursive digital filters for base flow</span>
+0033 <span class="comment">%   estimation. Water Resources Research, 52(6), pp.4745-4764.</span>
+0034 <span class="comment">%   Ladson, A.R., Brown, R., Neal, B. and Nathan, R., 2013. A standard</span>
+0035 <span class="comment">%   approach to baseflow separation using the Lyne and Hollick filter.</span>
+0036 <span class="comment">%   Australasian Journal of Water Resources, 17(1), pp.25-34.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%   Copyright (C) 2020</span>
+0039 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0040 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0041 
+0042 <span class="comment">% check input parameters</span>
+0043 <span class="keyword">if</span> nargin &lt; 1
+0044     error(<span class="string">'Not enough input arguments.'</span>)
+0045 <span class="keyword">end</span>
+0046 
+0047 ip = inputParser;
+0048 ip.CaseSensitive = true; 
+0049 
+0050 <span class="comment">% required input arguments</span>
+0051 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0052 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1)) 
+0053 
+0054 <span class="comment">% optional input arguments</span>
+0055 addParameter(ip, <span class="string">'filter_parameter'</span>, 0.925, @isnumeric)
+0056 addParameter(ip, <span class="string">'nr_passes'</span>, 1, @isnumeric)
+0057 addParameter(ip, <span class="string">'threshold_type'</span>, <span class="string">'pass'</span>, @ischar)
+0058 
+0059 parse(ip, Q, varargin{:})
+0060 filter_parameter = ip.Results.filter_parameter;
+0061 nr_passes = ip.Results.nr_passes;
+0062 threshold_type = ip.Results.threshold_type;
+0063 
+0064 <span class="keyword">if</span> filter_parameter&gt;1 &amp;&amp; filter_parameter&lt;=0
+0065     error(<span class="string">'Filter parameter must be between 0 and 1.'</span>)
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="keyword">if</span> floor(nr_passes)~=nr_passes &amp;&amp; nr_passes&lt;1
+0069     error(<span class="string">'Number of filter passes must be an integer larger than zero.'</span>)
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="comment">% Baseflow separation is problematic with NaN values. Therefore, we set NaN</span>
+0073 <span class="comment">% values to median, apply the filter, and then set baseflow to NaN where</span>
+0074 <span class="comment">% streamflow is NaN. If there are a lot of NaN values, we encourage the</span>
+0075 <span class="comment">% user to either interpolate these values or to calculate the signature for</span>
+0076 <span class="comment">% each block individually and then calculate a weighted average.</span>
+0077 Q_tmp = Q;
+0078 Q_tmp(isnan(Q)) = median(Q,<span class="string">'omitnan'</span>);
+0079 
+0080 <span class="comment">% calculate baseflow by applying RDF several times</span>
+0081 Q_b = <a href="#_sub1" class="code" title="subfunction Q_b = LyneHollickFilter(Q, filter_parameter, threshold_type)">LyneHollickFilter</a>(Q_tmp, filter_parameter, threshold_type);
+0082 <span class="keyword">for</span> nr = 2:nr_passes
+0083     Q_b = <a href="#_sub1" class="code" title="subfunction Q_b = LyneHollickFilter(Q, filter_parameter, threshold_type)">LyneHollickFilter</a>(flip(Q_b), filter_parameter, threshold_type);
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="comment">% set baseflow to NaN where streamflow is NaN</span>
+0087 Q_b(isnan(Q)) = NaN;
+0088 
+0089 <span class="comment">% constrain baseflow not to be higher than streamflow (see also Ladson et</span>
+0090 <span class="comment">% al. (2013))</span>
+0091 <span class="keyword">if</span> strcmp(threshold_type,<span class="string">'none'</span>)
+0092 <span class="keyword">else</span>
+0093     Q_b(Q_b&gt;Q) = Q(Q_b&gt;Q);
+0094 <span class="keyword">end</span>
+0095 
+0096 <span class="keyword">end</span>
+0097 
+0098 <a name="_sub1" href="#_subfunctions" class="code">function Q_b = LyneHollickFilter(Q, filter_parameter, threshold_type)</a>
+0099 <span class="comment">%LyneHollickFilter Helper function that runs the Lyne-Hollick filter.</span>
+0100 
+0101 <span class="comment">% define thresholding method</span>
+0102 threshold_timestep = false;
+0103 threshold_pass = false;
+0104 <span class="keyword">switch</span> threshold_type
+0105     <span class="keyword">case</span> <span class="string">'end'</span>
+0106     <span class="keyword">case</span> <span class="string">'timestep'</span>
+0107         threshold_timestep = true;
+0108     <span class="keyword">case</span> <span class="string">'pass'</span>
+0109         threshold_pass = true;
+0110     <span class="keyword">case</span> <span class="string">'none'</span>
+0111     <span class="keyword">otherwise</span>
+0112         error(<span class="string">'Not a valid thresholding method. Choose either end, timestep, pass, or none.'</span>)
+0113 <span class="keyword">end</span>
+0114 
+0115 n = length(Q);
+0116 Q_f = NaN(n,1);
+0117 Q_f(1) = Q(1) - min(Q); <span class="comment">% initial condition, see Su et al. (2016)</span>
+0118 
+0119 <span class="keyword">if</span> threshold_timestep
+0120     <span class="keyword">for</span> i=2:1:n
+0121         Q_f(i) = filter_parameter*Q_f(i-1) + ((1+filter_parameter)/2)*(Q(i) - Q(i-1));
+0122         <span class="keyword">if</span> Q_f(i)&lt;0 <span class="comment">% constrain after each timestep</span>
+0123             Q_f(i) = 0;
+0124         <span class="keyword">end</span>
+0125     <span class="keyword">end</span>
+0126 <span class="keyword">else</span>
+0127     <span class="keyword">for</span> i=2:1:n
+0128         Q_f(i) = filter_parameter*Q_f(i-1) + ((1+filter_parameter)/2)*(Q(i) - Q(i-1));
+0129     <span class="keyword">end</span>
+0130 <span class="keyword">end</span>
+0131 
+0132 <span class="keyword">if</span> threshold_pass
+0133     Q_f(Q_f&lt;0) = 0; <span class="comment">% constrain after each filter pass</span>
+0134 <span class="keyword">end</span>
+0135 
+0136 <span class="comment">% calculate baseflow</span>
+0137 Q_b = Q - Q_f;
+0138 
+0139 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
