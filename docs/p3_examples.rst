@@ -226,7 +226,7 @@ For each signature, we also provide small examples in the description of each m-
 	%   Q_mean = sig_Q_mean(Q,t);
 	[...]
 
-If any of the examples, errors or warnings are unclear, please :ref:`contact <p4_contact>` us. 
+If any of the examples, errors or warnings are unclear, please :ref:`contact <p5_contact>` us. 
 
 
 References
