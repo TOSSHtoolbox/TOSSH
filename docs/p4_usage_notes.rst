@@ -15,7 +15,7 @@ These parameters have been manually tuned for select signatures and U.S. gages a
 
 1. Overlandflow signatures
 
-- Parameter file: `params_overlandflow.csv <https://github.com/RY4GIT/TOSSH/tree/master/docs/_static/usages/params_overlandflow.csv>`_
+- Parameter file: `params_overlandflow.csv <https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_overlandflow.csv>`_
 
 - Use these parameters for the event separation algorithm `util_EventSeparation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html>`_
 
@@ -25,7 +25,7 @@ These parameters have been manually tuned for select signatures and U.S. gages a
 
 2. Recession-related signatures
 
-- Parameter file: `params_recession.csv <https://github.com/RY4GIT/TOSSH/tree/master/docs/_static/usages/params_recession.csv>`_ 
+- Parameter file: `params_recession.csv <https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_recession.csv>`_ 
 
 - Use these parameters for the recession delineation algorithm `util_RecessionSegments.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_RecessionSegments.html>`_ 
 
