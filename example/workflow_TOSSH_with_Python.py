@@ -28,14 +28,12 @@
 #   - numpy
 #   - pandas
 #   - matplotlib
-#   - h5py
 
 import os
 import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import h5py
 
 # In addition, the Matlab engine for Python is required. This can be installed by navigating to the Matlab installation
 # (e.g. .../MATLAB/R2024b/extern/engines/python/) and executing the setup.py script (e.g. python setup.py install).
