@@ -46,7 +46,7 @@ import h5py
 import matlab.engine
 
 eng = matlab.engine.start_matlab()  # Start the MATLAB engine
-from helper_TOSSH_with_python import run_tossh_function  # Load helper function that runs TOSSH signatures
+from functions.helper_TOSSH_with_python import run_tossh_function  # Load helper function that runs TOSSH signatures
 
 # The code assumes your current working directory is the TOSSH directory. This can, however, be specified by the user.
 mydir = os.getcwd()  # Get current working directory, e.g. for loading data in subfolders
