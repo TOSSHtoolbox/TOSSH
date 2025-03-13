@@ -22,13 +22,13 @@ Alternatively, email Hilary McMillan (<hmcmillan@sdsu.edu>) or Sebastian Gnann (
  
 ## Acknowledgements
 Thanks to Yves Tramblay for providing helpful feedback.
- 
+
+Extensive feedback, edits, and usage notes have also been provided by Ryoko Araki.
+
  
 ## Credits
 Gnann, S.J., Coxon, G., Woods, R.A., Howden, N.J.K., McMillan H.K., 2021. TOSSH: A Toolbox for Streamflow Signatures in Hydrology. Environmental Modelling & Software. 
 <https://doi.org/10.1016/j.envsoft.2021.104983>
-
-Extensive feedback, edits, and usage notes have also been provided by Ryoko Araki.
 
 
 ## License
