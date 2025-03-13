@@ -4,27 +4,19 @@
 
 ### TOSSH workflow 1 - basic workflow (also shown in online documentation)
 #
-# This script shows the basic functionalities of TOSSH with some example
-# data. You can go through this example step by step by evaluating each
-# section (separated by %%) using Ctrl+Enter.
-#
-# The example data used in this workflow are taken from CAMELS-GB
-# (Coxon et al., 2020), see README_example_data.txt for more information
-# on data sources.
+# This script shows the basic functionalities of TOSSH with some example data. The example data used in this workflow
+# are taken from CAMELS-GB (Coxon et al., 2020), see README_example_data.txt for more information on data sources.
 #
 # Copyright (C) 2025
 # This software is distributed under the GNU Public License Version 3.
 # See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
 
-# Check if required MATLAB toolboxes are installed
-# Required are:
+# Check if required MATLAB toolboxes are installed. Required are:
 #   - MATLAB (TOSSH was developed using Matlab R2020a)
 #   - Statistics and Machine Learning Toolbox
 #   - Optimization Toolbox
 
 # The following Python packages are required:
-#   - os
-#   - sys
 #   - numpy
 #   - pandas
 #   - matplotlib
