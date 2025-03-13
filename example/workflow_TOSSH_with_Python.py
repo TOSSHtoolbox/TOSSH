@@ -89,8 +89,7 @@ print(f'Q_mean = {Q_mean:.2f}')
 # of 5 days.
 BFI_UKIH = run_tossh_function(r'D:/Matlab/TOSSH/TOSSH_code', 'sig_BFI', eng, Q, t)
 print(f'BFI_UKIH = {BFI_UKIH:.2f}')
-# Alternatively, we can use the Lyne-Hollick filter with a filter parameter
-# of 0.925.
+# Alternatively, we can use the Lyne-Hollick filter with a filter parameter of 0.925.
 BFI_LH = run_tossh_function(r'D:/Matlab/TOSSH/TOSSH_code', 'sig_BFI', eng, Q, t, method='Lyne_Hollick')
 print(f'BFI_LH = {BFI_LH:.2f}')
 # We can also change the parameter value of the UKIH method to 10 days.
