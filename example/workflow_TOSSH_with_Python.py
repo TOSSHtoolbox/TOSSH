@@ -1,6 +1,6 @@
 ### Example script showing how to run TOSSH from Python ###
-# This script demonstrates how to run the TOSSH toolbox from Python using the MATLAB Engine API.
-# It is based on the basic workflow (workflow 1) example provided in the TOSSH documentation.
+# This script demonstrates how to run the TOSSH toolbox from Python using the MATLAB Engine API. It is based on the
+# basic workflow (workflow 1) example provided in the TOSSH documentation.
 
 ### TOSSH workflow 1 - basic workflow (also shown in online documentation)
 #
@@ -159,6 +159,4 @@ print(error_str)
 # Such errors should be easily avoidable by specifying all inputs correctly.
 
 # Further information
-# Further information can be found in the online documentation:
-# https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts
-# (e.g. 'workflow_2_advanced.m').
+# Further information can be found in the online documentation: https://TOSSHtoolbox.github.io/TOSSH/
