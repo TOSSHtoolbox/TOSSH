@@ -3,14 +3,14 @@
 Usage Notes
 ========
 
-Understanding Signature Parameters
+Understanding signature parameters
 ----------------
 
 Example parameters
 ^^^^^^^^^
 Hydrologic signatures often need customized input parameters because rainfall patterns vary by region and time resolutions vary by dataset [1]_. 
 The following lists example parameter files to help you get started. 
-These parameters have been manually tuned for select signatures and U.S. gages at a **daily timestep**, using the CAMELS and HYSETS datasets in Caravan [2]_. 
+These parameters have been manually tuned for selected signatures and U.S. gages at a **daily timestep**, using the CAMELS and HYSETS datasets in Caravan [2]_. 
 
 
 1. Overlandflow signatures
@@ -21,7 +21,7 @@ These parameters have been manually tuned for select signatures and U.S. gages a
 
 - Parameters included: ``min_termination``, ``min_duration``, ``min_intensity_day``, ``min_intensity_day_during``, ``max_recessiondays`` per CONUS region
 
-- In the table, ``ws_code`` column categorizes the CONUS regions using the first two digits of the USGS `gauge_id` from the CAMELS/HYSETS datasets. This classification is based on the downstream order system (see https://help.waterdata.usgs.gov/faq/sites/do-station-numbers-have-any-particular-meaning)
+- In the table, the ``ws_code`` column categorizes the CONUS regions using the first two digits of the USGS `gauge_id` from the CAMELS/HYSETS datasets. This classification is based on the downstream order system (see https://help.waterdata.usgs.gov/faq/sites/do-station-numbers-have-any-particular-meaning)
 
 2. Recession-related signatures
 
@@ -31,11 +31,11 @@ These parameters have been manually tuned for select signatures and U.S. gages a
 
 - Parameters included: ``recession_length``, ``n_start``, ``eps``, ``filter_par`` for low or high rainfall area
 
-**Note:** For tuning, we evaluated the parameter performance using approximately ten watersheds that have drainage area close to the median of each CONUS region. While these settings are a good starting point, please review and adjust them as needed for your specific application.
+**Note:** For tuning, we evaluated the parameter performance using approximately ten watersheds that have drainage areas close to the median of each CONUS region. While these settings are a good starting point, please review and adjust them as needed for your specific application.
 
 How to Adjust Parameters Yourself
 ^^^^^^^^^
-If the provided parameters don't suit your dataset, here are some guidelines for tuning key parameters. 
+If the provided parameters do not suit your dataset, here are some guidelines for tuning key parameters. 
 We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ and `sig_RecessionAnalysis.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html>`_) to inspect how well the parameters fit your time series.
 
 - Key parameters for `util_EventSeparation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html>`_: 
@@ -43,7 +43,7 @@ We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m
 		- This parameter controls how long the shortest storm event should be. The default value can be set to **48 hours** for daily data. With this, once-in-3-days rainfall is being separated as the new event. 
 		- For persistent rainfall or slower-responding watersheds, increase the values (e.g., **72 hours**).
     - ``min_intensity_day`` and ``min_intensity_day_during``:
-		- This parameter controls the minimum duration of the shortest storm event. The default value can be set to  **4.8 mm/day** for daily data (derived from 0.2 mm/hr × 24 hours). 
+		- This parameter controls the minimum duration of the shortest storm event. The default value can be set to **4.8 mm/day** for daily data (derived from 0.2 mm/hr × 24 hours). 
 		- Adjust this value based on the region's rainfall intensity (e.g., use higher values for areas with significant rainfall). Selecting a small value for regions with high rainfall may result in small, noisy rainfall being detected at the start of an event.
     - ``max_recessiondays``:
         - The default value can be set to **8 days**  (no tuning is generally required).
@@ -62,6 +62,13 @@ We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m
 
     - ``n_start``:
         - The default value can be set to **0** for daily data. For hourly data, increase this value to mask flow immediately after the peak.
+
+
+Calling TOSSH from Python
+----------------
+It is possible to call TOSSH from Python using the `Matlab Engine API <https://mathworks.com/help/matlab/matlab_external/python-setup-script-to-install-matlab-engine-api.html>`_.
+If you are interested in doing so, please have a look at the following example, which contains a basic workflow that shows how to call TOSSH from Python: `click here <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_TOSSH_with_Python.py>`_.
+
 
 References
 ----------
