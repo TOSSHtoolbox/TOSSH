@@ -1,7 +1,7 @@
 %% checks which Matlab toolboxes are used in TOSSH
 
 % you need to be in the directory above TOSSH
-files = dir('TOSSH_development\TOSSH_code\*\*.m');
+files = dir('./TOSSH/TOSSH_code/*/*.m');
 
 i = 0;
 for file = files'
