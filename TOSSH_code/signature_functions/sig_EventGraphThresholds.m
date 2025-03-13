@@ -371,26 +371,27 @@ Storage_thresh = thresh_st_qf;
 if plot_results
     
     % plot flow, baseflow and events
-    fig_events = figure('Position',[100 100 700 250]);
+    fig_events = figure('Position',[300 300 700*2 250*2]);
     title(['Flow, Baseflow and Event Separation'])
     dates_dt = t;%datetime(dates,'ConvertFrom','datenum');
-    P_max = max(Q);
+    P_max = max(P);
     hold on
     for i = 1:size(stormarray,1)
         p3=fill([dates_dt(stormarray(i,1)),dates_dt(stormarray(i,1)),...
             dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2))],...
-            [0, P_max, P_max, 0],'b','LineStyle','none');
+            [0, P_max, P_max, 0],[106, 174, 214]/255,'LineStyle','none');
         p4=fill([dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2)),...
             dates_dt(stormarray(i,3)),dates_dt(stormarray(i,3))],...
-            [0, P_max, P_max, 0],'c','LineStyle','none');
+            [0, P_max, P_max, 0],[198, 219, 239]/255,'LineStyle','none');
     end
-    p1 = plot(t,Q,'r-');
-    p2 = plot(t,B,'g-');
-    p5=plot(dates_dt(:),P(:)./50,'k-','linewidth',1);
+
+    p1 = plot(t,Q,'k-','linewidth',1);
+    p2 = plot(t,B,'k--','linewidth',1);
+    p5=plot(dates_dt(:),P(:),'color',[250,159,18]/255,'linewidth',1);
 
     xlabel('Time')
-    ylabel('Flow [mm]')
-    legend([p1, p2, p3, p4, p5],{'Flow','Baseflow','Events','Recessions','Rainfall/50'},'location','best')
+    ylabel('Flow or Rainfall [mm]')
+    legend([p1, p2, p3, p4, p5],{'Flow','Baseflow','Events','Recessions','Rainfall'},'location','best')
 
     % plot total precip against quickflow, with threshold
     fig = figure('Position',[100 100 900 250]);

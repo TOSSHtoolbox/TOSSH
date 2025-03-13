@@ -200,12 +200,12 @@ if plot_results
     for i = 1:size(stormarray,1)
         h1=fill([dates_dt(stormarray(i,1)),dates_dt(stormarray(i,1)),...
             dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2))],...
-            [0, P_max, P_max, 0],'g','LineStyle','none');
+            [0, P_max, P_max, 0],[106, 174, 214]/255,'LineStyle','none');
         h2=fill([dates_dt(stormarray(i,2)),dates_dt(stormarray(i,2)),...
             dates_dt(stormarray(i,3)),dates_dt(stormarray(i,3))],...
-            [0, P_max, P_max, 0],'c','LineStyle','none');
+            [0, P_max, P_max, 0],[198, 219, 239]/255,'LineStyle','none');
     end
-    h3=plot(dates_dt(:),P(:),'k-','linewidth',1.5);
+    h3=plot(dates_dt(:),P(:),'k-','linewidth',1.0);
     xlabel('Date')
     ylabel('Rainfall [mm/timestep]')
     legend([h3,h1,h2],{'Rainfall','Storm Period','Recession Period'})
