@@ -116,6 +116,16 @@ Note that these signatures are all calculated with the same function.
    :header-rows: 1
    :delim: ;
 
+Wu et al., (2021) overland flow set
+"""""""""""""""""""""""""""""""""
+A function `sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ contains 2 overland flow 
+signatures from Wu et al., (2021) [8]_. The implementation in this toolbox is the adapted and coded version by Bolotin and McMillan (2025) [9]_. 
+
+.. csv-table:: Wu et al., (2021) overland flow set
+   :file: ./_static/overland_flow_Wu.csv
+   :header-rows: 1
+   :delim: ;
+
 
 TOSSH: all remaining signatures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -149,4 +159,8 @@ References
 .. [6] Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S. and Savenije, H.H.G., 2013. A framework to assess the realism of model structures using hydrological signatures. Hydrology and Earth System Sciences, 17(5), pp.1893-1912.
 
 .. [7] McMillan, H.K., 2020. Linking hydrologic signatures to hydrologic processes: A review. Hydrological Processes, 34(6), pp.1393-1409.
+
+.. [8] Wu, S., Zhao, J., Wang, H., & Sivapalan, M. (2021). Regional patterns and physical controls of streamflow generation across the conterminous United States. Water Resources Research, 57(6), e2020WR028086.
+
+.. [9] Bolotin, L. A., & McMillan, H. (2024). A hydrologic signature approach to analysing wildfire impacts on overland flow. Hydrological Processes, 38(6). 
 

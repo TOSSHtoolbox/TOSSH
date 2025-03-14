@@ -137,7 +137,7 @@ xlim([datetime(2002,10,01) datetime(2003,03,31)])
 % Some signatures focus on patterns that are best analysed visually. For 
 % example, the quickflow response during a rainfall event can indicate 
 % which runoff generation processes occur in a catchment. 
-[ie_effect, se_effect, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, fig_EventGraphThresholds] = ...
+[ie_effect, se_effect, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, fig_EventGraphThresholds] = ...
     sig_EventGraphThresholds(Q_3,t_3,P_3,'plot_results',true);
 % We can see that most summer storms lead to little runoff, while all 
 % winter storms produce runoff. This indicates saturation excess quickflow.
