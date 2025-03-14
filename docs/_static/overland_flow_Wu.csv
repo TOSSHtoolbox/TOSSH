@@ -1,3 +1,3 @@
 Signature;Function (click for code);Unit;Description
-R_Pvol_RC;`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ ;--; Pearson correlation between total precipitation volume and quickflow
-R_Pint_RC;`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ ;--; Pearson correlation between precipitation intensity and quickflow
+R_Pvol_RC;`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ ;--; Pearson correlation between total precipitation volume and quickflow, related to saturation excess overlandflow process
+R_Pint_RC;`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ ;--; Pearson correlation between precipitation intensity and quickflow, related to infiltration excess overlandflow process

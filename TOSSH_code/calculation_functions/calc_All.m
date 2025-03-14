@@ -70,7 +70,7 @@ BaseflowMagnitude = NaN(size(Q_mat,1),1);
 BaseflowMagnitude_error_str = strings(size(Q_mat,1),1);
 BFI = NaN(size(Q_mat,1),1);
 BFI_error_str = strings(size(Q_mat,1),1);
-EventGraphThresholds = NaN(size(Q_mat,1),10);
+EventGraphThresholds = NaN(size(Q_mat,1),12);
 EventGraphThresholds_error_str = strings(size(Q_mat,1),1);
 EventRR = NaN(size(Q_mat,1),1);
 EventRR_error_str = strings(size(Q_mat,1),1);
@@ -154,6 +154,7 @@ for i = 1:size(Q_mat,1)
         EventGraphThresholds(i,5),EventGraphThresholds(i,6),...
         EventGraphThresholds(i,7),EventGraphThresholds(i,8),...
         EventGraphThresholds(i,9),EventGraphThresholds(i,10),...
+        EventGraphThresholds(i,11),EventGraphThresholds(i,12),...
         ~,EventGraphThresholds_error_str(i)] = ...
         sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i});
     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});

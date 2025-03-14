@@ -17,3 +17,4 @@ example/results/CAMELS_GB_TOSSH_signatures.mat
 example/results/CAMELS_TOSSH_signatures.mat
 _build/
 main_test.m
+log.txt

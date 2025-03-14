@@ -413,7 +413,7 @@ end
 if plot_results
 
     % plot flow, baseflow and events
-    fig_events = figure('Position',[300 300 700*2 250*2]);
+    fig_events = figure('Position',[100 100 700*2 250*2]);
     title(['Flow, Baseflow and Event Separation'])
     dates_dt = t;%datetime(dates,'ConvertFrom','datenum');
     P_max = max(P);
