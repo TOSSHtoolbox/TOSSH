@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; TOSSH 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3804885b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=292eb321"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage Notes" href="p4_usage_notes.html" />
+    <link rel="prev" title="Signatures" href="p2_signatures.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/TOSSH_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="p1_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p2_signatures.html">Signatures</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#input-data">Input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-data">Plot data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculate-signatures">Calculate signatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#warnings-and-errors">Warnings and errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-examples">Further examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="p4_usage_notes.html">Usage Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p5_contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TOSSH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/p3_examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<span id="p3-examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>This workflow shows basic functionalities of TOSSH with example data from one catchment.
+The example data used in this workflow are taken from CAMELS GB (Coxon et al., 2020) <a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>,
+see
+<a class="reference external" href="./_static/README_example_data.txt">README_example_data.txt</a>
+for more information on the data sources.</p>
+<section id="input-data">
+<h2>Input data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h2>
+<p>Every signature requires a streamflow (Q) time series and a corresponding
+date vector (t). The date vector should be in datetime format, but
+datenum format is also accepted and internally converted. Here is an
+example of Q and t vectors in the correct format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.14</span><span class="p">;</span><span class="mf">1.07</span><span class="p">;</span><span class="mf">2.39</span><span class="p">;</span><span class="mf">2.37</span><span class="p">;</span><span class="mf">1.59</span><span class="p">;</span><span class="mf">1.25</span><span class="p">;</span><span class="mf">1.35</span><span class="p">;</span><span class="mf">1.16</span><span class="p">;</span><span class="mf">1.27</span><span class="p">;</span><span class="mf">1.14</span><span class="p">];</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1999</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span><span class="s1">&#39;;</span>
+</pre></div>
+</div>
+<p>Typically, users will have their own data which they want to analyse.
+We provide an example file to get a more realistic time series.
+The example file also contains precipitation (P), potential
+evapotranspiration (PET), and temperature (T) data, which are required for some signatures.
+The paths are relative and assume that we are in the TOSSH directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./example/example_data/&#39;</span><span class="p">;</span> <span class="o">%</span> <span class="n">specify</span> <span class="n">path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">strcat</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s1">&#39;33029_daily.mat&#39;</span><span class="p">));</span> <span class="o">%</span> <span class="n">load</span> <span class="n">data</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">t</span><span class="p">;</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Q</span><span class="p">;</span> <span class="o">%</span> <span class="n">streamflow</span> <span class="p">[</span><span class="n">mm</span><span class="o">/</span><span class="n">day</span><span class="p">]</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">P</span><span class="p">;</span> <span class="o">%</span> <span class="n">precipitation</span> <span class="p">[</span><span class="n">mm</span><span class="o">/</span><span class="n">day</span><span class="p">]</span>
+<span class="o">%</span> <span class="n">Note</span><span class="p">:</span> <span class="n">PET</span> <span class="ow">and</span> <span class="n">T</span> <span class="n">example</span> <span class="n">data</span> <span class="n">are</span> <span class="n">provided</span> <span class="n">but</span> <span class="ow">not</span> <span class="n">used</span> <span class="n">here</span><span class="o">.</span>
+<span class="o">%</span> <span class="n">PET</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">PET</span><span class="p">;</span> <span class="o">%</span> <span class="n">potential</span> <span class="n">evapotranspiration</span> <span class="p">[</span><span class="n">mm</span><span class="o">/</span><span class="n">day</span><span class="p">]</span>
+<span class="o">%</span> <span class="n">T</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">;</span> <span class="o">%</span> <span class="n">temperature</span> <span class="p">[</span><span class="n">degC</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="plot-data">
+<h2>Plot data<a class="headerlink" href="#plot-data" title="Link to this heading"></a></h2>
+<p>We can plot the data to get a first idea of the hydrograph:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">figure</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">,[</span><span class="mi">100</span> <span class="mi">100</span> <span class="mi">350</span> <span class="mi">200</span><span class="p">])</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span><span class="s1">&#39;k-&#39;</span><span class="p">,</span><span class="s1">&#39;linewidth&#39;</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">)</span>
+<span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Streamflow [mm/day]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/hydrograph_example.png"><img alt="_images/hydrograph_example.png" src="_images/hydrograph_example.png" style="width: 50%;" />
+</a>
+</figure>
+<p>More information on how to specify input data can be found <a class="reference internal" href="p1_overview.html#p1-overview"><span class="std std-ref">here</span></a>.</p>
+</section>
+<section id="calculate-signatures">
+<h2>Calculate signatures<a class="headerlink" href="#calculate-signatures" title="Link to this heading"></a></h2>
+<p>Once the input data are loaded, we can calculate different signatures.
+We start by calculating the mean flow Q_mean:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mean</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;Q_mean = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Q_mean</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mean</span> <span class="o">=</span> <span class="mf">0.54</span>
+</pre></div>
+</div>
+<p>Some signatures can be calculated using different methods and/or
+parameter values. For example, there are different options to calculate
+the baseflow index (BFI). The default method is the UKIH smoothed minima
+method with a parameter of 5 days:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_UKIH</span> <span class="o">=</span> <span class="n">sig_BFI</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;BFI_UKIH = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">BFI_UKIH</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_UKIH</span> <span class="o">=</span> <span class="mf">0.82</span>
+</pre></div>
+</div>
+<p>Alternatively, we can use the Lyne-Hollick filter with a filter parameter of 0.925:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_LH</span> <span class="o">=</span> <span class="n">sig_BFI</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;Lyne_Hollick&#39;</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;BFI_LH = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">BFI_LH</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_LH</span> <span class="o">=</span> <span class="mf">0.78</span>
+</pre></div>
+</div>
+<p>We can also change the parameter value of the UKIH method to 10 days:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_UKIH10</span> <span class="o">=</span> <span class="n">sig_BFI</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;method&#39;</span><span class="p">,</span><span class="s1">&#39;UKIH&#39;</span><span class="p">,</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;BFI_UKIH10 = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">BFI_UKIH10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BFI_UKIH10</span> <span class="o">=</span> <span class="mf">0.77</span>
+</pre></div>
+</div>
+<p>As we can see, all three options lead to slightly different values.
+More details and examples on the different methods/parameters can be
+found in the code of each function
+(e.g. <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html">sig_BFI.m</a>).</p>
+<p>Some signatures also require precipitation (P) input time series. For
+example, the total runoff ratio requires both Q and P time series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TotalRR</span> <span class="o">=</span> <span class="n">sig_TotalRR</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">P</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;TotalRR = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">TotalRR</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TotalRR</span> <span class="o">=</span> <span class="mf">0.27</span>
+</pre></div>
+</div>
+<p>Some signature functions come with a plotting functionality. For example,
+we can calculate the slope of the flow duration curve (FDC) and plot the
+result:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FDC_slope</span> <span class="o">=</span> <span class="n">sig_FDC_slope</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;plot_results&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;FDC_slope = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">FDC_slope</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FDC_slope</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.91</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/FDC_example.png"><img alt="_images/FDC_example.png" src="_images/FDC_example.png" style="width: 50%;" />
+</a>
+</figure>
+<p>Some signatures are combinations of existing signatures, e.g. the
+baseflow fraction (K_b) defined as the ratio between mean baseflow Q_b and
+mean precipitation P. This signature can also be
+calculated as K_b = BFI*TotalRR. We therefore do not provide an extra
+signature function, but suggest to use the two existing functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K_b</span> <span class="o">=</span> <span class="n">sig_BFI</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">sig_TotalRR</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">P</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;K_b = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">K_b</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K_b</span> <span class="o">=</span> <span class="mf">0.21</span>
+</pre></div>
+</div>
+<p>More information on the signatures contained in TOSSH can be found <a class="reference internal" href="p2_signatures.html#p2-signatures"><span class="std std-ref">here</span></a>.</p>
+</section>
+<section id="warnings-and-errors">
+<h2>Warnings and errors<a class="headerlink" href="#warnings-and-errors" title="Link to this heading"></a></h2>
+<p>Each signature function can return a warning/error output. These
+warning/error outputs indicate problems during signature calculation, but
+they do not stop code execution like a normal Matlab error would do. Two
+outputs can be retrieved: an error flag (error_flag) that corresponds to
+a certain type of warning/error, and a string (error_str) that decribes
+the warning/error. If multiple warnings/errors occur, they are
+all listed in the error string, starting with the one that occurred last.</p>
+<p>A warning (error_flag = 1) typically indicates that the signature can be
+calculated but should be interpreted with care, e.g. because there are
+NaN values in the time series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">)</span> <span class="o">=</span> <span class="n">NaN</span><span class="p">;</span>
+<span class="p">[</span><span class="n">Q_mean</span><span class="p">,</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;Q_mean = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Q_mean</span><span class="p">)</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="n">error_str</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mean</span> <span class="o">=</span> <span class="mf">0.54</span>
+<span class="ne">Warning</span><span class="p">:</span> <span class="n">Ignoring</span> <span class="n">NaNs</span> <span class="ow">in</span> <span class="n">streamflow</span> <span class="n">data</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>We get the same mean value as before since the ten removed values do not
+influence the result much. In other cases, significant amounts of NaN
+entries might cause more problems.</p>
+<p>An error (error_flag &gt; 1) indicates that the signature could not be
+calculated, e.g. because there is a problem with the input data. For
+example, if the input time series contains negative and thus physically
+impossible values, NaN is returned:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">;</span>
+<span class="p">[</span><span class="n">Q_mean</span><span class="p">,</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="s1">&#39;Q_mean = </span><span class="si">%.2f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">Q_mean</span><span class="p">)</span>
+<span class="n">fprintf</span><span class="p">(</span><span class="n">error_str</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mean</span> <span class="o">=</span> <span class="n">NaN</span>
+<span class="n">Error</span><span class="p">:</span> <span class="n">Negative</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">flow</span> <span class="n">series</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Since these warnings/errors do not stop the execution of the code, we can
+run the signature code for many catchments without breaking, even if
+for some of the catchments the signature cannot be calculated.</p>
+<p>There are also “normal” errors which can happen if the input
+parameters are specified incorrectly (wrong format, wrong range, etc.).
+For example, if we swap Q and t in the input, we will get an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mean</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Q</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span> <span class="n">using</span> <span class="n">sig_Q_mean</span> <span class="p">(</span><span class="n">line</span> <span class="mi">42</span><span class="p">)</span>
+<span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="s1">&#39;Q&#39;</span> <span class="ow">is</span> <span class="n">invalid</span><span class="o">.</span> <span class="n">It</span> <span class="n">must</span> <span class="n">satisfy</span> <span class="n">the</span> <span class="n">function</span><span class="p">:</span>
+<span class="o">@</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="n">isnumeric</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="o">||</span><span class="n">size</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span>
+
+<span class="n">Error</span> <span class="ow">in</span> <span class="n">workflow_1_basic</span> <span class="p">(</span><span class="n">line</span> <span class="mi">149</span><span class="p">)</span>
+<span class="n">Q_mean</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Q</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>While this will stop code execution, such errors are
+avoidable by specifying all inputs correctly.</p>
+</section>
+<section id="further-examples">
+<h2>Further examples<a class="headerlink" href="#further-examples" title="Link to this heading"></a></h2>
+<p>Example scripts can be found in <em>TOSSH/example/</em>.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="./_static/matlab/example/TOSSH/example/workflow_1_basic.html">workflow_1_basic.m</a> contains the code shown on this page which shows basic functionalities of TOSSH with example data from one catchment</p></li>
+<li><p><a class="reference external" href="./_static/matlab/example/TOSSH/example/workflow_2_advanced.html">workflow_2_advanced.m</a> contains code that shows advanced functionalities of TOSSH with example data from multiple catchments</p></li>
+<li><p><a class="reference external" href="./_static/matlab/example/TOSSH/example/workflow_3_time_resolution.html">workflow_3_time_resolution.m</a> contains code that shows how to use TOSSH with example data from the same catchment but with different time resolution</p></li>
+<li><p><a class="reference external" href="./_static/matlab/example/TOSSH/example/workflow_4_CAMELS_US.html">workflow_4_CAMELS_US.m</a> contains code that shows how to use TOSSH to calculate the Addor et al. (2018) <a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> signatures using the CAMELS dataset</p></li>
+<li><p><a class="reference external" href="./_static/matlab/example/TOSSH/example/workflow_5_CAMELS_GB.html">workflow_5_CAMELS_GB.m</a> contains code that shows how to use TOSSH to calculate various signatures using the CAMELS GB dataset (Coxon et al., 2020) <a class="footnote-reference brackets" href="#id4" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
+</ul>
+<p>For each signature, we also provide small examples in the description of each m-file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="p">[</span><span class="n">Q_mean</span><span class="p">,</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="o">%</span><span class="n">sig_Q_mean</span> <span class="n">calculates</span> <span class="n">mean</span> <span class="n">flow</span> <span class="n">of</span> <span class="n">time</span> <span class="n">series</span><span class="o">.</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="o">%</span>   <span class="n">EXAMPLE</span>
+<span class="o">%</span>   <span class="o">%</span> <span class="n">load</span> <span class="n">example</span> <span class="n">data</span>
+<span class="o">%</span>   <span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;example/example_data/33029_daily.mat&#39;</span><span class="p">);</span>
+<span class="o">%</span>   <span class="n">Q</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Q</span><span class="p">;</span>
+<span class="o">%</span>   <span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">t</span><span class="p">;</span>
+<span class="o">%</span>   <span class="n">Q_mean</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">t</span><span class="p">);</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If any of the examples, errors or warnings are unclear, please <a class="reference internal" href="p5_contact.html#p5-contact"><span class="std std-ref">contact</span></a> us.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Coxon, G., Addor, N., Bloomfield, J.P., Freer, J., Fry, M., Hannaford, J., Howden, N.J., Lane, R., Lewis, M., Robinson, E.L. and Wagener, T., 2020. CAMELS-GB: hydrometeorological time series and landscape attributes for 671 catchments in Great Britain. Earth System Science Data, 12(4), pp.2459-2483.</p>
+</aside>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Addor, N., Newman, A. J., Mizukami, N., &amp; Clark, M. P., 2017. The CAMELS data set: catchment attributes and meteorology for large-sample studies. Hydrology and Earth System Sciences, 21(10), pp.5293-5313.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="p2_signatures.html" class="btn btn-neutral float-left" title="Signatures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p4_usage_notes.html" class="btn btn-neutral float-right" title="Usage Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Sebastian Gnann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
