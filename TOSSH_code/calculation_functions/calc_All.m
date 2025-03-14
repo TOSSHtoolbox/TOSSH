@@ -106,7 +106,9 @@ Q_var = NaN(size(Q_mat,1),1);
 Q_var_error_str = strings(size(Q_mat,1),1);
 QP_elasticity = NaN(size(Q_mat,1),1);
 QP_elasticity_error_str = strings(size(Q_mat,1),1);
-RecessionParameters = NaN(size(Q_mat,1),2);
+RecessionParameters_a = NaN(size(Q_mat,1),1);
+RecessionParameters_b = NaN(size(Q_mat,1),1);
+RecessionParameters_T0 = NaN(size(Q_mat,1),1);
 RecessionParameters_error_str = strings(size(Q_mat,1),1);
 RecessionK_early = NaN(size(Q_mat,1),1);
 RecessionK_early_error_str = strings(size(Q_mat,1),1);
@@ -196,8 +198,17 @@ for i = 1:size(Q_mat,1)
     [Q_skew(i),~,Q_skew_error_str(i)] = sig_Q_skew(Q_mat{i},t_mat{i});
     [Q_var(i),~,Q_var_error_str(i)] = sig_Q_var(Q_mat{i},t_mat{i});
     [QP_elasticity(i),~,QP_elasticity_error_str(i)] = sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i});
-    [RecessionParameters(i,:),~,~,RecessionParameters_error_str(i)] = ...
+    [RecessionParametersTemp,~,~,RecessionParameters_error_str(i)] = ...
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',false);
+
+    % Post-processing of RecessionParameters (see sig_RecessionAnalysis
+    % function description for the details)
+    RecessionParameters_a(i) = median((RecessionParametersTemp(:,1)),'omitnan');
+    RecessionParameters_b(i) = median(RecessionParametersTemp(:,2),'omitnan');
+    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
+    ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
+    RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
+
     [RecessionK_early(i),~,RecessionK_early_error_str(i)] = sig_RecessionParts(Q_mat{i},t_mat{i},'early');
     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
     [ResponseTime(i),~,ResponseTime_error_str(i)] = sig_ResponseTime(Q_mat{i},t_mat{i},P_mat{i});
@@ -278,7 +289,9 @@ results.Q_var = Q_var;
 results.Q_var_error_str = Q_var_error_str;
 results.QP_elasticity = QP_elasticity;
 results.QP_elasticity_error_str = QP_elasticity_error_str;
-results.RecessionParameters = RecessionParameters;
+results.RecessionParameters_a = RecessionParameters_a;
+results.RecessionParameters_b = RecessionParameters_b;
+results.RecessionParameters_T0 = RecessionParameters_T0;
 results.RecessionParameters_error_str = RecessionParameters_error_str;
 results.RecessionK_early = RecessionK_early;
 results.RecessionK_early_error_str = RecessionK_early_error_str;
