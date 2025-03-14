@@ -1,9 +1,9 @@
 function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, varargin)
 %calc_McMillan_Groundwater calculates various groundwater signatures.
-%   Calculates 15 signatures from McMillan (2020), related to groundwater 
-%   storage, groundwater dynamics and baseflow. These signatures come from 
-%   previous experimental studies that link catchment or hillslope 
-%   processes to streamflow response dynamics. Some signatures are 
+%   Calculates 15 signatures from McMillan (2020), related to groundwater
+%   storage, groundwater dynamics and baseflow. These signatures come from
+%   previous experimental studies that link catchment or hillslope
+%   processes to streamflow response dynamics. Some signatures are
 %   implemented direct from the original papers, others are interpreted
 %   from a qualitative description in the paper.
 %
@@ -13,7 +13,7 @@ function [results] = calc_McMillan_Groundwater(Q_mat, t_mat, P_mat, PET_mat, var
 %   P_mat: precipitation [mm/timestep] matrix (cell array)
 %   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
 %   OPTIONAL
-%   start_water_year: first month of water year, default = 10 (October)  
+%   start_water_year: first month of water year, default = 10 (October)
 %   plot_results: whether to plot results, default = false
 %   recession_length: min. length of recessions [days], default = 15
 %   n_start: days to be removed after start of recession
@@ -75,7 +75,7 @@ eps = ip.Results.eps;
 
 % initialise arrays
 
-% Section: Groundwater 
+% Section: Groundwater
 % Signatures referring to double peaks in streamflow are not coded due to
 % subjectivity in identification of the peaks.
 % Total runoff ratio describes overall water loss to deep groundwater.
@@ -98,52 +98,54 @@ StorageFraction_error_str = strings(size(Q_mat,1),1);
 % Seasonal variations in recession parameters (Shaw and Riha, 2012).
 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
-% Average storage from average baseflow and storage-discharge relationship 
+% Average storage from average baseflow and storage-discharge relationship
 % (McNamara et al., 2011).
 AverageStorage = NaN(size(Q_mat,1),1);
 AverageStorage_error_str = strings(size(Q_mat,1),1);
 % Recession analysis parameters approximate storage-discharge relationship.
 % This fits a single relationship to the point cloud.
-RecessionParameters = NaN(size(Q_mat,1),3);
+RecessionParameters_a = NaN(size(Q_mat,1),1);
+RecessionParameters_b = NaN(size(Q_mat,1),1);
+RecessionParameters_T0 = NaN(size(Q_mat,1),1);
 RecessionParameters_error_str = strings(size(Q_mat,1),1);
-% Changes of slope in a master recession curve (MRC) or recession analysis 
+% Changes of slope in a master recession curve (MRC) or recession analysis
 % plot indicate multiple linear reservoirs.
 MRC_num_segments = NaN(size(Q_mat,1),1);
 MRC_num_segments_error_str = strings(size(Q_mat,1),1);
 % First: steep section of the master recession curve = storage that is
 % quickly depleted (Estrany et al., 2010).
 First_Recession_Slope = NaN(size(Q_mat,1),1);
-% Second: mid section of the master recession curve = water retention  
+% Second: mid section of the master recession curve = water retention
 % capacity of the catchment (Estrany et al., 2010).
 Mid_Recession_Slope = NaN(size(Q_mat,1),1);
 % Non-uniqueness in the storage-discharge relationship (McMillan et al.,
-% 2011; Harman et al., 2009). Tested using Spearman rank correlation on Q 
+% 2011; Harman et al., 2009). Tested using Spearman rank correlation on Q
 % vs. dQ/dt.
 Spearmans_rho = NaN(size(Q_mat,1),1);
 Spearmans_rho_error_str = strings(size(Q_mat,1),1);
-% Ratio between event and total runoff coefficient: low = large storage 
+% Ratio between event and total runoff coefficient: low = large storage
 % capacity (Blume et al., 2008).
 EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
-% Variability index of flow. Low variability index shows higher water 
+% Variability index of flow. Low variability index shows higher water
 % storage (Estrany et al., 2010).
 VariabilityIndex = NaN(size(Q_mat,1),1);
 VariabilityIndex_error_str = strings(size(Q_mat,1),1);
 
-% Section: Baseflow 
+% Section: Baseflow
 % Visual inspection of hydrograph for stable baseflow: not coded.
-% Baseflow index indicates baseflow proportion and baseflow residence time 
+% Baseflow index indicates baseflow proportion and baseflow residence time
 % (Yilmaz et al., 2008; Bulygina et al., 2009; Hrachowitz et al., 2014).
 BFI = NaN(size(Q_mat,1),1);
 BFI_error_str = strings(size(Q_mat,1),1);
 % Baseflow recession constant K (assuming exponential recession behaviour),
-% slower recessions show greater groundwater influence and longer 
+% slower recessions show greater groundwater influence and longer
 % subsurface flow paths (Safeeq et al., 2013).
 BaseflowRecessionK = NaN(size(Q_mat,1),1);
 BaseflowRecessionK_error_str = strings(size(Q_mat,1),1);
 
 % loop over all catchments
 for i = 1:size(Q_mat,1)
-    
+
     % Section: Groundwater
     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
     [RR_Seasonality(i),~,RR_Seasonality_error_str(i)] = sig_RR_Seasonality(Q_mat{i}, t_mat{i}, P_mat{i}, ...
@@ -151,7 +153,7 @@ for i = 1:size(Q_mat,1)
     [EventRR(i),~,EventRR_error_str(i)] = sig_EventRR(Q_mat{i},t_mat{i},P_mat{i});
     [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = ...
         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'plot_results',plot_results);
-    
+
     % Section: Storage (especially groundwater)
     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = ...
         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'plot_results',plot_results,'n_start',n_start);
@@ -159,12 +161,16 @@ for i = 1:size(Q_mat,1)
         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'start_water_year',start_water_year,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
     [RecessionParametersTemp,~,~,RecessionParameters_error_str_temp] = ...
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',true,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
-    RecessionParameters(i,1) = median((RecessionParametersTemp(:,1)),'omitnan');
-    RecessionParameters(i,2) = median(RecessionParametersTemp(:,2),'omitnan');  
+
+    % Post-processing of RecessionParameters (see sig_RecessionAnalysis
+    % function description for the details)
+    RecessionParameters_a(i) = median((RecessionParametersTemp(:,1)),'omitnan');
+    RecessionParameters_b(i) = median(RecessionParametersTemp(:,2),'omitnan');
     RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
     ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
-    RecessionParameters(i,3) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
+    RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
     RecessionParameters_error_str(i) = RecessionParameters_error_str_temp;
+
     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = ...
         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'plot_results',plot_results,'eps',eps,'recession_length',recession_length,'n_start',n_start);
     First_Recession_Slope(i) = Segment_slopes(1);
@@ -174,12 +180,12 @@ for i = 1:size(Q_mat,1)
     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start);
     EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
     [VariabilityIndex(i),~,VariabilityIndex_error_str(i)] = sig_VariabilityIndex(Q_mat{i},t_mat{i});
-    
+
     % Section: Baseflow
     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},'method','UKIH');
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...
-        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start); 
-    
+        sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'n_start',n_start);
+
 end
 
 % add results to struct array
@@ -195,7 +201,9 @@ results.Recession_a_Seasonality = Recession_a_Seasonality;
 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
 results.AverageStorage = AverageStorage;
 results.AverageStorage_error_str = AverageStorage_error_str;
-results.RecessionParameters = RecessionParameters;
+results.RecessionParameters_a = RecessionParameters_a;
+results.RecessionParameters_b = RecessionParameters_b;
+results.RecessionParameters_T0 = RecessionParameters_T0;
 results.RecessionParameters_error_str = RecessionParameters_error_str;
 results.MRC_num_segments = MRC_num_segments;
 results.MRC_num_segments_error_str = MRC_num_segments_error_str;
