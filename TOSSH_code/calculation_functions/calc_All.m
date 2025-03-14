@@ -2,7 +2,7 @@ function [results] = calc_All(Q_mat, t_mat, P_mat, PET_mat, T_mat, varargin)
 %calc_All calculates all signatures in the toolbox.
 %   If a signature function can calculate multiple signatures
 %   (e.g. sig_x_percentile) only one signature is calculated (e.g. Q95).
-%   Note: This function is primarily intended to test all signatures and 
+%   Note: This function is primarily intended to test all signatures and
 %   not all functionalities are used (e.g. plotting).
 %
 %   INPUT
@@ -55,7 +55,7 @@ addRequired(ip, 'T_mat', @(T_mat) iscell(T_mat))
 
 % optional input arguments
 addParameter(ip, 'start_water_year', 10, @isnumeric) % when does the water year start? Default: 10
-addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
+addParameter(ip, 'plot_results', false, @islogical) % whether to plot results
 
 parse(ip, Q_mat, t_mat, P_mat, PET_mat, T_mat, varargin{:})
 start_water_year = ip.Results.start_water_year;
@@ -122,6 +122,13 @@ SeasonalTranslation = NaN(size(Q_mat,1),1);
 SeasonalTranslation_error_str = strings(size(Q_mat,1),1);
 Recession_a_Seasonality = NaN(size(Q_mat,1),1);
 Recession_a_Seasonality_error_str = strings(size(Q_mat,1),1);
+AverageStorage = NaN(size(Q_mat,1),1);
+AverageStorage_error_str = strings(size(Q_mat,1),1);
+MRC_num_segments = NaN(size(Q_mat,1),1);
+MRC_num_segments_error_str = strings(size(Q_mat,1),1);
+First_Recession_Slope = NaN(size(Q_mat,1),1);
+Mid_Recession_Slope = NaN(size(Q_mat,1),1);
+EventRR_TotalRR_ratio = NaN(size(Q_mat,1),1);
 SnowDayRatio = NaN(size(Q_mat,1),1);
 SnowDayRatio_error_str = strings(size(Q_mat,1),1);
 SnowStorage = NaN(size(Q_mat,1),1);
@@ -140,10 +147,23 @@ high_Q_duration = NaN(size(Q_mat,1),1);
 high_Q_duration_error_str = strings(size(Q_mat,1),1);
 high_Q_frequency = NaN(size(Q_mat,1),1);
 high_Q_frequency_error_str = strings(size(Q_mat,1),1);
+IE_effect = NaN(size(Q_mat,1),1);
+SE_effect = NaN(size(Q_mat,1),1);
+IE_thresh_signif = NaN(size(Q_mat,1),1);
+IE_thresh = NaN(size(Q_mat,1),1);
+SE_thresh_signif = NaN(size(Q_mat,1),1);
+SE_thresh = NaN(size(Q_mat,1),1);
+SE_slope = NaN(size(Q_mat,1),1);
+Storage_thresh_signif = NaN(size(Q_mat,1),1);
+Storage_thresh = NaN(size(Q_mat,1),1);
+min_Qf_perc = NaN(size(Q_mat,1),1);
+R_Pvol_RC = NaN(size(Q_mat,1),1);
+R_Pint_RC = NaN(size(Q_mat,1),1);
+EventGraph_error_str = strings(size(Q_mat,1),1);
 
 % loop over all catchments
 for i = 1:size(Q_mat,1)
-    
+
     [AC1(i),~,AC1_error_str(i)] = sig_Autocorrelation(Q_mat{i},t_mat{i});
     [BaseflowRecessionK(i),~,BaseflowRecessionK_error_str(i)] = ...
         sig_BaseflowRecessionK(Q_mat{i},t_mat{i},'eps',0.001*median(Q_mat{i},'omitnan'));
@@ -186,9 +206,19 @@ for i = 1:size(Q_mat,1)
     [SeasonalTranslation(i,1),SeasonalTranslation(i,2),~,SeasonalTranslation_error_str(i)] = ...
         sig_SeasonalTranslation(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
     [Recession_a_Seasonality(i),~,Recession_a_Seasonality_error_str(i)] = sig_SeasonalVarRecessions(Q_mat{i},t_mat{i});
+    [AverageStorage(i),~,AverageStorage_error_str(i)] = ...
+        sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i}, ...
+        'start_water_year',start_water_year,'plot_results', plot_results);
+    [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = ...
+        sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'plot_results',plot_results);
+    First_Recession_Slope(i) = Segment_slopes(1);
+    if length(Segment_slopes) >= 2
+        Mid_Recession_Slope(i) = Segment_slopes(2);
+    end
+    EventRR_TotalRR_ratio(i) = EventRR(i)/TotalRR(i);
     [SnowDayRatio(i),~,SnowDayRatio_error_str(i)] = sig_SnowDayRatio(Q_mat{i},t_mat{i},P_mat{i},T_mat{i});
     [SnowStorage(i),~,SnowStorage_error_str(i)] = sig_SnowStorage(Q_mat{i},t_mat{i},P_mat{i});
-    [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = ... 
+    [StorageFraction(i,1),StorageFraction(i,2),StorageFraction(i,3),~,StorageFraction_error_str(i)] = ...
         sig_StorageFraction(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
     [StorageFromBaseflow(i),~,StorageFromBaseflow_error_str(i)] = ...
         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i});
@@ -197,7 +227,10 @@ for i = 1:size(Q_mat,1)
     [Q95(i),~,Q95_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},95);
     [high_Q_duration(i),~,high_Q_duration_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},'high');
     [high_Q_frequency(i),~,high_Q_frequency_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},'high');
-    
+    [IE_effect(i),SE_effect(i),IE_thresh_signif(i),IE_thresh(i), ...
+        SE_thresh_signif(i),SE_thresh(i),SE_slope(i),Storage_thresh(i), ...
+        Storage_thresh_signif(i),min_Qf_perc(i),R_Pvol_RC(i),R_Pint_RC(i),~,EventGraph_error_str(i)] ...
+        = sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i},'plot_results',plot_results);
 end
 
 % add results to struct array
@@ -261,6 +294,12 @@ results.SeasonalTranslation = SeasonalTranslation;
 results.SeasonalTranslation_error_str = SeasonalTranslation_error_str;
 results.Recession_a_Seasonality = Recession_a_Seasonality;
 results.Recession_a_Seasonality_error_str = Recession_a_Seasonality_error_str;
+results.AverageStorage = AverageStorage;
+results.MRC_num_segments = MRC_num_segments;
+results.MRC_num_segments_error_str = MRC_num_segments_error_str;
+results.First_Recession_Slope = First_Recession_Slope;
+results.Mid_Recession_Slope = Mid_Recession_Slope;
+results.EventRR_TotalRR_ratio = EventRR_TotalRR_ratio;
 results.SnowDayRatio = SnowDayRatio;
 results.SnowDayRatio_error_str = SnowDayRatio_error_str;
 results.SnowStorage = SnowStorage;
@@ -279,5 +318,17 @@ results.high_Q_duration = high_Q_duration;
 results.high_Q_duration_error_str = high_Q_duration_error_str;
 results.high_Q_frequency = high_Q_frequency;
 results.high_Q_frequency_error_str = high_Q_frequency_error_str;
-
+results.IE_effect = IE_effect;
+results.SE_effect = SE_effect;
+results.IE_thresh_signif = IE_thresh_signif;
+results.SE_thresh_signif = SE_thresh_signif;
+results.IE_thresh = IE_thresh;
+results.SE_thresh = SE_thresh;
+results.SE_slope = SE_slope;
+results.Storage_thresh_signif = Storage_thresh_signif;
+results.Storage_thresh = Storage_thresh;
+results.min_Qf_perc = min_Qf_perc;
+results.R_Pvol_RC = R_Pvol_RC;
+results.R_Pint_RC = R_Pint_RC; 
+results.EventGraph_error_str = EventGraph_error_str;
 end
