@@ -329,6 +329,6 @@ results.Storage_thresh_signif = Storage_thresh_signif;
 results.Storage_thresh = Storage_thresh;
 results.min_Qf_perc = min_Qf_perc;
 results.R_Pvol_RC = R_Pvol_RC;
-results.R_Pint_RC = R_Pint_RC; 
+results.R_Pint_RC = R_Pint_RC;
 results.EventGraph_error_str = EventGraph_error_str;
 end
