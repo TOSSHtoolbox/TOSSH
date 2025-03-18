@@ -63,7 +63,7 @@ addRequired(ip, 't', @(t) (isnumeric(t) || isdatetime(t)) && (size(t,1)==1 || si
 % time series have to be numeric and either a (n,1) or a (1,n) vector
 addRequired(ip, 'P', @(P) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
 % time series have to be numeric and either a (n,1) or a (1,n) vector
-addRequired(ip, 'PET', @(PET) isnumeric(P) && (size(P,1)==1 || size(P,2)==1))
+addRequired(ip, 'PET', @(PET) isnumeric(PET) && (size(PET,1)==1 || size(PET,2)==1))
 % time series have to be numeric and either a (n,1) or a (1,n) vector
 addRequired(ip, 'T', @(T) isnumeric(T) && (size(T,1)==1 || size(T,2)==1))
 % param has to be numeric and either a (n,1) or a (1,n) vector
