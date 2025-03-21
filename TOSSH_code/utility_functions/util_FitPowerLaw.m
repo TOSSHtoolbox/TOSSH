@@ -15,7 +15,7 @@ function [a, b, error_flag, error_str] = ...
 %   OUTPUT
 %   a: scaling parameter
 %   b: parameter of non-linearity
-%   error_flag: 0 (no error), 1 (warning), 2 (errorin data check), 3
+%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
 %   error_str: string contraining error description
 %

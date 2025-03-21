@@ -71,7 +71,7 @@ R2 = ones(size(Q)); % weights
 t = datenum(t); % convert to datenum
 
 switch method
-    
+
     case 'BN' % Brutsaert and Nieber (1979)
         for j = 1:size(flow_section,1)
             rec = [flow_section(j,1):flow_section(j,2)]'; % get recession
@@ -79,7 +79,7 @@ switch method
             Qm(rec(2:end)) = (Q(rec(2:end)) + Q(rec(1:end-1)))./2;
             flow_section(j,1) = flow_section(j,1)+1; % shorten recession
         end
-        
+
     case 'backwards' % similar to Brutsaert and Nieber (1979), but we keep measured Q, see also Thomas et al. (2015)
         for j = 1:size(flow_section,1)
             rec = [flow_section(j,1):flow_section(j,2)]'; % get recession
@@ -87,32 +87,32 @@ switch method
             Qm(rec(2:end)) = Q(rec(2:end));
             flow_section(j,1) = flow_section(j,1)+1; % shorten recession
         end
-        
+
     case 'ETS' % exponential time stepping following Roques et al. (2017)
         for j = 1:size(flow_section,1)
             rec = [flow_section(j,1):flow_section(j,2)]'; % get recession
             n = 0.1*(length(rec)); % n = 10% of recession length led to good results according to Roques et al. (2017)
             gamma = util_FitExponential(Q(rec), t(rec), 'semilog'); % get gamma
             gamma(gamma<0) = 0;
-%             if gamma > 0
-                m(rec) = 1 + ceil(n.*exp(-1./(gamma.*[1:length(rec)])));
-                i = rec(1);
-                while i+m(i) <= rec(end)
-                    % Qm(i) = mean(Q(i:i+m(i)));
-                    Qm(i) = sum(Q(i:i+m(i)))/(1+m(i));
-                    [~, dQdt(i), R2(i)] = util_FitLinear(t(i:i+m(i)),Q(i:i+m(i)));
-                    i = i+1;
-                end
-                flow_section(j,2) = flow_section(j,2) - m(i); %(m(i)+1); % shorten recession
-%             else
-%                 flow_section(j,:) = NaN;
-%             end
+            %             if gamma > 0
+            m(rec) = 1 + ceil(n.*exp(-1./(gamma.*[1:length(rec)])));
+            i = rec(1);
+            while i+m(i) <= rec(end)
+                % Qm(i) = mean(Q(i:i+m(i)));
+                Qm(i) = sum(Q(i:i+m(i)))/(1+m(i));
+                [~, dQdt(i), R2(i)] = util_FitLinear(t(i:i+m(i)),Q(i:i+m(i)));
+                i = i+1;
+            end
+            flow_section(j,2) = flow_section(j,2) - m(i); %(m(i)+1); % shorten recession
+            %             else
+            %                 flow_section(j,:) = NaN;
+            %             end
         end
-        
+
         % remove flow sections with non-finite elements (e.g. due to
         % fitting problems)
         flow_section(~all(isfinite(flow_section)')',:) = [];
-        
+
     otherwise
         error('Differentiation method not available.')
 end

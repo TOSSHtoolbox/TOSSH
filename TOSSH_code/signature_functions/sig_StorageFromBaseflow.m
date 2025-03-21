@@ -1,7 +1,7 @@
 function [AverageStorage, error_flag, error_str, fig_handles] = ...
     sig_StorageFromBaseflow(Q, t, P, PET, varargin)
 %sig_StorageFromBaseflow calculates average storage from average baseflow.
-%   Uses a water balance approach to calculate daily changes in storage, 
+%   Uses a water balance approach to calculate daily changes in storage,
 %   then finds the relationship between storage and discharge, then
 %   estimates average storage from average baseflow (see McNamara et al.,
 %   2011 and Peters and Aulenbach, 2011).
@@ -34,9 +34,9 @@ function [AverageStorage, error_flag, error_str, fig_handles] = ...
 %       not requested)
 %
 %   EXAMPLE
-%   % load example data 
-%   data = load('example/example_data/33029_daily.mat'); 
-%   Q = data.Q; 
+%   % load example data
+%   data = load('example/example_data/33029_daily.mat');
+%   Q = data.Q;
 %   t = data.t;
 %   P = data.P;
 %   PET = data.PET;
@@ -44,11 +44,11 @@ function [AverageStorage, error_flag, error_str, fig_handles] = ...
 %   AverageStorage = sig_StorageFromBaseflow(Q, t, P, PET, 'plot_results', true);
 %
 %   References
-%   McNamara, J.P., Tetzlaff, D., Bishop, K., Soulsby, C., Seyfried, M., 
-%   Peters, N.E., Aulenbach, B.T. and Hooper, R., 2011. Storage as a metric 
+%   McNamara, J.P., Tetzlaff, D., Bishop, K., Soulsby, C., Seyfried, M.,
+%   Peters, N.E., Aulenbach, B.T. and Hooper, R., 2011. Storage as a metric
 %   of catchment comparison. Hydrological Processes, 25(21), pp.3364-3371.
-%   Peters, N.E. and Aulenbach, B.T., 2011. Water storage at the Panola 
-%   Mountain research watershed, Georgia, USA. Hydrological Processes, 
+%   Peters, N.E. and Aulenbach, B.T., 2011. Water storage at the Panola
+%   Mountain research watershed, Georgia, USA. Hydrological Processes,
 %   25(25), pp.3878-3889.
 %
 %   Copyright (C) 2020
@@ -75,11 +75,10 @@ addRequired(ip, 'PET', @(PET) isnumeric(PET) && (size(PET,1)==1 || size(PET,2)==
 
 % optional input arguments
 validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && floor(x)==x;
-addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start? Default: 10
+addParameter(ip, 'start_water_year', 10, validationFcn) % when does the water year start?
 addParameter(ip, 'field_capacity', [], @isnumeric) % field capacity for scaling PET to AET
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
-addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing
-% flow in days to be declared a recession
+addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing flow in days to be declared a recession
 addParameter(ip, 'n_start', 1, @isnumeric) % days to be removed at beginning of recession
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 
@@ -106,9 +105,9 @@ end
 % get rid of NaN values (temporarily)
 isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
 % replace NaN days with mean to have a roughly closed water balance
-Q(isn) = mean(Q,'omitnan'); 
-P(isn) = mean(P,'omitnan'); 
-PET(isn) = mean(PET,'omitnan'); 
+Q(isn) = mean(Q,'omitnan');
+P(isn) = mean(P,'omitnan');
+PET(isn) = mean(PET,'omitnan');
 
 % estimate storage
 [S, ~] = util_StorageAndAET(Q, t, P, PET, 'field_capacity', field_capacity);
@@ -150,7 +149,7 @@ end
 storage_discharge = storage_discharge(good_points,:);
 storage_discharge_datetime = storage_discharge_datetime(good_points,:);
 
-[water_year] = util_WaterYear(storage_discharge_datetime(:,1), 'WY_start_month', start_water_year);
+[water_year] = util_WaterYear(storage_discharge_datetime(:,1), 'start_water_year', start_water_year);
 
 % fit baseflow-storage relationship for combined water years, each with
 % different intercept but a single slope
@@ -175,15 +174,15 @@ for i = 1:length(WY_unique)
     revised_storage(wy_ind) = revised_storage(wy_ind)-intercept_coeffs(i);
 end
 
-% find average adjusted storage from average baseflow; average baseflow = 
+% find average adjusted storage from average baseflow; average baseflow =
 % average of the 7-day minimum streamflow (McNamara et al., 2011)
 baseflow = movmin(Q,7*(duration(24,0,0)/timestep));
 av_baseflow = mean(baseflow);
 AverageStorage = slope_fit.*log(av_baseflow) - min(revised_storage);
 
-% optional plotting 
+% optional plotting
 if plot_results
-    % figure combining all the years 
+    % figure combining all the years
     fig = figure('Position',[100 100 350 300]); hold on
     % scatter plot of baseflow vs adjusted storage
     gscatter(storage_discharge(:,2),revised_storage- min(revised_storage),water_year,[],[],10);

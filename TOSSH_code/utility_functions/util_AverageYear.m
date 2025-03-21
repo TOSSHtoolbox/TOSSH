@@ -42,7 +42,8 @@ addRequired(ip, 'X', @(X) isnumeric(X) && (size(X,1)==1 || size(X,2)==1))
 addRequired(ip, 't', @(t) (isnumeric(t) || isdatetime(t)) && (size(t,1)==1 || size(t,2)==1))
 
 % optional input arguments
-addParameter(ip, 'start_water_year', 1, @isnumeric)
+validationFcn = @(x) isnumeric(x) && isscalar(x) && (x >= 1) && (x <= 12) && floor(x)==x;
+addParameter(ip, 'start_water_year', 1, validationFcn) % when does the water year start?
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results 
 
 parse(ip, X, t, varargin{:})

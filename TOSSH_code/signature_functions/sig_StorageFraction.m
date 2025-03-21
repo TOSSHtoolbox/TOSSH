@@ -17,9 +17,9 @@ function [S_fraction, S_active, S_total, error_flag, error_str, fig_handles] = .
 %   PET: potential evapotranspiration [mm/timestep]
 %   OPTIONAL
 %   field_capacity: field capacity [mm]
-%   bin_size: bin size used to determine envelope (default: 10 mm)
-%   fit_range: range of envelope to which linear line should be fitted
-%       (default: 50th to 100th percentile, i.e. [0.5 1.0])
+%   bin_size: bin size used to determine envelope, default: 10 mm
+%   fit_range: range of envelope to which linear line should be fitted,
+%              default: 50th to 99th percentile, i.e. [0.5 0.99]
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
@@ -82,6 +82,9 @@ bin_size = ip.Results.bin_size;
 fit_range = ip.Results.fit_range;
 plot_results = ip.Results.plot_results;
 
+% create empty figure handle
+fig_handles = [];
+
 % data checks
 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, 'P', P, 'PET', PET);
 if error_flag == 2
@@ -93,18 +96,20 @@ end
 
 % calculate signature
 
-% get rid of NaN values (temporarily)
-isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
-% replace NaN days with mean to have a roughly closed water balance
-Q(isn) = mean(Q,'omitnan'); 
-P(isn) = mean(P,'omitnan'); 
-PET(isn) = mean(PET,'omitnan'); 
+% !NaN check now in util function!
+% % get rid of NaN values (temporarily)
+% isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
+% % replace NaN days with mean to have a roughly closed water balance
+% Q(isn) = mean(Q,'omitnan');
+% P(isn) = mean(P,'omitnan');
+% PET(isn) = mean(PET,'omitnan');
 
 % estimate storage
 [S, ~] = util_StorageAndAET(Q, t, P, PET, 'field_capacity', field_capacity);
 
-Q(isn) = NaN; % set Q and corresponding S back to NaN
-S(isn) = NaN;
+% Q(isn) = NaN; % set Q and corresponding S back to NaN
+% S(isn) = NaN;
+
 S_max = max(S); % maximum storage capacity
 D = S_max - S; % storage deficit
 
@@ -164,7 +169,7 @@ if isempty(S_active) || isempty(S_total)
     error_str = ['Error: Active or total storage could not be calculated. ', error_str];
     return
 end
-    
+
 if S_active > S_total
     error_flag = 1;
     error_str = ['Warning: Estimated active storage is larger than total storage. ', error_str];

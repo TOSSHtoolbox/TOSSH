@@ -89,9 +89,9 @@ end
 % get rid of NaN values (temporarily)
 isn = (isnan(Q) | isnan(P) | isnan(PET)); % store NaN indices
 % replace NaN days with mean to have a roughly closed water balance
-Q(isn) = mean(Q,'omitnan'); 
-P(isn) = mean(P,'omitnan'); 
-PET(isn) = mean(PET,'omitnan'); 
+Q(isn) = mean(Q,'omitnan');
+P(isn) = mean(P,'omitnan');
+PET(isn) = mean(PET,'omitnan');
 
 % calculate signature
 if useAET

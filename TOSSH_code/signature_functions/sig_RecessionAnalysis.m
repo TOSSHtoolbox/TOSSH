@@ -11,20 +11,20 @@ function [Recession_Parameters, recession_month, error_flag, error_str, fig_hand
 %   t: time [Matlab datetime]
 %   OPTIONAL
 %   recession_length: min. length of recession segments [days], default = 5
-%   n_start: days to be removed after start of recession
+%   n_start: days to be removed after start of recession, default = 1
 %   eps: allowed increase in flow during recession period, default = 0
-%   start_of_recession: define start of recession when baseflow filter
-%       rejoins the curve ("baseflow"), or after hydrograph peak ("peak")
+%   start_of_recession: define start of recession, e.g. after peak ("peak") 
+%      or when baseflow filter rejoins curve ("baseflow"), default = 'peak' 
 %   filter_par: smoothing parameter of Lyne-Hollick filter to determine
 %      start of recession (higher = later recession start), default = 0.925
-%   fit_individual: fit each individual recession segment
-%   fitting_type: fit non-linear or linear curve ('nonlinear','linear')
-%       reservoir), etc.
+%   fit_individual: fit each individual recession segment, default = false
+%   fitting_type: fit non-linear or linear curve ('nonlinear','linear'),
+%      default = 'linear'
 %   dQdt_method: method for dQ/dt calculation, default = 'ETS'
 %   plot_results: whether to plot results, default = false
 %
 %   OUTPUT
-%   Recession_Parameters: matrix with parameters alpha, beta (=1 for 
+%   Recession_Parameters: matrix with parameters alpha, beta (=1 for
 %       exponential fit) for each recession segment.
 %       Recession_Parameters(:,1): a, scaling parameter
 %       Recession_Parameters(:,2): b, parameter of non-linearity
@@ -68,11 +68,11 @@ function [Recession_Parameters, recession_month, error_flag, error_str, fig_hand
 %   ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
 %   RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
 
-%   RecessionParameters_T0 is characteristic timescale of recessions at median flow; It can be obtained 
-%   by fitting a line to the dQ/dt versus Q point cloud in log-log space for each individual recession, 
-%   with  Q scaled by median Q; T0 is the median value of −1/intercept (McMillan et al., 2021). 
+%   RecessionParameters_T0 is characteristic timescale of recessions at median flow; It can be obtained
+%   by fitting a line to the dQ/dt versus Q point cloud in log-log space for each individual recession,
+%   with Q scaled by median Q; T0 is the median value of −1/intercept (McMillan et al., 2021).
 
-%   RecessionParameters_T0 can be derived from RecessionParameters_a and RecessionParameters_b as follows (McMillan et al, 2014): 
+%   RecessionParameters_T0 can be derived from RecessionParameters_a and RecessionParameters_b as follows (McMillan et al, 2014):
 %   Let Qhat = Q/Qmedian, then:
 %       dQhat/dt = - (1/T0) * Qhat^b
 %   Separating constant terms,
@@ -80,15 +80,15 @@ function [Recession_Parameters, recession_month, error_flag, error_str, fig_hand
 %       dQ/dt = - (1/T0) * Q^b * (1/Qmedian) ^ (b-1)
 %   As our estimate of a and b parameters are from:
 %       dQ/dt = - a * Q^b
-%   It leads to: 
+%   It leads to:
 %       a = (1/T0) * (1/Qmedian) ^ (b-1)
 %       T0 = (1/a) * (1/Qmedian) ^ (b-1)
-%       T0 = 1 / (a * Qmedian ^ (b-1)) # This corresponds to the code for calculating RecessionParametersT0Temp
+%       T0 = 1 / (a * Qmedian ^ (b-1)) 
+%   This corresponds to the code for calculating RecessionParametersT0Temp.
 %
-%   McMillan, H., Gueguen, M., Grimon, E., Woods, R., Clark, M., & Rupp, D. E. (2014). 
-%   Spatial variability of hydrological processes and model structure diagnostics in a 50 km2 catchment. 
+%   McMillan, H., Gueguen, M., Grimon, E., Woods, R., Clark, M., & Rupp, D. E. (2014).
+%   Spatial variability of hydrological processes and model structure diagnostics in a 50 km2 catchment.
 %   Hydrological Processes, 28(18), 4896-4913. https://doi.org/10.1002/hyp.9988
-
 
 % check input parameters
 if nargin < 2
@@ -105,14 +105,13 @@ addRequired(ip, 'Q', @(Q) isnumeric(Q) && (size(Q,1)==1 || size(Q,2)==1))
 addRequired(ip, 't', @(t) (isnumeric(t) || isdatetime(t)) && (size(t,1)==1 || size(t,2)==1))
 
 % optional input arguments
-addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing 
+addParameter(ip, 'recession_length', 5, @isnumeric) % length of decreasing
 % flow section (amount of timesteps) to be declared a recession
 addParameter(ip, 'n_start', 1, @isnumeric) % days to be removed at beginning of recession
 addParameter(ip, 'eps', 0, @isnumeric) % allowed increase in flow during recession period
 addParameter(ip, 'start_of_recession', 'peak', @ischar) % defines start of a recession
-addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of 
-% Lyne-Hollick Filter to determine start of recession (higher = later recession start)
-addParameter(ip, 'fit_individual', true, @islogical) % fit individual recessions or point cloud
+addParameter(ip, 'filter_par', 0.925, @isnumeric) % smoothing parameter of Lyne-Hollick Filter to determine start of recession (higher = later recession start)
+addParameter(ip, 'fit_individual', false, @islogical) % fit individual recessions or point cloud
 addParameter(ip, 'fitting_type', 'linear', @ischar) % nonlinear or linear fit
 addParameter(ip, 'dQdt_method', 'ETS', @ischar) % how to calculate dQ/dt
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (2 graphs)
@@ -180,10 +179,10 @@ else
         goodrec = ~isnan(Qm(rec));
         [Recession_Parameters(i,1), Recession_Parameters(i,2), error_flag, error_str] = ...
             util_FitPowerLaw(Qm(rec(goodrec)), dQdt(rec(goodrec)), fitting_type, R2(rec(goodrec)));
-    % remove recessions with unrealistic (negative) parameter values
-    if Recession_Parameters(i,1) <= 0 || Recession_Parameters(i,2) <= 0
-       Recession_Parameters(i,:) = NaN;
-    end
+        % remove recessions with unrealistic (negative) parameter values
+        if Recession_Parameters(i,1) <= 0 || Recession_Parameters(i,2) <= 0
+            Recession_Parameters(i,:) = NaN;
+        end
     end
 end
 if error_flag == 3
@@ -225,7 +224,7 @@ if plot_results
     if fit_individual
         legend([p1 p2 p3 p4],{'MAM','JJA','SON','DJF'},'box','off','Location','best');
     end
-    
+
     if ~fit_individual
         rec = ~isnan(Qm);
         plot(sort(Qm(rec)),Recession_Parameters(1).*sort(Qm(rec)).^Recession_Parameters(2),...
@@ -234,11 +233,11 @@ if plot_results
         title(str);
     else
         [~, ind] = min(abs(Recession_Parameters(:,2) - median(Recession_Parameters(:,2),'omitnan')));
-        str = (sprintf('median: -dQ/dt = %.2f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));       
+        str = (sprintf('median: -dQ/dt = %.2f Q^{%.1f}',Recession_Parameters(ind,1),Recession_Parameters(ind,2)));
         title(str);
     end
     xlabel('Q [mm/timestep]')
-    ylabel('-dQ/dt [mm/timestep^2]') 
+    ylabel('-dQ/dt [mm/timestep^2]')
     set(gca,'XScale','log')
     set(gca,'YScale','log')
     fig_handles.RecessionAnalysis = fig;
