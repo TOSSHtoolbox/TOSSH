@@ -1,0 +1,11 @@
+Signature;Function (click for code);Unit;Description
+BaseflowMagnitude;`sig_BaseflowMagnitude.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowMagnitude.html>`_ ;mm;Difference between maximum and minimum of annual baseflow regime
+ResponseTime;`sig_ResponseTime.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_ResponseTime.html>`_ ;timestep;Catchment response time
+FlashinessIndex;`sig_FlashinessIndex.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html>`_ ;--;Richards-Baker flashiness idex
+PQ_Curve :sup:`a` ;`sig_PQ_Curve.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PQ_Curve.html>`_ ;--;Slopes and breakpoints in cumulative P-Q regime curve
+Q_n_day_max;`sig_Q_n_day_max.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_max.html>`_ ;mm/timestep;n-day maximum streamflow
+Q_skew;`sig_Q_skew.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_skew.html>`_ ;mm :sup:`3`/ timestep :sup:`3` ;Skewness of streamflow
+Q_var;`sig_Q_var.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_var.html>`_ ;mm :sup:`2`/ timestep :sup:`2` ;Variance of streamflow
+RecessionK_part;`sig_RecessionParts.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionParts.html>`_ ;1/timestep;Recession constant of early/late (exponential) recessions
+SeasonalTranslation :sup:`a` ;`sig_SeasonalTranslation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalTranslation.html>`_ ;--;Amplitude ratio and phase shift between seasonal forcing and flow cycles
+SnowStorage;`sig_SnowStorage.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowStorage.html>`_ ;mm;Snow storage derived from cumulative P-Q regime curve

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_Q_n_day_min</title>
+  <meta name="keywords" content="sig_Q_n_day_min">
+  <meta name="description" content="Q_n_day_min calculates n day minimum of flow time series.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_Q_n_day_min.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_Q_n_day_min
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Q_n_day_min calculates n day minimum of flow time series.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Q_n_day_min, error_flag, error_str] = sig_Q_n_day_min(Q, t, n_day) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Q_n_day_min calculates n day minimum of flow time series.
+   
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   n_day: window over which minimum should be calculated
+
+   OUTPUT
+   Q_n_day_min: n day minimum of flow [mm/n_day]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t;
+   Q_n_day_min = sig_Q_n_day_min(Q, t, 7);
+   Q_n_day_min = sig_Q_n_day_min(Q, t, [1:7]);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Q_n_day_min, error_flag, error_str] = sig_Q_n_day_min(Q, t, n_day)</a>
+0002 <span class="comment">%Q_n_day_min calculates n day minimum of flow time series.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INPUT</span>
+0005 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0006 <span class="comment">%   t: time [Matlab datetime]</span>
+0007 <span class="comment">%   n_day: window over which minimum should be calculated</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   OUTPUT</span>
+0010 <span class="comment">%   Q_n_day_min: n day minimum of flow [mm/n_day]</span>
+0011 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0012 <span class="comment">%       (error in signature calculation)</span>
+0013 <span class="comment">%   error_str: string contraining error description</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   EXAMPLE</span>
+0016 <span class="comment">%   % load example data</span>
+0017 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0018 <span class="comment">%   Q = data.Q;</span>
+0019 <span class="comment">%   t = data.t;</span>
+0020 <span class="comment">%   Q_n_day_min = sig_Q_n_day_min(Q, t, 7);</span>
+0021 <span class="comment">%   Q_n_day_min = sig_Q_n_day_min(Q, t, [1:7]);</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Copyright (C) 2020</span>
+0024 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0025 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0026 
+0027 <span class="comment">% check input parameters</span>
+0028 <span class="keyword">if</span> nargin &lt; 3
+0029     error(<span class="string">'Not enough input arguments.'</span>)
+0030 <span class="keyword">end</span>
+0031 
+0032 ip = inputParser;
+0033 ip.CaseSensitive = true;
+0034 
+0035 <span class="comment">% required input arguments</span>
+0036 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0037 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1)) 
+0038 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0039 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1)) 
+0040 <span class="comment">% n_day has to be numeric and either a (n,1) or a (1,n) vector</span>
+0041 addRequired(ip, <span class="string">'n_day'</span>, @(n_day) isnumeric(n_day) &amp;&amp; (size(n_day,1)==1 || size(n_day,2)==1))
+0042 
+0043 parse(ip, Q, t, n_day)
+0044 
+0045 <span class="comment">% data checks</span>
+0046 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t);
+0047 <span class="keyword">if</span> error_flag == 2
+0048     Q_n_day_min = NaN;
+0049     <span class="keyword">return</span>
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="keyword">if</span> any(n_day&lt;1 | n_day&gt;length(t)) || any(floor(n_day)~=n_day)
+0053     error(<span class="string">'Month has to be a vector containing integers between 1 and length(timeseries).'</span>)
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% calculate signature</span>
+0057 Q_n_day_min = NaN(length(n_day),1);
+0058 <span class="keyword">for</span> i=1:length(n_day)
+0059     Q_n_day_min(i) = n_day(i)*min(movmean(Q,n_day(i))); <span class="comment">% returns value in mm per chosen window n_day</span>
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
