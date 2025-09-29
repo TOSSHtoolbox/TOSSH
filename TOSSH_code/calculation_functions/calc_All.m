@@ -242,6 +242,7 @@ for i = 1:size(Q_mat,1)
         SE_thresh_signif(i),SE_thresh(i),SE_slope(i),Storage_thresh(i), ...
         Storage_thresh_signif(i),min_Qf_perc(i),R_Pvol_RC(i),R_Pint_RC(i),~,EventGraph_error_str(i)] ...
         = sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i},'plot_results',plot_results);
+    % For R_Pint_RC, if the data is daily, use sig_EventGraphThresholds_hourlyfrac.m instead
 end
 
 % add results to struct array
