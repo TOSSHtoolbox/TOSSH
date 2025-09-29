@@ -1,22 +1,27 @@
 function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
     SE_thresh_signif, SE_thresh, SE_slope, ...
     Storage_thresh, Storage_thresh_signif, min_Qf_perc, R_Pvol_RC, R_Pint_RC,...
-    error_flag, error_str, fig_handles] = sig_EventGraphThresholds(Q,t,P,varargin)
-%%   sig_EventGraphThresholds calculates a variety of signatures related to saturation and infiltration excess flow.
-%   Calculates a variety of signatures related to saturation excess (SE)
-%   and infiltration excess (IE) flow, based on the relationship between
-%   precipitation or antecedent conditions and flow response (volume or
-%   peak magnitude) during storm events.
-%
-%   Notes:
-%   Uses util_EventSeparation to separate individual storm events.
-%   Enables plotting of the relationship between rainfall/flow quantities,
-%   and calculation of regression coefficients and threshold strength.
+    error_flag, error_str, fig_handles] = sig_EventGraphThresholds_hourlyfrac(Q,t,P,P_hrfrac,varargin)
+%%   sig_EventGraphThresholds_hourlyRain calculates a variety of signatures related to saturation and infiltration excess flow.
+%   This code is developed to overcome the limitation of the R_Pint_RC
+%   signature, which is reliable for hourly data but not when you have only
+%   daily streamflow data available. All other signature designs remain the
+%   same. Therefore, this code works when you have **daily** streamflow, 
+%   **daily** precipitation, and **hourly** precipitation data.
 %
 %   INPUT
-%   Q: streamflow [mm/timestep]
+%   Q: streamflow [mm/d]
 %   t: time [Matlab datetime]
-%   P: precipitation [mm/timestep]
+%   P: precipitation [mm/d]
+%
+%   *** EXTRA INPUT FOR THIS SIGNATURE ***
+%   P_hrfrac [-]: Fraction of maximum precipitation intensity (mm/hr) relative
+%   to the total precipitation of the day (mm). Multiplying this fraction
+%   by the daily total precipitation data will provide the maximum
+%   precipitation intensity (P [mm total per day] * P_hrfrac [-] = max hourly 
+%   precipitation intensity of the day [mm/hr]). 
+%   This needs to be pre-calculated using hourly precipitation data, such as NLDAS.
+%
 %   OPTIONAL
 %   (All these parameters enable the user to tweak the definition of storm
 %   events:)
@@ -34,54 +39,24 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %       another event starts), default = 1
 %   plot_results: whether to plot results, default = false
 %
-%   OUTPUT
-%   IE_effect: infiltration excess (IE) importance [-]
-%   SE_effect: saturation excess (SE) importance [-]
-%   IE and SE importance based on their coefficients in regression
-%   equations to predict event flow characteristics, adapted from
-%   qualitative description in Estrany et al. (2010).
-%
-%   IE_thresh_signif: infiltration excess threshold significance [-]
-%   IE_thresh: infiltration excess threshold location [mm/timestep]
-%   Significance (using likelihood ratio test) and location of a threshold
-%   in a plot of quickflow volume vs. maximum intensity, signifying IE
-%   process, adapted from qualitative description in Ali et al. (2013);
-%   IE is indicated when ie_thresh_sig < 0.05.
-%
-%   SE_thresh_signif: saturation excess threshold significance [-]
-%   SE_thresh: saturation excess threshold location [mm]
-%   SE_slope: saturation excess threshold above-threshold slope [mm/mm]
-%   Significance, location, and above-threshold slope of a threshold in a
-%   plot of quickflow volume vs. total precipitation. No threshold
-%   indicates flow generation from riparian areas (Tani, 1997). Slope above
-%   threshold indicates rate at which saturated areas expand (Tani, 1997;
-%   Becker and McDonnell, 1998); SE is indicated when se_thresh_sig < 0.05.
-%
-%   Storage_thresh: storage/saturation excess threshold significance [-]
-%   Storage_thresh_signif: storage/saturation excess threshold location [mm]
-%   Significance and location of a threshold in a plot of quickflow volume
-%   vs. antecedent precipitation index + total precipitation, adapted from
-%   qualitative description in Ali et al. (2013) and McGrath et al. (2007);
-%   SE is indicated when storage_thresh_sig < 0.05.
-%
-%   min_Qf_perc: minimum quickflow as a percentage of precipitation [%],
-%   Indicates impermeable area contribution (qualitative description in
-%   Becker and McDonnell, 1998).
-%
+%   OUTPUT: See sig_EventGraphThresholds.m for the definition of 
+%   IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
+%   SE_thresh_signif, SE_thresh, SE_slope, ...
+%   Storage_thresh, Storage_thresh_signif, min_Qf_perc
+%   
 %   Event signatures from Wu et al., (2021); translated to Matlab in Bolotin and McMillan (2025).
-% 
-%   *** Note: This signature, especially R_Pint_RC, is reliable only for 
-%   sub-daily temporal resolution (hourly data is used in Wu et al., 2021). 
-%   If you are using daily data, we recommend using sig_EventGraphThresholds_hourlyfrac.m instead. ***
 %
 %   R_Pvol_RC: Pearson correlation between total precipitation vs. normalized quick flow
 %   (equivalent to event runoff coefficient = (quickflow volume / total P))
 %   Related to stormflow processes which are sensitive to rainfall volume,
 %   for example, SSF2, SOF, SSF1, and GWF. Called "SE_correlation" in Bolotin and McMillan (2025).
 %
-%   R_Pint_RC: Pearson correlation beween maximum precipitation intensity vs. normalized quick flow
-%   Related to Stormflow processes which are sensitive to rainfall
+%   R_Pint_RC: Pearson correlation between maximum precipitation intensity (mm/hr) and normalized quick flow
+%   Related to stormflow processes that are sensitive to rainfall
 %   intensity, for example, HOF. Called "IE_correlation" in Bolotin and McMillan (2025).
+%   Since maximum precipitation intensity is sensitive to timesteps,
+%   hourly fraction data is used to calculate the maximum precipitation
+%   intensity (mm/hr) of the day.
 %
 %   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
 %       (error in signature calculation)
@@ -98,7 +73,7 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %   [IE_effect, SE_effect] = sig_EventGraphThresholds(Q,t,P);
 %   [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %   SE_thresh_signif, SE_thresh, SE_slope, Storage_thresh, ...
-%   Storage_thresh_signif, min_Qf_perc] = ...
+%   Storage_thresh_signif, min_Qf_perc, R_Pvol_RC, R_Pint_RC, ~,~,~] = ...
 %   sig_EventGraphThresholds(Q,t,P,'plot_results',true);
 %
 %   References
@@ -110,9 +85,6 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %   controls of runoff generation and lateral flows in mountain catchments.
 %   IAHS Publications-Series of Proceedings and Reports-Intern Assoc
 %   Hydrological Sciences, 248, pp.199-206.
-%   Bolotin, L. A., & McMillan, H. (2024). A hydrologic signature approach
-%   to analysing wildfire impacts on overland flow. Hydrological Processes,
-%   38(6). https://doi.org/10.1002/hyp.15215
 %   Estrany, J., Garcia, C. and Batalla, R.J., 2010. Hydrological response
 %   of a small mediterranean agricultural catchment. Journal of Hydrology,
 %   380(1-2), pp.180-190.
@@ -129,9 +101,9 @@ function [IE_effect, SE_effect, IE_thresh_signif, IE_thresh, ...
 %   Pfister, L., 2015. Towards more systematic perceptual model
 %   development: a case study using 3 Luxembourgish catchments.
 %   Hydrological Processes, 29(12), pp.2731-2750.
-%   Wu, S., Zhao, J., Wang, H., & Sivapalan, M. (2021).
-%   Regional patterns and physical controls of streamflow generation across
-%   the conterminous United States. Water Resources Research, 57(6),
+%   Wu, S., Zhao, J., Wang, H., & Sivapalan, M. (2021). 
+%   Regional patterns and physical controls of streamflow generation across 
+%   the conterminous United States. Water Resources Research, 57(6), 
 %   e2020WR028086. https://doi.org/10.1029/2020wr028086
 
 %   Copyright (C) 2020
@@ -166,8 +138,10 @@ addParameter(ip, 'min_intensity_day_during', 1, @isnumeric) % minimum timestep
 % intensity allowed during storm event without contributing to termination time
 addParameter(ip, 'max_recessiondays', 1, @isnumeric) % maximum number of days to allow recession after rain
 addParameter(ip, 'plot_results', false, @islogical) % whether to plot results (1 graph)
+% time series of max hourly rain as fraction of daily, have to be numeric and either a (n,1) or a (1,n) vector
+addRequired(ip, 'P_hrfrac', @(P_hrfrac) isnumeric(P_hrfrac) && (size(P_hrfrac,1)==1 || size(P_hrfrac,2)==1))
 
-parse(ip, Q, t, P, varargin{:})
+parse(ip, Q, t, P, P_hrfrac, varargin{:})
 
 min_termination = ip.Results.min_termination;
 min_duration = ip.Results.min_duration;
@@ -194,8 +168,6 @@ if error_flag == 2
     Storage_thresh = NaN;
     Storage_thresh_signif = NaN;
     min_Qf_perc = NaN;
-    R_Pvol_RC = NaN;
-    R_Pint_RC = NaN;
     return
 end
 timestep_factor = 1/days(timestep); % adjust for timestep
@@ -246,31 +218,32 @@ event_array = zeros(size(stormarray,1),9);
 for i = 1:size(stormarray,1)
     % total event precipitation [mm] (Estrany names this as X3 coefficient)
     event_array(i,1) = sum(P(stormarray(i,1):stormarray(i,3)),'omitnan');
-
+    
     % event average precipitation intensity [mm/timestep] (Estrany X4)
     event_array(i,2) = mean(P(stormarray(i,1):stormarray(i,3)),'omitnan');
-
+    
     % event maximum precipitation intensity [mm/timestep] (Estrany X5; but they used 5 min data)
-    event_array(i,3) = max(P(stormarray(i,1):stormarray(i,3)));
-
+    % *** Adapted to get max hourly precipitation ***
+    event_array(i,3) = max(P(stormarray(i,1):stormarray(i,3)).*(P_hrfrac(stormarray(i,1):stormarray(i,3))));
+    
     % antecedent precipitation 3 days before [mm] (Estrany X1)
     time_antecedent = max(stormarray(i,1) - 3*24/timestep,1);
     event_array(i,4) = sum(P(time_antecedent:stormarray(i,1)),'omitnan');
-
+    
     % antecedent precipitation 7 days before [mm] (Estrany X2)
     time_antecedent = max(stormarray(i,1) - 7*24/timestep,1);
     event_array(i,5) = sum(P(time_antecedent:stormarray(i,1)),'omitnan');
-
+    
     % total event flow volume [mm]
     event_array(i,6) = sum(Q(stormarray(i,1):stormarray(i,3)),'omitnan');
-
+    
     % total event quickflow volume [mm]
     event_array(i,7) = sum(Q(stormarray(i,1):stormarray(i,3)),'omitnan')-...
         sum(B(stormarray(i,1):stormarray(i,3)),'omitnan');
-
+    
     % maximum event runoff [mm/timestep]
     event_array(i,8) = max(Q(stormarray(i,1):stormarray(i,3)));
-
+    
     % antecedent precipitation index (API) using Mosley (1979) method
     % (sum Pi/i for 30 days)
     % get total antecedent time
@@ -391,7 +364,7 @@ IE_thresh = thresh_mi_qf;
 Storage_thresh_signif = p_value_st_qf;
 Storage_thresh = thresh_st_qf;
 
-%% Wu et al. (2021) correlations for SE and IE
+%% Add Wu et al. correlations for SE and IE
 
 % Event Runoff coefficients = quickflow volume / total P
 rcq = event_array(:,7)./event_array(:,1);
@@ -404,20 +377,18 @@ end_ratio = Q(stormarray(:,3))./event_array(:,8);
 large_events = and(start_ratio < bfi, end_ratio < bfi);
 
 if sum(large_events)>2
-    %Spearman rank Corr of total P (event_array(:,1)) and maximum intensity
-    %(event_array(:,3)) with runoff coefficient per storm event
+%Spearman rank Corr of total P (event_array(:,1)) and maximum intensity (event_array(:,3)) with event runoff coefficients
     [R_Pvol_RC,~] = corr(event_array(large_events,1), rcq(large_events), 'Type', 'Spearman');
     [R_Pint_RC,~] = corr(event_array(large_events,3), rcq(large_events), 'Type', 'Spearman');
 else
-    R_Pvol_RC = NaN;
-    R_Pint_RC = NaN;
+   R_Pvol_RC = NaN;
+   R_Pint_RC = NaN;
 end
-
 %% optional plotting
 if plot_results
-
+    
     % plot flow, baseflow and events
-    fig_events = figure('Position',[100 100 700*2 250*2]);
+    fig_events = figure('Position',[300 300 700*2 250*2]);
     title(['Flow, Baseflow and Event Separation'])
     dates_dt = t;%datetime(dates,'ConvertFrom','datenum');
     P_max = max(P);
@@ -433,7 +404,7 @@ if plot_results
     p5=plot(dates_dt(:),P(:),'color',[250,159,18]/255,'linewidth',1);
     p1 = plot(t,Q,'k-','linewidth',1);
     p2 = plot(t,B,'k--','linewidth',1);
-
+    
     xlabel('Time')
     ylabel('Flow [mm]')
     legend([p1, p2, p3, p4, p5],{'Flow','Baseflow','Events','Recessions','Rainfall'},'location','best')
@@ -452,7 +423,7 @@ if plot_results
     xlabel('Event precipitation [mm]')
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
-
+    
     % maximum intensity against quickflow, with threshold
     subplot(1,3,2)
     title(['Quickflow vs intensity, p = ',num2str(round(p_value_mi_qf,6))])
@@ -466,7 +437,7 @@ if plot_results
     xlabel('Event maximum intensity [mm/timestep]')
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
-
+    
     % API + total precipitation against quickflow, with threshold
     subplot(1,3,3)
     title(['Quickflow vs API + P, p = ',num2str(round(p_value_st_qf,6))])
@@ -480,7 +451,7 @@ if plot_results
     ylabel('Event quickflow volume [mm]')
     legend([p1, p2, p3],{'Data','No threshold','With threshold'},'location','best')
     fig_handles.EventGraphThresholds = fig;
-
+    
     % Wrede et al. (2015) say "high intensity storms that don't produce
     % flow imply no IE processes". We plot max intensity against quickflow
     % on a seasonal basis for the user to evaluate this.
@@ -502,7 +473,7 @@ if plot_results
     legend('DJF','MAM','JJA','SON','location','best')
     title('Quickflow vs intensity per season') % Wrede 2015
     fig_handles.EventGraphThresholdsSeasons = fig2;
-
+    
 
     % plot Spearman rank correlation of total P and max intensity against
     fig3 = figure('Position',[100 100 700 300]);

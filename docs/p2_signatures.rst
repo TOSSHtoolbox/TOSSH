@@ -118,7 +118,8 @@ Note that these signatures are all calculated with the same function.
 
 Wu et al., (2021) overland flow set
 """""""""""""""""""""""""""""""""
-A function `sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ contains 2 overland flow 
+A function `sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ 
+and `sig_EventGraphThresholds_hourlyfrac.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds_hourlyfrac.html>`_ contains 2 overland flow 
 signatures from Wu et al., (2021) [8]_. The implementation in this toolbox is the adapted and coded version by Bolotin and McMillan (2025) [9]_. 
 
 .. csv-table:: Wu et al., (2021) overland flow set
