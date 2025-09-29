@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveFig</title>
+  <meta name="keywords" content="saveFig">
+  <meta name="description" content="saveFig saves figure as PDF.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../../index.html">example</a> &gt; <a href="#">functions</a> &gt; <a href="index.html">plotting</a> &gt; saveFig.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\functions\plotting&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>saveFig
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>saveFig saves figure as PDF.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [] = saveFig(fig,figure_name,figure_path,figure_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">saveFig saves figure as PDF.
+
+   INPUT
+   fig: figure
+   figure_name: name of figure
+   figure_path: path to folder where figure should be saved
+   figure_type: figure type, e.g. -dpdf or -dmeta
+   OPTIONAL
+
+   OUTPUT
+   saved figure
+
+   ---
+
+   Sebastian Gnann, sebastian.gnann@bristol.ac.uk (2020)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="plotMapUK.html" class="code" title="function [] = plotMapUK(lat,lon,z,varargin)">plotMapUK</a>	plotMapUK Plots UK map with dots coloured according to an attribute.</li><li><a href="plotMapUS.html" class="code" title="function [] = plotMapUS(lat,lon,z,varargin)">plotMapUS</a>	plotMapUS Plots US map with dots coloured according to an attribute.</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [] = saveFig(fig,figure_name,figure_path,figure_type)</a>
+0002 <span class="comment">%saveFig saves figure as PDF.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INPUT</span>
+0005 <span class="comment">%   fig: figure</span>
+0006 <span class="comment">%   figure_name: name of figure</span>
+0007 <span class="comment">%   figure_path: path to folder where figure should be saved</span>
+0008 <span class="comment">%   figure_type: figure type, e.g. -dpdf or -dmeta</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   OUTPUT</span>
+0012 <span class="comment">%   saved figure</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   ---</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Sebastian Gnann, sebastian.gnann@bristol.ac.uk (2020)</span>
+0017 
+0018 <span class="comment">% check input parameters</span>
+0019 <span class="keyword">if</span> nargin &lt; 3
+0020     error(<span class="string">'Not enough input arguments.'</span>)
+0021 <span class="keyword">elseif</span> nargin &lt; 4
+0022     figure_type = <span class="string">'-dpdf'</span>;
+0023 <span class="keyword">end</span>
+0024 
+0025 set(fig,<span class="string">'Units'</span>,<span class="string">'Inches'</span>);
+0026 position = get(fig,<span class="string">'Position'</span>);
+0027 set(fig,<span class="string">'PaperPositionMode'</span>,<span class="string">'Auto'</span>,<span class="string">'PaperUnits'</span>,<span class="string">'Inches'</span>,<span class="keyword">...</span>
+0028     <span class="string">'PaperSize'</span>,[position(3),position(4)]);
+0029 figure_name = strcat(figure_name);
+0030 path = strcat(figure_path,<span class="string">'\'</span>,figure_name);
+0031 print(fig,path,figure_type,<span class="string">'-r500'</span>); 
+0032 
+0033 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:15 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

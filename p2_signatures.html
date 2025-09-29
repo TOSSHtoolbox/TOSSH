@@ -1,0 +1,769 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signatures &mdash; TOSSH 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3804885b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=292eb321"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="p3_examples.html" />
+    <link rel="prev" title="Overview" href="p1_overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/TOSSH_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="p1_overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Signatures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-signature-sets">List of signature sets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-set">Basic set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#benchmark-sets">Benchmark sets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#addor-et-al-2018-set">Addor et al. (2018) set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sawicz-et-al-2011-set">Sawicz et al. (2011) set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#euser-et-al-2013-set">Euser et al. (2013) set</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#process-based-signature-sets">Process-based signature sets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcmillan-2020-groundwater-set">McMillan (2020) groundwater set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcmillan-2020-overland-flow-set">McMillan (2020) overland flow set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wu-et-al-2021-overland-flow-set">Wu et al., (2021) overland flow set</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tossh-all-remaining-signatures">TOSSH: all remaining signatures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="p3_examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p4_usage_notes.html">Usage Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p5_contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TOSSH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Signatures</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/p2_signatures.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="signatures">
+<span id="p2-signatures"></span><h1>Signatures<a class="headerlink" href="#signatures" title="Link to this heading"></a></h1>
+<p>Below we provide a list of signatures with a short description organised according to the signature sets.
+A more detailed description of each signature can be found in the Matlab functions which can be opened by clicking on the function name.
+At the end of the page we also provide a list with all remaining signatures contained in TOSSH which are not (yet) part of any set.</p>
+<p><a class="reference external" href="./_static/matlab/TOSSH_code/index.html">Click here to browse through all Matlab functions contained in TOSSH.</a></p>
+<section id="list-of-signature-sets">
+<h2>List of signature sets<a class="headerlink" href="#list-of-signature-sets" title="Link to this heading"></a></h2>
+<section id="basic-set">
+<h3>Basic set<a class="headerlink" href="#basic-set" title="Link to this heading"></a></h3>
+<p>The basic set of signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_BasicSet.html">calc_BasicSet.m</a>)
+is designed to cover the five components of a natural streamflow regime
+as defined by Richter et al. (1996) <a class="footnote-reference brackets" href="#id55" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> and Poff et al. (1997) <a class="footnote-reference brackets" href="#id56" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>:
+magnitude, frequency, duration, timing, and rate of change.
+As Poff et al. (1997) <a class="footnote-reference brackets" href="#id56" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> state, these components “can be used to characterize the entire range of flows
+and specific hydrologic phenomena, such as floods or low flows, that are critical to the integrity of river ecosystems”.</p>
+<table class="docutils align-default" id="id64">
+<caption><span class="caption-text">Basic set</span><a class="headerlink" href="#id64" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Magnitude</strong></p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Q_mean</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean.html">sig_Q_mean.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>Mean streamflow</p></td>
+</tr>
+<tr class="row-even"><td><p>Q5</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html">sig_x_percentile.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>5-th streamflow percentile</p></td>
+</tr>
+<tr class="row-odd"><td><p>Q95</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html">sig_x_percentile.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>95-th streamflow percentile</p></td>
+</tr>
+<tr class="row-even"><td><p>Q_mean_monthly <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean_monthly.html">sig_Q_mean_monthly.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>Mean monthly streamflow</p></td>
+</tr>
+<tr class="row-odd"><td><p>Q_7_day_min</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_min.html">sig_Q_n_day_min.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>7-day minimum streamflow</p></td>
+</tr>
+<tr class="row-even"><td><p>BFI</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html">sig_BFI.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Baseflow index</p></td>
+</tr>
+<tr class="row-odd"><td><p>CoV</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_CoV.html">sig_Q_CoV.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Coefficient of variation</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Frequency</strong></p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>high_Q_frequency</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>High flow frequency</p></td>
+</tr>
+<tr class="row-even"><td><p>low_Q_frequency</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Low flow frequency</p></td>
+</tr>
+<tr class="row-odd"><td><p>zero_Q_frequency</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Zero flow frequency</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Duration</strong></p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>high_Q_duration</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html">sig_x_Q_duration.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>High flow duration</p></td>
+</tr>
+<tr class="row-even"><td><p>low_Q_duration</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html">sig_x_Q_duration.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>Low flow duration</p></td>
+</tr>
+<tr class="row-odd"><td><p>zero_Q_duration</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html">sig_x_Q_duration.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>Zero flow duration</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Timing</strong></p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>HFD_mean</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFD_mean.html">sig_HFD_mean.m</a></p></td>
+<td><p>day of year</p></td>
+<td><p>Half flow date</p></td>
+</tr>
+<tr class="row-even"><td><p>HFI_mean</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFI_mean.html">sig_HFI_mean.m</a></p></td>
+<td><p>days</p></td>
+<td><p>Half flow interval</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Rate of change</strong></p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>AC1</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html">sig_Autocorrelation.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Lag-1 autocorrelation</p></td>
+</tr>
+<tr class="row-odd"><td><p>FDC_slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html">sig_FDC_slope.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slope of the flow duration curve</p></td>
+</tr>
+<tr class="row-even"><td><p>BaseflowRecessionK</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html">sig_BaseflowRecessionK.m</a></p></td>
+<td><p>1/d</p></td>
+<td><p>Exponential recession constant</p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>a</sup> Note that this signature function returns a value for each month.</p>
+</section>
+<section id="benchmark-sets">
+<h3>Benchmark sets<a class="headerlink" href="#benchmark-sets" title="Link to this heading"></a></h3>
+<section id="addor-et-al-2018-set">
+<h4>Addor et al. (2018) set<a class="headerlink" href="#addor-et-al-2018-set" title="Link to this heading"></a></h4>
+<p>Addor et al. (2018) <a class="footnote-reference brackets" href="#id57" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> use 15 signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Addor.html">calc_Addor.m</a>)
+that “characterize different parts of the hydrograph,
+and […] are sensitive to processes occurring over different time scales”.
+The signatures are selected from those commonly used in the literature,
+and are used to explore the strength of relationships between signatures and catchment attributes.</p>
+<table class="docutils align-default" id="id65">
+<caption><span class="caption-text">Addor et al. (2018)</span><a class="headerlink" href="#id65" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Q_mean</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_mean.html">sig_Q_mean.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>Mean streamflow</p></td>
+</tr>
+<tr class="row-odd"><td><p>TotalRR</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html">sig_TotalRR.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Total runoff ratio</p></td>
+</tr>
+<tr class="row-even"><td><p>QP_elasticity</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_QP_elasticity.html">sig_QP_elasticity.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Streamflow-precipitation elasticity</p></td>
+</tr>
+<tr class="row-odd"><td><p>FDC_slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html">sig_FDC_slope.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slope of the flow duration curve</p></td>
+</tr>
+<tr class="row-even"><td><p>BFI</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html">sig_BFI.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Baseflow index</p></td>
+</tr>
+<tr class="row-odd"><td><p>HFD_mean</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_HFD_mean.html">sig_HFD_mean.m</a></p></td>
+<td><p>day of year</p></td>
+<td><p>Half flow date</p></td>
+</tr>
+<tr class="row-even"><td><p>Q5</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html">sig_x_percentile.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>5th streamflow percentile (low flows)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Q95</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_percentile.html">sig_x_percentile.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>95th streamflow percentile (high flows)</p></td>
+</tr>
+<tr class="row-even"><td><p>high_Q_freq</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>High flow frequency</p></td>
+</tr>
+<tr class="row-odd"><td><p>high_Q_dur</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html">sig_x_Q_duration.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>High flow duration</p></td>
+</tr>
+<tr class="row-even"><td><p>low_Q_freq</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Low flow frequency</p></td>
+</tr>
+<tr class="row-odd"><td><p>low_Q_dur</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_duration.html">sig_x_Q_duration.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>Low flow duration</p></td>
+</tr>
+<tr class="row-even"><td><p>zero_Q_freq</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_x_Q_frequency.html">sig_x_Q_frequency.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Zero flow frequency</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sawicz-et-al-2011-set">
+<h4>Sawicz et al. (2011) set<a class="headerlink" href="#sawicz-et-al-2011-set" title="Link to this heading"></a></h4>
+<p>Sawicz et al. (2011) <a class="footnote-reference brackets" href="#id58" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> use 6 signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Sawicz.html">calc_Sawicz.m</a>)
+drawn largely from Yadav et al. (2007) <a class="footnote-reference brackets" href="#id59" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>,
+that are chosen to be uncorrelated and to be linked to catchment function.
+The signatures are used to analyse hydrological similarity between catchments,
+and link the resulting clusters to climate and landscape attributes.</p>
+<table class="docutils align-default" id="id66">
+<caption><span class="caption-text">Sawicz et al. (2011)</span><a class="headerlink" href="#id66" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TotalRR</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html">sig_TotalRR.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Total runoff ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>FDC_slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC_slope.html">sig_FDC_slope.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slope of the flow duration curve</p></td>
+</tr>
+<tr class="row-even"><td><p>BFI</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html">sig_BFI.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Baseflow index</p></td>
+</tr>
+<tr class="row-odd"><td><p>QP_elasticity</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_QP_elasticity.html">sig_QP_elasticity.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Streamflow-precipitation elasticity</p></td>
+</tr>
+<tr class="row-even"><td><p>SnowDayRatio</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowDayRatio.html">sig_SnowDayRatio.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Snow day ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>RLD</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RisingLimbDensity.html">sig_RisingLimbDensity.m</a></p></td>
+<td><p>1/timestep</p></td>
+<td><p>Rising limb density</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="euser-et-al-2013-set">
+<h4>Euser et al. (2013) set<a class="headerlink" href="#euser-et-al-2013-set" title="Link to this heading"></a></h4>
+<p>Euser et al. (2013) <a class="footnote-reference brackets" href="#id60" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a> use 8 signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Euser.html">calc_Euser.m</a>)
+that represent different aspects of hydrological behaviour.
+The signatures are used to test the consistency of model performance,
+within the FARM model evaluation framework.
+Some signatures are the same but applied to different parts of the time series, e.g. the low flow period (May to September) or the high flow period (November to April).</p>
+<table class="docutils align-default" id="id67">
+<caption><span class="caption-text">Euser et al. (2011)</span><a class="headerlink" href="#id67" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AC1</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html">sig_Autocorrelation.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Lag-1 autocorrelation</p></td>
+</tr>
+<tr class="row-odd"><td><p>AC1_low</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html">sig_Autocorrelation.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Lag-1 autocorrelation for low flow period</p></td>
+</tr>
+<tr class="row-even"><td><p>RLD</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RisingLimbDensity.html">sig_RisingLimbDensity.m</a></p></td>
+<td><p>1/timestep</p></td>
+<td><p>Rising limb density</p></td>
+</tr>
+<tr class="row-odd"><td><p>PeakDistribution</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html">sig_PeakDistribution.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slope of distribution of peaks</p></td>
+</tr>
+<tr class="row-even"><td><p>PeakDistribution_low</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html">sig_PeakDistribution.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slope of distribution of peaks for low flow period</p></td>
+</tr>
+<tr class="row-odd"><td><p>FDC <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html">sig_FDC.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Flow duration curve</p></td>
+</tr>
+<tr class="row-even"><td><p>FDC_low&lt;sup&gt;a&lt;/sup&gt;</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html">sig_FDC.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Flow duration curve for low flow period</p></td>
+</tr>
+<tr class="row-odd"><td><p>FDC_high&lt;sup&gt;a&lt;/sup&gt;</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html">sig_FDC.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Flow duration curve for high flow period</p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>a</sup> Note that this signature function returns the whole flow duration curve.</p>
+</section>
+</section>
+<section id="process-based-signature-sets">
+<h3>Process-based signature sets<a class="headerlink" href="#process-based-signature-sets" title="Link to this heading"></a></h3>
+<section id="mcmillan-2020-groundwater-set">
+<h4>McMillan (2020) groundwater set<a class="headerlink" href="#mcmillan-2020-groundwater-set" title="Link to this heading"></a></h4>
+<p>Calculates 15 signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_Groundwater.html">calc_McMillan_Groundwater.m</a>)
+from McMillan (2020) <a class="footnote-reference brackets" href="#id61" id="id34" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>, related to groundwater
+storage, groundwater dynamics and baseflow. These signatures come from
+previous experimental studies that link catchment or hillslope
+processes to streamflow response dynamics. Some signatures are
+implemented direct from the original papers, others are interpreted
+from a qualitative description in the paper.</p>
+<table class="docutils align-default" id="id68">
+<caption><span class="caption-text">McMillan (2020) groundwater set</span><a class="headerlink" href="#id68" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TotalRR</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html">sig_TotalRR.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Total runoff ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>RR_Seasonality</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RR_Seasonality.html">sig_RR_Seasonality.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Runoff ratio seasonality</p></td>
+</tr>
+<tr class="row-even"><td><p>EventRR</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html">sig_EventRR.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Event runoff ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>StorageFraction <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html">sig_StorageFraction.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Ratio between active and total storage</p></td>
+</tr>
+<tr class="row-even"><td><p>Recession_a_Seasonality</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalVarRecessions.html">sig_SeasonalVarRecessions.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Seasonal variations in recession parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p>AverageStorage</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFromBaseflow.html">sig_StorageFromBaseflow.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Average storage from average baseflow and storage-discharge relationship</p></td>
+</tr>
+<tr class="row-even"><td><p>RecessionParameters <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html">sig_RecessionAnalysis.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Recession analysis parameters approximate storage-discharge relationship</p></td>
+</tr>
+<tr class="row-odd"><td><p>MRC_num_segments</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html">sig_MRC_SlopeChanges.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Number of different segments in master recession curve (MRC)</p></td>
+</tr>
+<tr class="row-even"><td><p>First_Recession_Slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html">sig_MRC_SlopeChanges.m</a></p></td>
+<td><p>mm/timestep <sup>2</sup></p></td>
+<td><p>Steep section of MRC = storage that is quickly depleted</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mid_Recession_Slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html">sig_MRC_SlopeChanges.m</a></p></td>
+<td><p>mm/timestep <sup>2</sup></p></td>
+<td><p>Mid section of MRC = water retention capacity of the catchment</p></td>
+</tr>
+<tr class="row-even"><td><p>Spearmans_rho</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionUniqueness.html">sig_RecessionUniqueness.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Non-uniqueness in the storage-discharge relationship</p></td>
+</tr>
+<tr class="row-odd"><td><p>EventRR_TotalRR_ratio <sup>b</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html">sig_EventRR.m</a>  / <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html">sig_TotalRR.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Ratio between event and total runoff ratio</p></td>
+</tr>
+<tr class="row-even"><td><p>VariabilityIndex</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_VariabilityIndex.html">sig_VariabilityIndex.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Variability index of flow</p></td>
+</tr>
+<tr class="row-odd"><td><p>BFI</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html">sig_BFI.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Baseflow index</p></td>
+</tr>
+<tr class="row-even"><td><p>BaseflowRecessionK</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html">sig_BaseflowRecessionK.m</a></p></td>
+<td><p>1/d</p></td>
+<td><p>Exponential recession constant</p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>a</sup> Note that these signature functions return multiple signatures.</p>
+<p><sup>b</sup> Note that this signature is a combination of two other signatures.</p>
+</section>
+<section id="mcmillan-2020-overland-flow-set">
+<h4>McMillan (2020) overland flow set<a class="headerlink" href="#mcmillan-2020-overland-flow-set" title="Link to this heading"></a></h4>
+<p>Calculates 10 overland flow (infiltration excess and saturation excess)
+signatures (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_OverlandFlow.html">calc_McMillan_OverlandFlow.m</a>)
+from McMillan (2020) <a class="footnote-reference brackets" href="#id61" id="id42" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>. These signatures come from previous
+experimental studies that link catchment or hillslope processes to
+streamflow response dynamics. Some signatures are implemented direct
+from the original papers, others are interpreted from a qualitative
+description in the paper.
+Note that these signatures are all calculated with the same function.</p>
+<table class="docutils align-default" id="id69">
+<caption><span class="caption-text">McMillan (2020) overland flow set</span><a class="headerlink" href="#id69" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>IE_effect</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Infiltration excess importance</p></td>
+</tr>
+<tr class="row-odd"><td><p>SE_effect</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Saturation excess importance</p></td>
+</tr>
+<tr class="row-even"><td><p>IE_thresh_signif</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Infiltration excess threshold significance (in a plot of quickflow volume vs. maximum intensity)</p></td>
+</tr>
+<tr class="row-odd"><td><p>IE_thresh</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>Infiltration excess threshold location (in a plot of quickflow volume vs. maximum intensity)</p></td>
+</tr>
+<tr class="row-even"><td><p>SE_thresh_signif</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Saturation excess threshold significance (in a plot of quickflow volume vs. total precipitation)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SE_thresh</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>mm</p></td>
+<td><p>Saturation excess threshold location (in a plot of quickflow volume vs. total precipitation)</p></td>
+</tr>
+<tr class="row-even"><td><p>SE_slope</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>mm/mm</p></td>
+<td><p>Saturation excess threshold above-threshold slope (in a plot of quickflow volume vs. total precipitation)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Storage_thresh_signif</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Storage/saturation excess threshold significance (in a plot of quickflow volume vs. antecedent precipitation index + total precipitation)</p></td>
+</tr>
+<tr class="row-even"><td><p>Storage_thresh</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>mm</p></td>
+<td><p>Storage/saturation excess threshold location (in a plot of quickflow volume vs. antecedent precipitation index + total precipitation)</p></td>
+</tr>
+<tr class="row-odd"><td><p>min_Qf_perc</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a></p></td>
+<td><p>%</p></td>
+<td><p>Minimum quickflow as a percentage of precipitation</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="wu-et-al-2021-overland-flow-set">
+<h4>Wu et al., (2021) overland flow set<a class="headerlink" href="#wu-et-al-2021-overland-flow-set" title="Link to this heading"></a></h4>
+<p>A function <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a>
+and sig_EventGraphThresholds_hourlyfrac.m contains 2 overland flow
+signatures from Wu et al., (2021) <a class="footnote-reference brackets" href="#id62" id="id53" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>. The implementation in this toolbox is the adapted and coded version by Bolotin and McMillan (2025) <a class="footnote-reference brackets" href="#id63" id="id54" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>.</p>
+</section>
+</section>
+<section id="tossh-all-remaining-signatures">
+<h3>TOSSH: all remaining signatures<a class="headerlink" href="#tossh-all-remaining-signatures" title="Link to this heading"></a></h3>
+<p>This is a list of all remaining signatures currently contained in TOSSH.</p>
+<table class="docutils align-default" id="id70">
+<caption><span class="caption-text">All remaining signatures</span><a class="headerlink" href="#id70" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signature</p></th>
+<th class="head"><p>Function (click for code)</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BaseflowMagnitude</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowMagnitude.html">sig_BaseflowMagnitude.m</a></p></td>
+<td><p>mm</p></td>
+<td><p>Difference between maximum and minimum of annual baseflow regime</p></td>
+</tr>
+<tr class="row-odd"><td><p>ResponseTime</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_ResponseTime.html">sig_ResponseTime.m</a></p></td>
+<td><p>timestep</p></td>
+<td><p>Catchment response time</p></td>
+</tr>
+<tr class="row-even"><td><p>FlashinessIndex</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FlashinessIndex.html">sig_FlashinessIndex.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Richards-Baker flashiness idex</p></td>
+</tr>
+<tr class="row-odd"><td><p>PQ_Curve <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PQ_Curve.html">sig_PQ_Curve.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Slopes and breakpoints in cumulative P-Q regime curve</p></td>
+</tr>
+<tr class="row-even"><td><p>Q_n_day_max</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_n_day_max.html">sig_Q_n_day_max.m</a></p></td>
+<td><p>mm/timestep</p></td>
+<td><p>n-day maximum streamflow</p></td>
+</tr>
+<tr class="row-odd"><td><p>Q_skew</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_skew.html">sig_Q_skew.m</a></p></td>
+<td><p>mm <sup>3</sup>/ timestep <sup>3</sup></p></td>
+<td><p>Skewness of streamflow</p></td>
+</tr>
+<tr class="row-even"><td><p>Q_var</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Q_var.html">sig_Q_var.m</a></p></td>
+<td><p>mm <sup>2</sup>/ timestep <sup>2</sup></p></td>
+<td><p>Variance of streamflow</p></td>
+</tr>
+<tr class="row-odd"><td><p>RecessionK_part</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionParts.html">sig_RecessionParts.m</a></p></td>
+<td><p>1/timestep</p></td>
+<td><p>Recession constant of early/late (exponential) recessions</p></td>
+</tr>
+<tr class="row-even"><td><p>SeasonalTranslation <sup>a</sup></p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalTranslation.html">sig_SeasonalTranslation.m</a></p></td>
+<td><p>–</p></td>
+<td><p>Amplitude ratio and phase shift between seasonal forcing and flow cycles</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnowStorage</p></td>
+<td><p><a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SnowStorage.html">sig_SnowStorage.m</a></p></td>
+<td><p>mm</p></td>
+<td><p>Snow storage derived from cumulative P-Q regime curve</p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>a</sup> Note that these signature functions return multiple signatures.</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id55" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Richter, B.D., Baumgartner, J.V., Powell, J. and Braun, D.P., 1996. A method for assessing hydrologic alteration within ecosystems. Conservation biology, 10(4), pp.1163-1174.</p>
+</aside>
+<aside class="footnote brackets" id="id56" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Poff, N.L., Allan, J.D., Bain, M.B., Karr, J.R., Prestegaard, K.L., Richter, B.D., Sparks, R.E. and Stromberg, J.C., 1997. The natural flow regime. BioScience, 47(11), pp.769-784.</p>
+</aside>
+<aside class="footnote brackets" id="id57" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">3</a><span class="fn-bracket">]</span></span>
+<p>Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and Clark, M.P., 2018. A ranking of hydrological signatures based on their predictability in space. Water Resources Research, 54(11), pp.8792-8812.</p>
+</aside>
+<aside class="footnote brackets" id="id58" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">4</a><span class="fn-bracket">]</span></span>
+<p>Sawicz, K., Wagener, T., Sivapalan, M., Troch, P.A. and Carrillo, G., 2011. Catchment classification: empirical analysis of hydrologic similarity based on catchment function in the eastern USA. Hydrology and Earth System Sciences, 15(9), pp.2895-2911.</p>
+</aside>
+<aside class="footnote brackets" id="id59" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">5</a><span class="fn-bracket">]</span></span>
+<p>Yadav, M., Wagener, T. and Gupta, H., 2007. Regionalization of constraints on expected catchment response behavior for improved predictions in ungauged basins. Advances in Water Resources, 30(8), pp.1756-1774.</p>
+</aside>
+<aside class="footnote brackets" id="id60" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id27">6</a><span class="fn-bracket">]</span></span>
+<p>Euser, T., Winsemius, H.C., Hrachowitz, M., Fenicia, F., Uhlenbrook, S. and Savenije, H.H.G., 2013. A framework to assess the realism of model structures using hydrological signatures. Hydrology and Earth System Sciences, 17(5), pp.1893-1912.</p>
+</aside>
+<aside class="footnote brackets" id="id61" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id34">1</a>,<a role="doc-backlink" href="#id42">2</a>)</span>
+<p>McMillan, H.K., 2020. Linking hydrologic signatures to hydrologic processes: A review. Hydrological Processes, 34(6), pp.1393-1409.</p>
+</aside>
+<aside class="footnote brackets" id="id62" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id53">8</a><span class="fn-bracket">]</span></span>
+<p>Wu, S., Zhao, J., Wang, H., &amp; Sivapalan, M. (2021). Regional patterns and physical controls of streamflow generation across the conterminous United States. Water Resources Research, 57(6), e2020WR028086.</p>
+</aside>
+<aside class="footnote brackets" id="id63" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id54">9</a><span class="fn-bracket">]</span></span>
+<p>Bolotin, L. A., &amp; McMillan, H. (2024). A hydrologic signature approach to analysing wildfire impacts on overland flow. Hydrological Processes, 38(6).</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="p1_overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p3_examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Sebastian Gnann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

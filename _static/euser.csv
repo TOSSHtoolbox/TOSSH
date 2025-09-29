@@ -1,0 +1,9 @@
+Signature;Function (click for code);Unit;Description
+AC1;`sig_Autocorrelation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html>`_ ;--;Lag-1 autocorrelation
+AC1_low;`sig_Autocorrelation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_Autocorrelation.html>`_ ;--;Lag-1 autocorrelation for low flow period
+RLD;`sig_RisingLimbDensity.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RisingLimbDensity.html>`_ ;1/timestep;Rising limb density
+PeakDistribution;`sig_PeakDistribution.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html>`_ ;--;Slope of distribution of peaks
+PeakDistribution_low;`sig_PeakDistribution.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_PeakDistribution.html>`_ ;--;Slope of distribution of peaks for low flow period
+FDC :sup:`a`;`sig_FDC.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html>`_ ;--;Flow duration curve
+FDC_low<sup>a</sup>;`sig_FDC.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html>`_ ;--;Flow duration curve for low flow period
+FDC_high<sup>a</sup>;`sig_FDC.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_FDC.html>`_ ;--;Flow duration curve for high flow period

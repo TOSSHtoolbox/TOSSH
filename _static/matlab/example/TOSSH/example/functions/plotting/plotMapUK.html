@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotMapUK</title>
+  <meta name="keywords" content="plotMapUK">
+  <meta name="description" content="plotMapUK Plots UK map with dots coloured according to an attribute.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="../../index.html">example</a> &gt; <a href="#">functions</a> &gt; <a href="index.html">plotting</a> &gt; plotMapUK.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example\functions\plotting&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>plotMapUK
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>plotMapUK Plots UK map with dots coloured according to an attribute.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [] = plotMapUK(lat,lon,z,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">plotMapUK Plots UK map with dots coloured according to an attribute.
+   Options:
+   - various plotting options, e.g. axes limits
+   - save plot as PDF
+
+   INPUT
+   lat: latitude
+   lon: longitude
+   z: attribute to be coloured in, e.g. BFI
+   OPTIONAL
+   attribute_name: name of attribute
+   ID: catchment ID
+     colour_scheme: name of colour scheme
+   flip_colour_scheme: flip colour scheme?
+   c_limits: limits of colour axis, e.g. [0 1]
+   c_lower_limit_open: is the lower limit open?
+   c_upper_limit_open: is the upper limit open?
+   nr_colours: nr of colours used for colourscale
+   figure_title: title of plot, e.g. '(a)'
+   figure_name: name for saving, e.g. UK_BFI
+   save_figure: save plot true/false
+   figure_path: path to folder where figure should be saved
+   figure_type: figure type, e.g. -dpdf or -dmeta
+
+   OUTPUT
+   plot and saved figure
+
+   ---
+
+   Sebastian Gnann, sebastian.gnann@bristol.ac.uk (2020)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="myupdatefcn.html" class="code" title="function txt = myupdatefcn(~,event_obj,ID,index)">myupdatefcn</a>	Customizes text of data tips</li><li><a href="saveFig.html" class="code" title="function [] = saveFig(fig,figure_name,figure_path,figure_type)">saveFig</a>	saveFig saves figure as PDF.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [] = plotMapUK(lat,lon,z,varargin)</a>
+0002 <span class="comment">%plotMapUK Plots UK map with dots coloured according to an attribute.</span>
+0003 <span class="comment">%   Options:</span>
+0004 <span class="comment">%   - various plotting options, e.g. axes limits</span>
+0005 <span class="comment">%   - save plot as PDF</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   lat: latitude</span>
+0009 <span class="comment">%   lon: longitude</span>
+0010 <span class="comment">%   z: attribute to be coloured in, e.g. BFI</span>
+0011 <span class="comment">%   OPTIONAL</span>
+0012 <span class="comment">%   attribute_name: name of attribute</span>
+0013 <span class="comment">%   ID: catchment ID</span>
+0014 <span class="comment">%     colour_scheme: name of colour scheme</span>
+0015 <span class="comment">%   flip_colour_scheme: flip colour scheme?</span>
+0016 <span class="comment">%   c_limits: limits of colour axis, e.g. [0 1]</span>
+0017 <span class="comment">%   c_lower_limit_open: is the lower limit open?</span>
+0018 <span class="comment">%   c_upper_limit_open: is the upper limit open?</span>
+0019 <span class="comment">%   nr_colours: nr of colours used for colourscale</span>
+0020 <span class="comment">%   figure_title: title of plot, e.g. '(a)'</span>
+0021 <span class="comment">%   figure_name: name for saving, e.g. UK_BFI</span>
+0022 <span class="comment">%   save_figure: save plot true/false</span>
+0023 <span class="comment">%   figure_path: path to folder where figure should be saved</span>
+0024 <span class="comment">%   figure_type: figure type, e.g. -dpdf or -dmeta</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   OUTPUT</span>
+0027 <span class="comment">%   plot and saved figure</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   ---</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%   Sebastian Gnann, sebastian.gnann@bristol.ac.uk (2020)</span>
+0032 
+0033 <span class="keyword">if</span> nargin &lt; 3
+0034     error(<span class="string">'Not enough input arguments.'</span>)
+0035 <span class="keyword">end</span>
+0036 
+0037 ip = inputParser;
+0038 
+0039 addRequired(ip, <span class="string">'latitude'</span>, <span class="keyword">...</span>
+0040     @(lat) isnumeric(lat) &amp;&amp; (size(lat,1)==1 || size(lat,2)==1))
+0041 addRequired(ip, <span class="string">'longitude'</span>, <span class="keyword">...</span>
+0042     @(lon) isnumeric(lon) &amp;&amp; (size(lon,1)==1 || size(lon,2)==1))
+0043 addRequired(ip, <span class="string">'attribute'</span>, <span class="keyword">...</span>
+0044     @(z) isnumeric(z) || islogical(z))
+0045 
+0046 addParameter(ip, <span class="string">'attribute_name'</span>, @ischar)
+0047 addParameter(ip, <span class="string">'ID'</span>, NaN(size(z)), @isnumeric)
+0048 addParameter(ip, <span class="string">'colour_scheme'</span>, <span class="string">'parula'</span>, @ischar)
+0049 addParameter(ip, <span class="string">'flip_colour_scheme'</span>, false, @islogical)
+0050 addParameter(ip, <span class="string">'c_limits'</span>, [min(z) max(z)], @(x) isnumeric(x) &amp;&amp; length(x)==2)
+0051 addParameter(ip, <span class="string">'c_lower_limit_open'</span>, false, @islogical)
+0052 addParameter(ip, <span class="string">'c_upper_limit_open'</span>, false, @islogical)
+0053 addParameter(ip, <span class="string">'nr_colours'</span>, 10, @isnumeric)
+0054 addParameter(ip, <span class="string">'figure_title'</span>, <span class="string">''</span>, @ischar)
+0055 addParameter(ip, <span class="string">'figure_name'</span>, <span class="string">'no_name'</span>, @ischar)
+0056 addParameter(ip, <span class="string">'save_figure'</span>, false, @islogical)
+0057 addParameter(ip, <span class="string">'figure_path'</span>, <span class="string">''</span>, @ischar)
+0058 addParameter(ip, <span class="string">'figure_type'</span>, <span class="string">'-dpdf'</span>, @ischar)
+0059 
+0060 parse(ip, lat, lon, z, varargin{:})
+0061 
+0062 attribute_name = ip.Results.attribute_name;
+0063 ID = ip.Results.ID;
+0064 colour_scheme = ip.Results.colour_scheme;
+0065 flip_colour_scheme = ip.Results.flip_colour_scheme;
+0066 c_limits = ip.Results.c_limits;
+0067 c_lower_limit_open = ip.Results.c_lower_limit_open;
+0068 c_upper_limit_open = ip.Results.c_upper_limit_open;
+0069 nr_colours = ip.Results.nr_colours;
+0070 figure_title = ip.Results.figure_title;
+0071 figure_name = ip.Results.figure_name;
+0072 save_figure = ip.Results.save_figure;
+0073 figure_path = ip.Results.figure_path;
+0074 figure_type = ip.Results.figure_type;
+0075 
+0076 <span class="comment">%% plotting</span>
+0077 index = [1:length(z)]';
+0078 
+0079 fig = figure(<span class="string">'Name'</span>,figure_name,<span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="string">'pos'</span>,[100 100 350 500]);
+0080 ax = axesm(<span class="string">'MapProjection'</span>,<span class="string">'mercator'</span>,<span class="string">'MapLatLimit'</span>,[49 60],<span class="string">'MapLonLimit'</span>,[-9 3]);
+0081 states = shaperead(<span class="string">'great_britain_50m.shp'</span>, <span class="string">'UseGeoCoords'</span>, true);
+0082 geoshow(ax, states, <span class="keyword">...</span>
+0083     <span class="string">'DisplayType'</span>,<span class="string">'polygon'</span>,<span class="string">'DefaultFaceColor'</span>,<span class="string">'white'</span>,<span class="string">'DefaultEdgeColor'</span>,<span class="string">'black'</span>) <span class="comment">%geoshow</span>
+0084 hold on
+0085 <span class="comment">% grid on</span>
+0086 
+0087 <span class="comment">% create colormap</span>
+0088 <span class="comment">% if flip_colour_scheme</span>
+0089 <span class="comment">%     colour_mat = flip(brewermap(nr_colours,colour_scheme));</span>
+0090 <span class="comment">% else</span>
+0091 <span class="comment">%     colour_mat = brewermap(nr_colours,colour_scheme);</span>
+0092 <span class="comment">% end</span>
+0093 
+0094 <span class="comment">% plot</span>
+0095 <span class="comment">% h = scatterm(lat(isnan(z)),lon(isnan(z)),'x k','linewidth',1.0);</span>
+0096 h = scatterm(lat(isnan(z)),lon(isnan(z)),20,<span class="string">'linewidth'</span>,1.0,<span class="string">'markeredgecolor'</span>,[.5 .5 .5]);
+0097 <span class="comment">% h.Children.MarkerFaceAlpha = .5;</span>
+0098 scatterm(lat,lon,25,z,<span class="string">'filled'</span>)
+0099 <span class="comment">% xlabel('Latitude [km]'); ylabel('Longitude [km]')</span>
+0100 set(gca,<span class="string">'Visible'</span>,<span class="string">'off'</span>)
+0101 title(figure_title)
+0102 title(figure_title,<span class="string">'Visible'</span>,<span class="string">'on'</span>)
+0103 axis equal
+0104 <span class="comment">% colormap(colour_mat)</span>
+0105 colormap(colour_scheme);
+0106 <span class="keyword">if</span> flip_colour_scheme
+0107     cmap = colormap;
+0108     colormap(flipud(cmap));
+0109 <span class="keyword">end</span>
+0110 c = colorbar;
+0111 title(c,attribute_name)
+0112 x1=get(gca,<span class="string">'position'</span>);
+0113 x=[0.65 0.5 0.02 0.2];
+0114 set(c,<span class="string">'Position'</span>,x)
+0115 set(gca,<span class="string">'position'</span>,x1)
+0116 caxis(c_limits)
+0117 <span class="keyword">if</span> c_lower_limit_open
+0118     c.TickLabels{1} = [<span class="string">'&lt;'</span> c.TickLabels{1}];
+0119 <span class="keyword">end</span>
+0120 <span class="keyword">if</span> c_upper_limit_open
+0121     c.TickLabels{end} = [<span class="string">'&gt;'</span> c.TickLabels{end}];
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="comment">% update cursor</span>
+0125 dcm_obj = datacursormode(figure(fig));
+0126 set(dcm_obj,<span class="string">'UpdateFcn'</span>,{@<a href="myupdatefcn.html" class="code" title="function txt = myupdatefcn(~,event_obj,ID,index)">myupdatefcn</a>,ID,index})
+0127 
+0128 <span class="comment">%% save fig</span>
+0129 <span class="keyword">if</span> save_figure
+0130     fig_name = strcat(<span class="string">'map_UK'</span>,<span class="string">'_'</span>,figure_name);  
+0131     <a href="saveFig.html" class="code" title="function [] = saveFig(fig,figure_name,figure_path,figure_type)">saveFig</a>(fig,fig_name,figure_path,figure_type)
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="keyword">end</span>
+0135</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:15 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

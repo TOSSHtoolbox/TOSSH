@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_UKIH_Method</title>
+  <meta name="keywords" content="util_UKIH_Method">
+  <meta name="description" content="util_UKIH_Method estimates baseflow with UKIH method.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_UKIH_Method.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_UKIH_Method
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_UKIH_Method estimates baseflow with UKIH method.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [Q_b] = util_UKIH_Method(Q, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_UKIH_Method estimates baseflow with UKIH method.
+   Estimates baseflow UKIH &quot;smoothed minima&quot; method (UK Institute of
+   Hydrology, 1980).
+
+   INPUT
+   Q: [mm/timestep]
+   OPTIONAL
+   n_days: length of data blocks, default = 5 days
+   
+   OUTPUT
+   Q_b: baseflow [mm/timestep]
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   Q = data.Q; 
+   t = data.t; 
+   Q_b = util_UKIH_Method(Q);
+   Q_b90 = util_UKIH_Method(Q, 'n_days',  90);
+
+   References
+   UK Institute of Hydrology (Great Britain), 1980. Low Flow Studies
+   Reports. Institute of Hydrology.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [Q_b, t_ind] = UKIH_Method(Q, n_days)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Q_b] = util_UKIH_Method(Q, varargin)</a>
+0002 <span class="comment">%util_UKIH_Method estimates baseflow with UKIH method.</span>
+0003 <span class="comment">%   Estimates baseflow UKIH &quot;smoothed minima&quot; method (UK Institute of</span>
+0004 <span class="comment">%   Hydrology, 1980).</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   Q: [mm/timestep]</span>
+0008 <span class="comment">%   OPTIONAL</span>
+0009 <span class="comment">%   n_days: length of data blocks, default = 5 days</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   OUTPUT</span>
+0012 <span class="comment">%   Q_b: baseflow [mm/timestep]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   EXAMPLE</span>
+0015 <span class="comment">%   % load example data</span>
+0016 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0017 <span class="comment">%   Q = data.Q;</span>
+0018 <span class="comment">%   t = data.t;</span>
+0019 <span class="comment">%   Q_b = util_UKIH_Method(Q);</span>
+0020 <span class="comment">%   Q_b90 = util_UKIH_Method(Q, 'n_days',  90);</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   References</span>
+0023 <span class="comment">%   UK Institute of Hydrology (Great Britain), 1980. Low Flow Studies</span>
+0024 <span class="comment">%   Reports. Institute of Hydrology.</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Copyright (C) 2020</span>
+0027 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0028 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0029 
+0030 <span class="keyword">if</span> nargin &lt; 1
+0031     error(<span class="string">'Not enough input arguments.'</span>)
+0032 <span class="keyword">end</span>
+0033 
+0034 ip = inputParser;
+0035 ip.CaseSensitive = true; 
+0036 
+0037 <span class="comment">% required input arguments</span>
+0038 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0039 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0040 
+0041 <span class="comment">% optional input arguments</span>
+0042 addParameter(ip, <span class="string">'n_days'</span>, 5, @isnumeric)
+0043 
+0044 parse(ip, Q, varargin{:})
+0045 n_days = ip.Results.n_days;
+0046 
+0047 <span class="keyword">if</span> floor(n_days)~=n_days &amp;&amp; n_days&lt;1
+0048     error(<span class="string">'Filter window must be an integer larger than zero.'</span>)
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% Baseflow separation is problematic with NaN values. Therefore, we set NaN</span>
+0052 <span class="comment">% values to median, apply the filter, and then set baseflow to NaN where</span>
+0053 <span class="comment">% streamflow is NaN. If there are a lot of NaN values, we encourage the</span>
+0054 <span class="comment">% user to either interpolate these values or to calculate the signature for</span>
+0055 <span class="comment">% each block individually and then calculate a weighted average.</span>
+0056 Q_tmp = Q;
+0057 Q_tmp(isnan(Q)) = median(Q,<span class="string">'omitnan'</span>);
+0058 
+0059 <span class="comment">% calculate baseflow</span>
+0060 [Q_b, t_ind] = <a href="#_sub1" class="code" title="subfunction [Q_b, t_ind] = UKIH_Method(Q, n_days)">UKIH_Method</a>(Q_tmp, n_days); <span class="comment">% 5 is the default parameter</span>
+0061 
+0062 <span class="comment">% use minimum baseflow to fill in missing values at the beginning</span>
+0063 B_tmp = min(Q_tmp)*ones(size(Q_tmp));
+0064 B_tmp(t_ind) = Q_b;
+0065 Q_b = B_tmp;
+0066 
+0067 <span class="comment">% set baseflow to NaN where streamflow is NaN</span>
+0068 Q_b(isnan(Q)) = NaN;
+0069 
+0070 <span class="keyword">end</span>
+0071 
+0072 <a name="_sub1" href="#_subfunctions" class="code">function [Q_b, t_ind] = UKIH_Method(Q, n_days)</a>
+0073 <span class="comment">%UKIH_Method Helper function that runs the UKIH method.</span>
+0074 
+0075 n = length(Q);
+0076 Q_min5 = NaN(round(n/n_days),1); <span class="comment">% 5 day minima</span>
+0077 min_i = NaN(round(n/n_days),1); <span class="comment">% corresponding indices</span>
+0078 ind5 = 1; <span class="comment">% minima counter</span>
+0079 TP = 0; <span class="comment">% turning points</span>
+0080 t_TP = 0; <span class="comment">% corresponding time/index</span>
+0081 indTP = 1; <span class="comment">% TP counter</span>
+0082 
+0083 <span class="keyword">for</span> i = 1:n_days:floor(n/n_days)*n_days <span class="comment">% divide in non-overlapping n-day blocks</span>
+0084     [Q_min5(ind5), min_i(ind5)] = min(Q(i:i+(n_days-1))); <span class="comment">% find minimum</span>
+0085     <span class="keyword">if</span> ind5 &lt;= 2 <span class="comment">% need at least three minima</span>
+0086     <span class="keyword">elseif</span>      Q_min5(ind5-1)*0.9 &lt; Q_min5(ind5-2) <span class="keyword">...</span>
+0087             &amp;&amp;  Q_min5(ind5-1)*0.9 &lt; Q_min5(ind5) <span class="comment">% check if baseflow ordinate</span>
+0088         TP(indTP) = Q_min5(ind5-1);
+0089         t_TP(indTP) = i - n_days - 1 + min_i(ind5-1); <span class="comment">% get corresponding index</span>
+0090         indTP = indTP + 1;
+0091     <span class="keyword">end</span>
+0092     ind5 = ind5 + 1;
+0093 <span class="keyword">end</span>
+0094 
+0095 t_ind = [t_TP(1):t_TP(end)]';
+0096 <span class="keyword">if</span> t_ind == 0
+0097     t_ind = [1:length(Q)]';
+0098     Q_b = NaN(size(Q));
+0099 <span class="keyword">else</span>
+0100     Q_b = interp1q(t_TP',TP',t_ind); <span class="comment">% linear interpolation</span>
+0101     Qt = Q(t_ind);
+0102     Q_b(Q_b&gt;Qt) = Qt(Q_b&gt;Qt); <span class="comment">% constrain B, so that B is never larger than Q</span>
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="keyword">end</span>
+0106</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

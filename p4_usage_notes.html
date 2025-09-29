@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage Notes &mdash; TOSSH 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3804885b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=292eb321"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contact" href="p5_contact.html" />
+    <link rel="prev" title="Examples" href="p3_examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/TOSSH_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="p1_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p2_signatures.html">Signatures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p3_examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-signature-parameters">Understanding signature parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-parameters">Example parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-adjust-parameters-yourself">How to Adjust Parameters Yourself</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calling-tossh-from-python">Calling TOSSH from Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="p5_contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TOSSH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Usage Notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/p4_usage_notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage-notes">
+<span id="p4-usage-notes"></span><h1>Usage Notes<a class="headerlink" href="#usage-notes" title="Link to this heading"></a></h1>
+<section id="understanding-signature-parameters">
+<h2>Understanding signature parameters<a class="headerlink" href="#understanding-signature-parameters" title="Link to this heading"></a></h2>
+<section id="example-parameters">
+<h3>Example parameters<a class="headerlink" href="#example-parameters" title="Link to this heading"></a></h3>
+<p>Hydrologic signatures often need customized input parameters because rainfall patterns vary by region and time resolutions vary by dataset <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
+The following lists example parameter files to help you get started.
+These parameters have been manually tuned for selected signatures and U.S. gages at a <strong>daily timestep</strong>, using the CAMELS and HYSETS datasets in Caravan <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<ol class="arabic simple">
+<li><p>Overlandflow signatures</p></li>
+</ol>
+<ul class="simple">
+<li><p>Parameter file: <a class="reference external" href="https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_overlandflow.csv">params_overlandflow.csv</a></p></li>
+<li><p>Use these parameters for the event separation algorithm <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html">util_EventSeparation.m</a></p></li>
+<li><p>Parameters included: <code class="docutils literal notranslate"><span class="pre">min_termination</span></code>, <code class="docutils literal notranslate"><span class="pre">min_duration</span></code>, <code class="docutils literal notranslate"><span class="pre">min_intensity_day</span></code>, <code class="docutils literal notranslate"><span class="pre">min_intensity_day_during</span></code>, <code class="docutils literal notranslate"><span class="pre">max_recessiondays</span></code> per CONUS region</p></li>
+<li><p>In the table, the <code class="docutils literal notranslate"><span class="pre">ws_code</span></code> column categorizes the CONUS regions using the first two digits of the USGS <cite>gauge_id</cite> from the CAMELS/HYSETS datasets. This classification is based on the downstream order system (see <a class="reference external" href="https://help.waterdata.usgs.gov/faq/sites/do-station-numbers-have-any-particular-meaning">https://help.waterdata.usgs.gov/faq/sites/do-station-numbers-have-any-particular-meaning</a>)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Recession-related signatures</p></li>
+</ol>
+<ul class="simple">
+<li><p>Parameter file: <a class="reference external" href="https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_recession.csv">params_recession.csv</a></p></li>
+<li><p>Use these parameters for the recession delineation algorithm <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_RecessionSegments.html">util_RecessionSegments.m</a></p></li>
+<li><p>Parameters included: <code class="docutils literal notranslate"><span class="pre">recession_length</span></code>, <code class="docutils literal notranslate"><span class="pre">n_start</span></code>, <code class="docutils literal notranslate"><span class="pre">eps</span></code>, <code class="docutils literal notranslate"><span class="pre">filter_par</span></code> for low or high rainfall area</p></li>
+</ul>
+<p><strong>Note:</strong> For tuning, we evaluated the parameter performance using approximately ten watersheds that have drainage areas close to the median of each CONUS region. While these settings are a good starting point, please review and adjust them as needed for your specific application.</p>
+</section>
+<section id="how-to-adjust-parameters-yourself">
+<h3>How to Adjust Parameters Yourself<a class="headerlink" href="#how-to-adjust-parameters-yourself" title="Link to this heading"></a></h3>
+<p>If the provided parameters do not suit your dataset, here are some guidelines for tuning key parameters.
+We highly recommend using TOSSH visualization tools (<a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html">sig_EventGraphThresholds.m</a> and <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html">sig_RecessionAnalysis.m</a>) to inspect how well the parameters fit your time series.</p>
+<ul>
+<li><dl>
+<dt>Key parameters for <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html">util_EventSeparation.m</a>:</dt><dd><blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">min_termination</span></code>:</dt><dd><ul>
+<li><p>This parameter controls how long the shortest storm event should be. The default value can be set to <strong>48 hours</strong> for daily data. With this, once-in-3-days rainfall is being separated as the new event.</p></li>
+<li><p>For persistent rainfall or slower-responding watersheds, increase the values (e.g., <strong>72 hours</strong>).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">min_intensity_day</span></code> and <code class="docutils literal notranslate"><span class="pre">min_intensity_day_during</span></code>:</dt><dd><ul>
+<li><p>This parameter controls the minimum duration of the shortest storm event. The default value can be set to <strong>4.8 mm/day</strong> for daily data (derived from 0.2 mm/hr × 24 hours).</p></li>
+<li><p>Adjust this value based on the region’s rainfall intensity (e.g., use higher values for areas with significant rainfall). Selecting a small value for regions with high rainfall may result in small, noisy rainfall being detected at the start of an event.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">max_recessiondays</span></code>:</dt><dd><ul>
+<li><p>The default value can be set to <strong>8 days</strong>  (no tuning is generally required).</p></li>
+<li><p>Increasing this value helps capture long recession tails when no subsequent rainfall occurs. Allowing a larger <code class="docutils literal notranslate"><span class="pre">max_recessiondays</span></code> does no harm, as the <code class="docutils literal notranslate"><span class="pre">min_termination</span></code> parameter will start a new event when subsequent rainfall occurs.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">min_duration</span></code>:</dt><dd><ul>
+<li><p>The default value can be set to <strong>1 day</strong> (no tuning is required for daily data).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Key parameters for <a class="reference external" href="./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_RecessionSegments.html">util_RecessionSegments.m</a>:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">recession_length</span></code>:</dt><dd><ul>
+<li><p>The default value can be set to <strong>5 days</strong> with <code class="docutils literal notranslate"><span class="pre">eps=0.08</span></code> for most cases.</p></li>
+<li><p>For low-flow conditions, use longer thresholds (e.g., <strong>10 days</strong> with <code class="docutils literal notranslate"><span class="pre">eps=0.01</span></code>).</p></li>
+<li><p>For quick recessions after rainfall, reduce the value to <strong>3 days</strong> (but avoid including noisy recessions).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">filter_par</span></code>:</dt><dd><ul>
+<li><p>The default value can be set to <strong>0.925</strong> (no tuning needed; used for smoothing).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">n_start</span></code>:</dt><dd><ul>
+<li><p>The default value can be set to <strong>0</strong> for daily data. For hourly data, increase this value to mask flow immediately after the peak.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+<section id="calling-tossh-from-python">
+<h2>Calling TOSSH from Python<a class="headerlink" href="#calling-tossh-from-python" title="Link to this heading"></a></h2>
+<p>It is possible to call TOSSH from Python using the <a class="reference external" href="https://mathworks.com/help/matlab/matlab_external/python-setup-script-to-install-matlab-engine-api.html">Matlab Engine API</a>.
+If you are interested in doing so, please have a look at the following example, which contains a basic workflow that shows how to call TOSSH from Python: <a class="reference external" href="https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_TOSSH_with_Python.py">click here</a>.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>McMillan, H. K., Coxon, G., Araki, R., Salwey, S., Kelleher, C., Zheng, Y., et al. (2023). When good signatures go bad: Applying hydrologic signatures in large sample studies. Hydrological Processes, 37(9). <a class="reference external" href="https://doi.org/10.1002/hyp.14987">https://doi.org/10.1002/hyp.14987</a></p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Kratzert, F., Nearing, G., Addor, N., Erickson, T., Gauch, M., Gilon, O., Gudmundsson, L., Hassidim, A., Klotz, D., Nevo, S., Shalev, G., &amp; Matias, Y. (2024). Caravan - A global community dataset for large-sample hydrology (1.4) [Data set]. Zenodo. <a class="reference external" href="https://doi.org/10.5281/zenodo.10968468">https://doi.org/10.5281/zenodo.10968468</a></p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="p3_examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p5_contact.html" class="btn btn-neutral float-right" title="Contact" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Sebastian Gnann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

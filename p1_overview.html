@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; TOSSH 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3804885b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=292eb321"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Signatures" href="p2_signatures.html" />
+    <link rel="prev" title="TOSSH: A Toolbox for Streamflow Signatures in Hydrology" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/TOSSH_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#matlab-functions">MATLAB functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#signature-functions">Signature functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility-functions">Utility functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calculation-functions">Calculation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-scripts-and-functions">Other scripts and functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#input-data">Input data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#input-time-series">Input time series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-parameters">Input parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-checks">Data checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#errors-and-warnings">Errors and warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#required-matlab-toolboxes">Required MATLAB toolboxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-toolbox">Using the toolbox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="p2_signatures.html">Signatures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p3_examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p4_usage_notes.html">Usage Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="p5_contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TOSSH</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/p1_overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<span id="p1-overview"></span><h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<section id="matlab-functions">
+<h2>MATLAB functions<a class="headerlink" href="#matlab-functions" title="Link to this heading"></a></h2>
+<p>TOSSH consists of different types of MATLAB functions.
+The three core types are: <strong>signature functions</strong>, <strong>utility functions</strong>, and <strong>calculation functions</strong>.
+An overview of the toolbox structure is given below.</p>
+<figure class="align-center">
+<img alt="_images/toolbox_structure.png" src="_images/toolbox_structure.png" />
+</figure>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<section id="signature-functions">
+<h3>Signature functions<a class="headerlink" href="#signature-functions" title="Link to this heading"></a></h3>
+<p>Signature functions (<em>sig_xxx.m</em>) calculate different hydrological signatures.
+Note that some functions just call MATLAB functions (e.g. mean flow).
+They, however, provide data checks and are included to ensure consistency.
+Signature functions start with a short description, perform input parameter checks, data checks, and calculate the signature.
+For example, a shortened version of the mean flow signature <em>sig_Q_mean.m</em> looks as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="p">[</span><span class="n">Q_mean</span><span class="p">,</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_Q_mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="o">%</span><span class="n">sig_Q_mean</span> <span class="n">calculates</span> <span class="n">mean</span> <span class="n">flow</span> <span class="n">of</span> <span class="n">time</span> <span class="n">series</span><span class="o">.</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="o">%</span> <span class="n">check</span> <span class="nb">input</span> <span class="n">parameters</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="o">%</span> <span class="n">data</span> <span class="n">checks</span>
+<span class="p">[</span><span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">util_DataCheck</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
+<span class="k">if</span> <span class="n">error_flag</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">Q_mean</span> <span class="o">=</span> <span class="n">NaN</span><span class="p">;</span>
+        <span class="k">return</span>
+<span class="n">end</span>
+
+<span class="o">%</span> <span class="n">calculate</span> <span class="n">signature</span>
+<span class="n">Q_mean</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="s1">&#39;omitnan&#39;</span><span class="p">);</span>
+
+<span class="n">end</span>
+</pre></div>
+</div>
+<p>Some signature functions return more than one signature and optionally create a plot (e.g. <em>sig_RecessionAnalysis.m</em>).
+Signature functions with plotting functionality optionally return a figure handle that allows to manipulate the figure.
+Every signature function optionally returns an error flag and an error string, which contain information about problems that occurred during signature calculation.</p>
+<p>We provide two templates which should be used to implement new signatures in a consistent way:
+a basic template <em>sig_TemplateBasic.m</em> which only contains Q, t, and optional parameters as inputs
+and an advanced template <em>sig_TemplateAdvanced.m</em> which contains all possible inputs (Q, t, P, PET, T, required parameters, and optional parameters).</p>
+</section>
+<section id="utility-functions">
+<h3>Utility functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h3>
+<p>Utility functions (<em>util_xxx.m</em>) are used within some of the signature functions but are kept separate to enhance reusability.
+For example, the data are checked for certain problems using <em>util_DataCheck.m</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="p">[</span><span class="n">error_flag</span><span class="p">,</span> <span class="n">error_str</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">util_DataCheck</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">varargin</span><span class="p">)</span>
+<span class="o">%</span><span class="n">util_DataCheck</span> <span class="n">checks</span> <span class="n">data</span> <span class="k">for</span> <span class="n">various</span> <span class="n">things</span><span class="o">.</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="o">%</span> <span class="n">check</span> <span class="nb">input</span> <span class="n">parameters</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="o">%</span> <span class="n">default</span> <span class="n">setting</span> <span class="n">reads</span> <span class="k">as</span> <span class="n">good</span> <span class="n">data</span>
+<span class="n">error_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">error_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="o">%</span> <span class="n">data</span> <span class="n">checks</span>
+<span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span>
+        <span class="n">error_flag</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Error: Negative values in flow series. &#39;</span><span class="p">,</span> <span class="n">error_str</span><span class="p">];</span>
+        <span class="k">return</span>
+<span class="n">end</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="n">end</span>
+</pre></div>
+</div>
+</section>
+<section id="calculation-functions">
+<h3>Calculation functions<a class="headerlink" href="#calculation-functions" title="Link to this heading"></a></h3>
+<p>Signature calculation functions (<em>calc_xxx.m</em>) calculate sets of signatures for a given dataset.
+The signature sets are described in the corresponding paper and <a class="reference internal" href="p2_signatures.html#p2-signatures"><span class="std std-ref">here</span></a>.</p>
+</section>
+<section id="other-scripts-and-functions">
+<h3>Other scripts and functions<a class="headerlink" href="#other-scripts-and-functions" title="Link to this heading"></a></h3>
+<p>There are a few other scripts and functions.
+Most of them are workflow scripts (e.g. <em>workflow_1_basic.m</em>) which show how the toolbox can be used with some example data (see <a class="reference internal" href="p3_examples.html#p3-examples"><span class="std std-ref">here</span></a> for more information on workflow scripts).
+The remaining functions are helper functions used to load data, to create plots, etc., and they are mainly used in the workflow scripts.</p>
+</section>
+</section>
+<section id="input-data">
+<h2>Input data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h2>
+<section id="input-time-series">
+<h3>Input time series<a class="headerlink" href="#input-time-series" title="Link to this heading"></a></h3>
+<p>Every signature function requires streamflow data (as a MATLAB vector, typically in mm/timestep) and corresponding dates (as a MATLAB datetime vector).
+Additionally, some signatures require precipitation, potential evapotranspiration (both in mm/timestep), or temperature data (in °C).</p>
+</section>
+<section id="input-parameters">
+<h3>Input parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h3>
+<p>Most signatures that require parameter values will use default parameter values unless the parameters are specified in the inputs.
+Some signatures always require parameter values to be specified.
+This is explained in the function descriptions and in the workflow scripts.</p>
+</section>
+<section id="data-checks">
+<h3>Data checks<a class="headerlink" href="#data-checks" title="Link to this heading"></a></h3>
+<p>Every signature function performs data checks and either returns a warning or an error via an error string. We check for:</p>
+<ul class="simple">
+<li><p>NaN values</p></li>
+<li><p>Inconsistencies in the time vector, e.g. missing days</p></li>
+<li><p>General problems with the input data, e.g. unrealistic values, time series of different lengths</p></li>
+</ul>
+</section>
+</section>
+<section id="errors-and-warnings">
+<h2>Errors and warnings<a class="headerlink" href="#errors-and-warnings" title="Link to this heading"></a></h2>
+<p>Every signature function optionally returns an error flag (a number describing the error type, e.g. 2 corresponds to a data check error)
+and an error string (e.g. ‘Error: Negative values in flow series.’).
+These contain warnings and errors that might occur during the data check or during signature calculation.
+If such an error occurs, NaN is returned as signature value without stopping code execution.
+This enables signature calculations for large samples of catchments without breaking.
+The error strings indicate why a certain signature could not be calculated for a certain catchment.</p>
+<p>There are still normal Matlab warnings and errors, for example if input parameters are specified incorrectly.
+Such errors stop code execution but can be avoided if the functions are called with input data that are in the correct format.</p>
+</section>
+<section id="required-matlab-toolboxes">
+<h2>Required MATLAB toolboxes<a class="headerlink" href="#required-matlab-toolboxes" title="Link to this heading"></a></h2>
+<p>The toolbox was developed using Matlab R2020a.
+Some functions require MATLAB toolboxes, which are listed below:</p>
+<ul class="simple">
+<li><p>Statistics and Machine Learning Toolbox v11.3</p></li>
+<li><p>Optimization Toolbox v8.1</p></li>
+</ul>
+</section>
+<section id="using-the-toolbox">
+<h2>Using the toolbox<a class="headerlink" href="#using-the-toolbox" title="Link to this heading"></a></h2>
+<p>Example workflow scripts that show how to use the toolbox are provided <a class="reference internal" href="p3_examples.html#p3-examples"><span class="std std-ref">here</span></a> and can be found in <em>TOSSH/example/</em>.</p>
+<p>Note that the Mapping Toolbox is used for some plots in the workflow scripts, but it is not required for any signature calculation.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="TOSSH: A Toolbox for Streamflow Signatures in Hydrology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p2_signatures.html" class="btn btn-neutral float-right" title="Signatures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Sebastian Gnann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+Signature;Function (click for code);Unit;Description
+TotalRR;`sig_TotalRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html>`_ ;--;Total runoff ratio
+RR_Seasonality;`sig_RR_Seasonality.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RR_Seasonality.html>`_ ;--;Runoff ratio seasonality
+EventRR;`sig_EventRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html>`_ ;--;Event runoff ratio
+StorageFraction :sup:`a`;`sig_StorageFraction.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFraction.html>`_ ;--;Ratio between active and total storage
+Recession_a_Seasonality;`sig_SeasonalVarRecessions.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_SeasonalVarRecessions.html>`_ ;--;Seasonal variations in recession parameters
+AverageStorage;`sig_StorageFromBaseflow.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_StorageFromBaseflow.html>`_ ;--;Average storage from average baseflow and storage-discharge relationship
+RecessionParameters :sup:`a`;`sig_RecessionAnalysis.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html>`_ ;--;Recession analysis parameters approximate storage-discharge relationship
+MRC_num_segments;`sig_MRC_SlopeChanges.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html>`_ ;--;Number of different segments in master recession curve (MRC)
+First_Recession_Slope;`sig_MRC_SlopeChanges.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html>`_ ;mm/timestep :sup:`2` ;Steep section of MRC = storage that is quickly depleted
+Mid_Recession_Slope;`sig_MRC_SlopeChanges.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_MRC_SlopeChanges.html>`_ ;mm/timestep :sup:`2` ;Mid section of MRC = water retention capacity of the catchment
+Spearmans_rho;`sig_RecessionUniqueness.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionUniqueness.html>`_ ;--;Non-uniqueness in the storage-discharge relationship
+EventRR_TotalRR_ratio :sup:`b`;`sig_EventRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventRR.html>`_  / `sig_TotalRR.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_TotalRR.html>`_ ;--;Ratio between event and total runoff ratio
+VariabilityIndex;`sig_VariabilityIndex.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_VariabilityIndex.html>`_ ;--;Variability index of flow
+BFI;`sig_BFI.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BFI.html>`_ ;--;Baseflow index
+BaseflowRecessionK;`sig_BaseflowRecessionK.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_BaseflowRecessionK.html>`_ ;1/d;Exponential recession constant

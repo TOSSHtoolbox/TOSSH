@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_Addor</title>
+  <meta name="keywords" content="calc_Addor">
+  <meta name="description" content="calc_Addor calculates signatures from Addor et al. (2018).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_Addor.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_Addor
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_Addor calculates signatures from Addor et al. (2018).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_Addor(Q_mat, t_mat, P_mat, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_Addor calculates signatures from Addor et al. (2018).
+   Addor et al. (2018) use 15 signatures that &quot;characterize different
+   parts of the hydrograph, and [...] are sensitive to processes occurring
+   over different time scales&quot;. The signatures were selected from those
+   commonly used in the literature, and are used to explore the strength
+   of relationships between signatures and catchment attributes.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+   P_mat: precipitation [mm/timestep] matrix (cell array)
+   OPTIONAL
+   start_water_year: first month of water year, default = 10 (October)
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   % create consistent cell arrays
+   Q_mat = {data.Q}; 
+   t_mat = {data.t};
+   P_mat = {data.P}; 
+   results = calc_Addor(Q_mat,t_mat,P_mat);
+
+   References
+   Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and
+   Clark, M.P., 2018. A ranking of hydrological signatures based on their
+   predictability in space. Water Resources Research, 54(11), pp.8792-8812.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_Addor(Q_mat, t_mat, P_mat, varargin)</a>
+0002 <span class="comment">%calc_Addor calculates signatures from Addor et al. (2018).</span>
+0003 <span class="comment">%   Addor et al. (2018) use 15 signatures that &quot;characterize different</span>
+0004 <span class="comment">%   parts of the hydrograph, and [...] are sensitive to processes occurring</span>
+0005 <span class="comment">%   over different time scales&quot;. The signatures were selected from those</span>
+0006 <span class="comment">%   commonly used in the literature, and are used to explore the strength</span>
+0007 <span class="comment">%   of relationships between signatures and catchment attributes.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT</span>
+0010 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0011 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0012 <span class="comment">%   P_mat: precipitation [mm/timestep] matrix (cell array)</span>
+0013 <span class="comment">%   OPTIONAL</span>
+0014 <span class="comment">%   start_water_year: first month of water year, default = 10 (October)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0018 <span class="comment">%       series and associated error strings)</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   EXAMPLE</span>
+0021 <span class="comment">%   % load example data</span>
+0022 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0023 <span class="comment">%   % create consistent cell arrays</span>
+0024 <span class="comment">%   Q_mat = {data.Q};</span>
+0025 <span class="comment">%   t_mat = {data.t};</span>
+0026 <span class="comment">%   P_mat = {data.P};</span>
+0027 <span class="comment">%   results = calc_Addor(Q_mat,t_mat,P_mat);</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   References</span>
+0030 <span class="comment">%   Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and</span>
+0031 <span class="comment">%   Clark, M.P., 2018. A ranking of hydrological signatures based on their</span>
+0032 <span class="comment">%   predictability in space. Water Resources Research, 54(11), pp.8792-8812.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%   Copyright (C) 2020</span>
+0035 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0036 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0037 
+0038 <span class="comment">% check input parameters</span>
+0039 <span class="keyword">if</span> nargin &lt; 3
+0040     error(<span class="string">'Not enough input arguments.'</span>)
+0041 <span class="keyword">end</span>
+0042 
+0043 ip = inputParser;
+0044 ip.CaseSensitive = true;
+0045 
+0046 <span class="comment">% required input arguments</span>
+0047 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0048 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0049 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0050 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0051 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0052 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0053 addRequired(ip, <span class="string">'P_mat'</span>, @(P_mat) iscell(P_mat))
+0054 
+0055 <span class="comment">% optional input arguments</span>
+0056 addParameter(ip, <span class="string">'start_water_year'</span>, 10, @isnumeric) <span class="comment">% when does the water year start? Default: 10</span>
+0057 
+0058 parse(ip, Q_mat, t_mat, P_mat, varargin{:})
+0059 start_water_year = ip.Results.start_water_year;
+0060 
+0061 <span class="comment">% initialise arrays</span>
+0062 Q_mean = NaN(size(Q_mat,1),1);
+0063 Q_mean_error_str = strings(size(Q_mat,1),1);
+0064 TotalRR = NaN(size(Q_mat,1),1);
+0065 TotalRR_error_str = strings(size(Q_mat,1),1);
+0066 QP_elasticity = NaN(size(Q_mat,1),1);
+0067 QP_elasticity_error_str = strings(size(Q_mat,1),1);
+0068 FDC_slope = NaN(size(Q_mat,1),1);
+0069 FDC_slope_error_str = strings(size(Q_mat,1),1);
+0070 BFI = NaN(size(Q_mat,1),1);
+0071 BFI_error_str = strings(size(Q_mat,1),1);
+0072 HFD_mean = NaN(size(Q_mat,1),1);
+0073 HFD_mean_error_str = strings(size(Q_mat,1),1);
+0074 Q5 = NaN(size(Q_mat,1),1);
+0075 Q5_error_str = strings(size(Q_mat,1),1);
+0076 Q95 = NaN(size(Q_mat,1),1);
+0077 Q95_error_str = strings(size(Q_mat,1),1);
+0078 high_Q_freq = NaN(size(Q_mat,1),1);
+0079 high_Q_freq_error_str = strings(size(Q_mat,1),1);
+0080 high_Q_dur = NaN(size(Q_mat,1),1);
+0081 high_Q_dur_error_str = strings(size(Q_mat,1),1);
+0082 low_Q_freq = NaN(size(Q_mat,1),1);
+0083 low_Q_freq_error_str = strings(size(Q_mat,1),1);
+0084 low_Q_dur = NaN(size(Q_mat,1),1);
+0085 low_Q_dur_error_str = strings(size(Q_mat,1),1);
+0086 zero_Q_freq = NaN(size(Q_mat,1),1);
+0087 zero_Q_freq_error_str = strings(size(Q_mat,1),1);
+0088 
+0089 <span class="comment">% loop over all catchments</span>
+0090 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0091     
+0092     [Q_mean(i),~,Q_mean_error_str(i)] = sig_Q_mean(Q_mat{i},t_mat{i});
+0093     [TotalRR(i),~,TotalRR_error_str(i)] = sig_TotalRR(Q_mat{i},t_mat{i},P_mat{i});
+0094     [QP_elasticity(i),~,QP_elasticity_error_str(i)] = <span class="keyword">...</span>
+0095         sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i},<span class="string">'method'</span>,<span class="string">'Sanka'</span>,<span class="string">'start_water_year'</span>,start_water_year); 
+0096     [FDC_slope(i),~,FDC_slope_error_str(i)] = sig_FDC_slope(Q_mat{i},t_mat{i});
+0097     [BFI(i),~,BFI_error_str(i)] = sig_BFI(Q_mat{i},t_mat{i},<span class="string">'method'</span>,<span class="string">'Lyne_Hollick'</span>,<span class="string">'parameters'</span>,[0.925 3]);
+0098     [HFD_mean(i),~,HFD_mean_error_str(i)] = sig_HFD_mean(Q_mat{i},t_mat{i},<span class="string">'start_water_year'</span>,start_water_year); 
+0099     [Q5(i),~,Q5_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},5);
+0100     [Q95(i),~,Q95_error_str(i)] = sig_x_percentile(Q_mat{i},t_mat{i},95);
+0101     [high_Q_freq(i),~,high_Q_freq_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},<span class="string">'high'</span>);
+0102     [high_Q_dur(i),~,high_Q_dur_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},<span class="string">'high'</span>);
+0103     [low_Q_freq(i),~,low_Q_freq_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},<span class="string">'low'</span>);
+0104     [low_Q_dur(i),~,low_Q_dur_error_str(i)] = sig_x_Q_duration(Q_mat{i},t_mat{i},<span class="string">'low'</span>);
+0105     [zero_Q_freq(i),~, zero_Q_freq_error_str(i)] = sig_x_Q_frequency(Q_mat{i},t_mat{i},<span class="string">'no'</span>);
+0106     
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">% add results to struct array</span>
+0110 results.Q_mean = Q_mean;
+0111 results.Q_mean_error_str = Q_mean_error_str;
+0112 results.TotalRR = TotalRR;
+0113 results.TotalRR_error_str = TotalRR_error_str;
+0114 results.QP_elasticity = QP_elasticity;
+0115 results.QP_elasticity_error_str = QP_elasticity_error_str;
+0116 results.FDC_slope = FDC_slope;
+0117 results.FDC_slope_error_str = FDC_slope_error_str;
+0118 results.BFI = BFI;
+0119 results.BFI_error_str = BFI_error_str;
+0120 results.HFD_mean = HFD_mean;
+0121 results.HFD_mean_error_str = HFD_mean_error_str;
+0122 results.Q5 = Q5;
+0123 results.Q5_error_str = Q5_error_str;
+0124 results.Q95 = Q95;
+0125 results.Q95_error_str = Q95_error_str;
+0126 results.high_Q_freq = high_Q_freq;
+0127 results.high_Q_freq_error_str = high_Q_freq_error_str;
+0128 results.high_Q_dur = high_Q_dur;
+0129 results.high_Q_dur_error_str = high_Q_dur_error_str;
+0130 results.low_Q_freq = low_Q_freq;
+0131 results.low_Q_freq_error_str = low_Q_freq_error_str;
+0132 results.low_Q_dur = low_Q_dur;
+0133 results.low_Q_dur_error_str = low_Q_dur_error_str;
+0134 results.zero_Q_freq = zero_Q_freq;
+0135 results.zero_Q_freq_error_str = zero_Q_freq_error_str;
+0136 
+0137 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

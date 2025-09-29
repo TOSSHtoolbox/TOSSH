@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_FitBrokenStick</title>
+  <meta name="keywords" content="util_FitBrokenStick">
+  <meta name="description" content="util_FitBrokenStick fits two or three part broken stick fit.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_FitBrokenStick.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_FitBrokenStick
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_FitBrokenStick fits two or three part broken stick fit.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [err, fittedlines, slopes] =util_FitBrokenStick(breakpoints, x, y, zero_intercept) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_FitBrokenStick fits two or three part broken stick fit.
+   Fits two or three part broken stick fit (segmented regression) with
+   known break points. Returns norm of residuals to be used for
+   optimisation.
+   Adapted from online example by John D'Errico.
+
+   INPUT
+   breakpoints: breakpoints of broken stick (1 or 2 breakpoints)
+   x: independent variable
+   y: dependent variable
+   OPTIONAL
+   zero_intercept: should the intercept be 0?, default = false
+
+   OUTPUT
+   err: norm of residuals
+   fittedlines: start points and break points of fitted lines
+   slopes: slopes of the linear segments of the broken stick
+
+   EXAMPLE
+   x = [1:10]';
+   y = zeros(size(x));
+   y(1:5) = 2*x(1:5);
+   y(6:10) = y(5) + 0.5*(x(6:10)-5);
+   breakpoints = 5;
+   [err,fittedlines,slopes] = util_FitBrokenStick(breakpoints,x,y)
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [err, fittedlines, slopes] = </a><span class="keyword">...</span>
+0002     util_FitBrokenStick(breakpoints, x, y, zero_intercept)
+0003 <span class="comment">%util_FitBrokenStick fits two or three part broken stick fit.</span>
+0004 <span class="comment">%   Fits two or three part broken stick fit (segmented regression) with</span>
+0005 <span class="comment">%   known break points. Returns norm of residuals to be used for</span>
+0006 <span class="comment">%   optimisation.</span>
+0007 <span class="comment">%   Adapted from online example by John D'Errico.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT</span>
+0010 <span class="comment">%   breakpoints: breakpoints of broken stick (1 or 2 breakpoints)</span>
+0011 <span class="comment">%   x: independent variable</span>
+0012 <span class="comment">%   y: dependent variable</span>
+0013 <span class="comment">%   OPTIONAL</span>
+0014 <span class="comment">%   zero_intercept: should the intercept be 0?, default = false</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%   err: norm of residuals</span>
+0018 <span class="comment">%   fittedlines: start points and break points of fitted lines</span>
+0019 <span class="comment">%   slopes: slopes of the linear segments of the broken stick</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   EXAMPLE</span>
+0022 <span class="comment">%   x = [1:10]';</span>
+0023 <span class="comment">%   y = zeros(size(x));</span>
+0024 <span class="comment">%   y(1:5) = 2*x(1:5);</span>
+0025 <span class="comment">%   y(6:10) = y(5) + 0.5*(x(6:10)-5);</span>
+0026 <span class="comment">%   breakpoints = 5;</span>
+0027 <span class="comment">%   [err,fittedlines,slopes] = util_FitBrokenStick(breakpoints,x,y)</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   Copyright (C) 2020</span>
+0030 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0031 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0032 
+0033 <span class="keyword">if</span> nargin &lt; 3
+0034     error(<span class="string">'Not enough input arguments.'</span>)
+0035 <span class="keyword">end</span>
+0036 <span class="keyword">if</span> nargin &lt; 4
+0037     zero_intercept = false;
+0038 <span class="keyword">end</span>
+0039 
+0040 breakpoints = breakpoints(:).'; <span class="comment">% make breakpoints into row vector</span>
+0041 
+0042 breaks = [min(x),sort(breakpoints),max(x)];
+0043 nx = length(x);
+0044 <span class="comment">% which points lie in which interval?</span>
+0045 xbins = discretize(x,breaks);
+0046 <span class="comment">% breakpoints cannot be in the same interval</span>
+0047 <span class="keyword">if</span> numel(unique(xbins)) &lt; numel(breakpoints) + 1
+0048     err = 10^6;
+0049     fittedlines = NaN(length(breakpoints)+2,2);
+0050     slopes = NaN(length(breakpoints)+2,1);
+0051     <span class="keyword">return</span>
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="comment">% write the problem in matrix form</span>
+0055 <span class="keyword">if</span> zero_intercept <span class="comment">% intercept is zero</span>
+0056     <span class="keyword">if</span> numel(breakpoints)==1
+0057         A = [x - breaks(1),(x - breaks(2)).*(xbins == 2)];
+0058     <span class="keyword">elseif</span>   numel (breakpoints)==2
+0059         A = [x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
+0060     <span class="keyword">else</span>
+0061         error(<span class="string">'Function brokenstick only works for 1 or 2 breakpoints.'</span>)
+0062     <span class="keyword">end</span>
+0063 <span class="keyword">else</span> <span class="comment">% intercept will be optimised as well</span>
+0064     <span class="keyword">if</span> numel(breakpoints)==1
+0065         A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(xbins == 2)];
+0066     <span class="keyword">elseif</span>   numel (breakpoints)==2
+0067         A = [ones(nx,1),x - breaks(1),(x - breaks(2)).*(or(xbins == 2,xbins == 3)),(x - breaks(3)).*(xbins == 3)];
+0068     <span class="keyword">else</span>
+0069         error(<span class="string">'Function brokenstick only works for 1 or 2 breakpoints.'</span>)
+0070     <span class="keyword">end</span>
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% solve matrix</span>
+0074 coef = A\y;
+0075 err = norm(y - A*coef);
+0076 <span class="keyword">if</span> zero_intercept
+0077     coef = [0; coef];
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="comment">% unpack the coefficients</span>
+0081 c1 = coef(1);
+0082 s = [coef(2:end)];
+0083 css = cumsum(s);
+0084 s = [s;s(end)];
+0085 css = [css;css(end)];
+0086 bi = [breaks(1:end-1).';breaks(end-1)];
+0087 fittedlines = zeros(length(breaks),2);
+0088 slopes = zeros(length(breaks),1);
+0089 fittedlines(:,1) = breaks.';
+0090 fittedlines(1:2,2) = (c1 - breaks(1).*s(1)) + s(1).*breaks(1:2).';
+0091 fittedlines(3,2) = (c1 - breaks(1).*s(1) - breaks(2).*s(2)) + (s(1)+s(2)).*breaks(3).';
+0092 <span class="keyword">if</span> numel (breakpoints)==2
+0093     fittedlines(4,2) = (c1 - sum(breaks(1:3).'.*s(1:3))) + sum(s(1:3)).*breaks(4).';
+0094 <span class="keyword">end</span>
+0095 slopes = cumsum(s);slopes=slopes(1:end-1);
+0096 
+0097 <span class="keyword">end</span>
+0098 
+0099</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
