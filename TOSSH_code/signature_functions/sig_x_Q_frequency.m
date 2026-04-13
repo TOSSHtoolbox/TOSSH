@@ -23,10 +23,10 @@ function [x_Q_frequency, error_flag, error_str] = sig_x_Q_frequency(Q, t, type, 
 %   data = load('example/example_data/33029_daily.mat'); 
 %   Q = data.Q; 
 %   t = data.t;
-%   x_Q_freq = sig_x_Q_freq(Q,t,'no');
-%   x_Q_freq = sig_x_Q_freq(Q,t,'high');
-%   x_Q_freq = sig_x_Q_freq(Q,t,'low');
-%   x_Q_freq = sig_x_Q_freq(Q,t,'custom_low','threshold',0.2*mean(Q,'omitnan'));
+%   x_Q_freq = sig_x_Q_frequency(Q,t,'no');
+%   x_Q_freq = sig_x_Q_frequency(Q,t,'high');
+%   x_Q_freq = sig_x_Q_frequency(Q,t,'low');
+%   x_Q_freq = sig_x_Q_frequency(Q,t,'custom_low','threshold',0.2*mean(Q,'omitnan'));
 %
 %   References
 %   Addor, N., Nearing, G., Prieto, C., Newman, A.J., Le Vine, N. and  
@@ -66,6 +66,12 @@ if error_flag == 2
     return
 end
 
+% add warning for intermittent streams
+if ~isempty(Q(Q==0))
+    error_flag = 2;
+    error_str = ['Warning: Flow is zero at least once (intermittent flow). ', error_str];
+end
+
 % calculate signature
 
 len = length(Q(~isnan(Q))); % total amount of non-NaN values
@@ -80,7 +86,17 @@ switch type
         Q_high = 9*median(Q,'omitnan');
         x_Q_num = length(Q(Q>Q_high));
         x_Q_frequency = x_Q_num/len;
-        
+   
+        if Q_high == 0
+        % add warning for intermittent streams
+            x_Q_frequency = nan;
+            error_flag = 2;
+            error_str = ['Warning: median flow is 0 (intermittent flow), signature set to NaN. Consider alternative thresholds. ', error_str];
+        elseif Q_high > max(Q)
+            error_flag = 2;
+            error_str = ['Warning: 9 times median flow is larger than maximum flow (damped hydrograph). Consider alternative thresholds. ', error_str];
+        end
+
     case 'low'
         Q_low = 0.2*mean(Q,'omitnan');
         x_Q_num = length(Q(Q<Q_low));
