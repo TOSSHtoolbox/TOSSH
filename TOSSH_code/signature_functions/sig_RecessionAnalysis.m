@@ -59,37 +59,6 @@ function [Recession_Parameters, recession_month, error_flag, error_str, fig_hand
 %   This software is distributed under the GNU Public License Version 3.
 %   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
 
-%   NOTE: Post-processing of Recession Parameters
-%
-%   Post-processing of Recession parameters can be done as:
-%   RecessionParameters_a(i) = median((RecessionParametersTemp(:,1)),'omitnan');
-%   RecessionParameters_b(i) = median(RecessionParametersTemp(:,2),'omitnan');
-%   RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
-%   ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
-%   RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
-
-%   RecessionParameters_T0 is characteristic timescale of recessions at median flow; It can be obtained
-%   by fitting a line to the dQ/dt versus Q point cloud in log-log space for each individual recession,
-%   with Q scaled by median Q; T0 is the median value of −1/intercept (McMillan et al., 2021).
-
-%   RecessionParameters_T0 can be derived from RecessionParameters_a and RecessionParameters_b as follows (McMillan et al, 2014):
-%   Let Qhat = Q/Qmedian, then:
-%       dQhat/dt = - (1/T0) * Qhat^b
-%   Separating constant terms,
-%       1/Qmedian * dQ/dt = - (1/T0) * Q^b * (1/Qmedian)^b
-%       dQ/dt = - (1/T0) * Q^b * (1/Qmedian) ^ (b-1)
-%   As our estimate of a and b parameters are from:
-%       dQ/dt = - a * Q^b
-%   It leads to:
-%       a = (1/T0) * (1/Qmedian) ^ (b-1)
-%       T0 = (1/a) * (1/Qmedian) ^ (b-1)
-%       T0 = 1 / (a * Qmedian ^ (b-1)) 
-%   This corresponds to the code for calculating RecessionParametersT0Temp.
-%
-%   McMillan, H., Gueguen, M., Grimon, E., Woods, R., Clark, M., & Rupp, D. E. (2014).
-%   Spatial variability of hydrological processes and model structure diagnostics in a 50 km2 catchment.
-%   Hydrological Processes, 28(18), 4896-4913. https://doi.org/10.1002/hyp.9988
-
 % check input parameters
 if nargin < 2
     error('Not enough input arguments.')

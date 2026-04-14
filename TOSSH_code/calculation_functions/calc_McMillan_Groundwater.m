@@ -159,18 +159,11 @@ for i = 1:size(Q_mat,1)
         sig_SeasonalVarRecessions(Q_mat{i},t_mat{i},'eps',eps,'recession_length',recession_length,'plot_results',plot_results,'n_start',n_start);
     [AverageStorage(i),~,AverageStorage_error_str(i)] = ...
         sig_StorageFromBaseflow(Q_mat{i},t_mat{i},P_mat{i},PET_mat{i},'start_water_year',start_water_year,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
-    [RecessionParametersTemp,~,~,RecessionParameters_error_str_temp] = ...
+    [RecessionParametersTemp,~,~,RecessionParameters_error_str(i)] = ...
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',true,'plot_results',plot_results,'recession_length',recession_length,'n_start',n_start,'eps',eps);
-
-    % Post-processing of RecessionParameters (see sig_RecessionAnalysis
-    % function description for the details)
-    RecessionParameters_a(i) = median((RecessionParametersTemp(:,1)),'omitnan');
-    RecessionParameters_b(i) = median(RecessionParametersTemp(:,2),'omitnan');
-    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
-    ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
-    RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
-    RecessionParameters_error_str(i) = RecessionParameters_error_str_temp;
-
+    % post-processing of RecessionParameters (see util_Recession_PostProcess for details)
+    [RecessionParameters_a(i), RecessionParameters_b(i), RecessionParameters_T0(i)] = ...
+        util_Recession_PostProcess(RecessionParametersTemp, Q_mat, i, 'useMedianPair', true);
     [MRC_num_segments(i),Segment_slopes,~,MRC_num_segments_error_str(i)] = ...
         sig_MRC_SlopeChanges(Q_mat{i},t_mat{i},'plot_results',plot_results,'eps',eps,'recession_length',recession_length,'n_start',n_start);
     First_Recession_Slope(i) = Segment_slopes(1);

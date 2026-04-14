@@ -200,15 +200,9 @@ for i = 1:size(Q_mat,1)
     [QP_elasticity(i),~,QP_elasticity_error_str(i)] = sig_QP_elasticity(Q_mat{i},t_mat{i},P_mat{i});
     [RecessionParametersTemp,~,~,RecessionParameters_error_str(i)] = ...
         sig_RecessionAnalysis(Q_mat{i},t_mat{i},'fit_individual',false);
-
-    % Post-processing of RecessionParameters (see sig_RecessionAnalysis
-    % function description for the details)
-    RecessionParameters_a(i) = median((RecessionParametersTemp(:,1)),'omitnan');
-    RecessionParameters_b(i) = median(RecessionParametersTemp(:,2),'omitnan');
-    RecessionParametersT0Temp = 1./(RecessionParametersTemp(:,1).*median(Q_mat{i}(Q_mat{i}>0),'omitnan').^(RecessionParametersTemp(:,2)-1));
-    ReasonableT0 = and(RecessionParametersTemp(:,2)>0.5,RecessionParametersTemp(:,2)<5);
-    RecessionParameters_T0(i) = median(RecessionParametersT0Temp(ReasonableT0),'omitnan');
-
+    % post-processing of RecessionParameters (see util_Recession_PostProcess for details)
+    [RecessionParameters_a(i), RecessionParameters_b(i), RecessionParameters_T0(i)] = ...
+        util_Recession_PostProcess(RecessionParametersTemp, Q_mat, i, 'useMedianPair', false);
     [RecessionK_early(i),~,RecessionK_early_error_str(i)] = sig_RecessionParts(Q_mat{i},t_mat{i},'early');
     [Spearmans_rho(i),~,Spearmans_rho_error_str(i)] = sig_RecessionUniqueness(Q_mat{i},t_mat{i});
     [ResponseTime(i),~,ResponseTime_error_str(i)] = sig_ResponseTime(Q_mat{i},t_mat{i},P_mat{i});
