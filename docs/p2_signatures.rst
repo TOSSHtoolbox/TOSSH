@@ -131,7 +131,8 @@ signatures from Wu et al., (2021) [8]_. The implementation in this toolbox is th
 TOSSH: all remaining signatures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This is a list of all remaining signatures currently contained in TOSSH.
+This is a list of all remaining signatures contained in TOSSH as of 2021. 
+Please note that newer functions might not be listed yet.
 
 ..
 	(`calc_All.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html>`_)
