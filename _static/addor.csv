@@ -1,0 +1,14 @@
+Signature;Function (click for code);Unit;Description
+Q_mean;`sig_Q_mean.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_Q_mean.m>`_ ;mm/timestep;Mean streamflow
+TotalRR;`sig_TotalRR.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_TotalRR.m>`_ ;--;Total runoff ratio
+QP_elasticity;`sig_QP_elasticity.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_QP_elasticity.m>`_ ;--;Streamflow-precipitation elasticity
+FDC_slope;`sig_FDC_slope.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_FDC_slope.m>`_ ;--;Slope of the flow duration curve
+BFI;`sig_BFI.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_BFI.m>`_ ;--;Baseflow index
+HFD_mean;`sig_HFD_mean.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_HFD_mean.m>`_ ;day of year;Half flow date
+Q5;`sig_x_percentile.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_percentile.m>`_ ;mm/timestep;5th streamflow percentile (low flows)
+Q95;`sig_x_percentile.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_percentile.m>`_ ;mm/timestep;95th streamflow percentile (high flows)
+high_Q_freq;`sig_x_Q_frequency.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_Q_frequency.m>`_ ;--;High flow frequency
+high_Q_dur;`sig_x_Q_duration.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_Q_duration.m>`_ ;timestep;High flow duration
+low_Q_freq;`sig_x_Q_frequency.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_Q_frequency.m>`_ ;--;Low flow frequency
+low_Q_dur;`sig_x_Q_duration.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_Q_duration.m>`_ ;timestep;Low flow duration
+zero_Q_freq;`sig_x_Q_frequency.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_x_Q_frequency.m>`_ ;--;Zero flow frequency

@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of workflow_5_CAMELS_GB</title>
+  <meta name="keywords" content="workflow_5_CAMELS_GB">
+  <meta name="description" content="% TOSSH workflow 5 - calculation of signatures for CAMELS GB catchments">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="index.html">example</a> &gt; workflow_5_CAMELS_GB.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>workflow_5_CAMELS_GB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH workflow 5 - calculation of signatures for CAMELS GB catchments</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH workflow 5 - calculation of signatures for CAMELS GB catchments
+
+   This script shows how to use TOSSH to calculate various signatures
+   using the CAMELS GB dataset (Coxon et al., 2020). Note that this
+   workflow can be slow and requires sufficient RAM.
+
+   The CAMELS GB dataset can be downloaded from
+   https://catalogue.ceh.ac.uk/documents/8344e4f3-d2ea-44f5-8afa-86d2987543a9
+   and needs to be placed in the right directory.
+
+   References
+   Coxon, G., Addor, N., Bloomfield, J.P., Freer, J., Fry, M., Hannaford,
+   J., Howden, N.J., Lane, R., Lewis, M., Robinson, E.L. and Wagener, T.,
+   2020. CAMELS-GB: Hydrometeorological time series and landscape
+   attributes for 671 catchments in Great Britain. Earth System Science
+   Data Discussions, pp.1-34.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH workflow 5 - calculation of signatures for CAMELS GB catchments</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   This script shows how to use TOSSH to calculate various signatures</span>
+0004 <span class="comment">%   using the CAMELS GB dataset (Coxon et al., 2020). Note that this</span>
+0005 <span class="comment">%   workflow can be slow and requires sufficient RAM.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   The CAMELS GB dataset can be downloaded from</span>
+0008 <span class="comment">%   https://catalogue.ceh.ac.uk/documents/8344e4f3-d2ea-44f5-8afa-86d2987543a9</span>
+0009 <span class="comment">%   and needs to be placed in the right directory.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   References</span>
+0012 <span class="comment">%   Coxon, G., Addor, N., Bloomfield, J.P., Freer, J., Fry, M., Hannaford,</span>
+0013 <span class="comment">%   J., Howden, N.J., Lane, R., Lewis, M., Robinson, E.L. and Wagener, T.,</span>
+0014 <span class="comment">%   2020. CAMELS-GB: Hydrometeorological time series and landscape</span>
+0015 <span class="comment">%   attributes for 671 catchments in Great Britain. Earth System Science</span>
+0016 <span class="comment">%   Data Discussions, pp.1-34.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   Copyright (C) 2020</span>
+0019 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0020 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0021 
+0022 close all
+0023 <span class="comment">% clear all</span>
+0024 clc
+0025 
+0026 <span class="comment">%% Download and extract CAMELS GB data</span>
+0027 <span class="comment">% First, we need to download and extract the CAMELS GB data from:</span>
+0028 <span class="comment">% https://catalogue.ceh.ac.uk/documents/8344e4f3-d2ea-44f5-8afa-86d2987543a9</span>
+0029 <span class="comment">% The data should be stored in a folder named CAMELS_GB located in the</span>
+0030 <span class="comment">% example_data directory of TOSSH (.\example\example_data\CAMELS_GB).</span>
+0031 
+0032 <span class="comment">%% Add directories to path</span>
+0033 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path. This is</span>
+0034 <span class="comment">% important to ensure that we can work with relative paths. If we already</span>
+0035 <span class="comment">% are in this directory, we can use the pwd command:</span>
+0036 mydir = pwd;
+0037 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0038 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0039 cd(mydir)
+0040 addpath(genpath(mydir));
+0041 
+0042 <span class="comment">% We also specify the path where to save our results and figures:</span>
+0043 results_path = <span class="string">'./example/results/'</span>;
+0044 fig_path = <span class="string">'./example/results/images'</span>;
+0045 
+0046 <span class="comment">%% Load CAMELS GB data</span>
+0047 <span class="comment">% We now load the CAMELS GB data into a struct file for easy handling with</span>
+0048 <span class="comment">% Matlab. We have to be in the TOSSH directory and the CAMELS GB data</span>
+0049 <span class="comment">% should be stored in a folder named CAMELS_GB in the example_data</span>
+0050 <span class="comment">% directory.</span>
+0051 
+0052 <span class="comment">% The following folders are required:</span>
+0053 <span class="comment">% ./example/example_data/CAMELS_GB/data/CAMELS_GB_*_attributes.csv</span>
+0054 <span class="comment">% (8 files; contain catchment attributes)</span>
+0055 <span class="comment">% ./example/example_data/CAMELS_GB/data/timeseries/CAMELS_GB_hydromet*.csv</span>
+0056 <span class="comment">% (671 files; contain forcing and streamflow time series)</span>
+0057 
+0058 <span class="comment">% Loading the datamight take a few minutes.</span>
+0059 CAMELS_GB_data = loadCAMELSGBstruct();
+0060 <span class="comment">% Note that you can also save the struct file to avoid loading the data</span>
+0061 <span class="comment">% anew every time you want to work with them.</span>
+0062 
+0063 <span class="comment">%% Calculate signatures for CAMELS GB catchments using TOSSH</span>
+0064 <span class="comment">% To use the calculation function calc_Addor.m, we need to create cell</span>
+0065 <span class="comment">% arrays containing the time series. We use cell arrays since some time</span>
+0066 <span class="comment">% series might have different lengths. While the length of each row in the</span>
+0067 <span class="comment">% cell array can vary, the cell arrays containing the t, Q, P, and PET data</span>
+0068 <span class="comment">% need to have exactly the same dimensions. We first initialise the cell</span>
+0069 <span class="comment">% arrays.</span>
+0070 n_CAMELS_GB = length(CAMELS_GB_data.gauge_id);
+0071 t_mat = cell(n_CAMELS_GB,1);
+0072 Q_mat = cell(n_CAMELS_GB,1);
+0073 P_mat = cell(n_CAMELS_GB,1);
+0074 PET_mat = cell(n_CAMELS_GB,1);
+0075 
+0076 <span class="comment">% We then loop over all catchments and extract the time series for each</span>
+0077 <span class="comment">% catchment.</span>
+0078 fprintf(<span class="string">'Creating data matrix...\n'</span>)
+0079 <span class="keyword">for</span> i = 1:n_CAMELS_GB
+0080     
+0081     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0082         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS_GB)
+0083     <span class="keyword">end</span>
+0084     
+0085     t = datetime(CAMELS_GB_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0086     Q = CAMELS_GB_data.Q{i}(:,2);
+0087     P = CAMELS_GB_data.P{i}(:,2);
+0088     PET = CAMELS_GB_data.PET{i}(:,2);
+0089     
+0090     t_mat{i} = t;
+0091     Q_mat{i} = Q;
+0092     P_mat{i} = P;
+0093     PET_mat{i} = PET;
+0094     
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="comment">% We can now use the calculation function calc_Addor.m to calculate all the</span>
+0098 <span class="comment">% Addor et al. (2018) signatures, which are also contained in Coxon et al.</span>
+0099 <span class="comment">% (2020).</span>
+0100 fprintf(<span class="string">'Calculating signatures...\n'</span>)
+0101 CAMELS_GB_signatures = calc_Addor(Q_mat, t_mat, P_mat);
+0102 <span class="comment">% Besides the signature values, the function also returns a list with</span>
+0103 <span class="comment">% warnings and error messages. Most warnings come from our data check and</span>
+0104 <span class="comment">% indicate that there are some NaN values in the time series.</span>
+0105 fprintf(CAMELS_GB_signatures.FDC_slope_error_str(1)+&quot;\n&quot;)
+0106 
+0107 <span class="comment">% We can save the results as mat file which can be easily loaded into</span>
+0108 <span class="comment">% Matlab. Alternatively, we can save the results as txt file.</span>
+0109 save(strcat(results_path,<span class="string">'CAMELS_GB_signatures.mat'</span>),<span class="keyword">...</span>
+0110     <span class="string">'-struct'</span>,<span class="string">'CAMELS_GB_signatures'</span>)
+0111 writetable(struct2table(CAMELS_GB_signatures),<span class="keyword">...</span>
+0112     strcat(results_path,<span class="string">'CAMELS_GB_signatures.txt'</span>))
+0113 
+0114 <span class="comment">%% Compare TOSSH signatures to CAMELS signatures</span>
+0115 <span class="comment">% We can compare the signatures contained in CAMELS GB with the signatures</span>
+0116 <span class="comment">% calculated here to see if we get the same results.</span>
+0117 makeScatterPlot(CAMELS_GB_signatures,CAMELS_GB_data,90)
+0118 saveFig(gcf,strcat(<span class="string">'TOSSH_scatter_plot_GB'</span>),fig_path,<span class="string">'-dpdf'</span>)
+0119 <span class="comment">% Overall the results are very similar, but for some signatures there are</span>
+0120 <span class="comment">% large differences, which can be explained by different treatment of NaN</span>
+0121 <span class="comment">% values. The blue dots - which indicate a complete record - fall on a 1:1</span>
+0122 <span class="comment">% line, the other ones mostly don not. Note that some signatures are</span>
+0123 <span class="comment">% extremly sensitive to NaN values, e.g. P-Q elasticity.</span>
+0124 
+0125 <span class="comment">%% Calculation of new signatures</span>
+0126 <span class="comment">% We can also calculate some new signatures that are not provided with</span>
+0127 <span class="comment">% CAMELS GB.</span>
+0128 <span class="comment">% Note that some signatures take a while to calculate because there are</span>
+0129 <span class="comment">% many internal calculations (e.g. recession extration, fitting, etc.).</span>
+0130 
+0131 BaseflowRecessionK = NaN(n_CAMELS_GB,1);
+0132 BaseflowRecessionK_error_flag = NaN(n_CAMELS_GB,1);
+0133 BaseflowRecessionK_error_str = strings(n_CAMELS_GB,1);
+0134 RecessionParameters = NaN(n_CAMELS_GB,2);
+0135 RecessionParameters_error_flag = NaN(n_CAMELS_GB,1);
+0136 RecessionParameters_error_str = strings(n_CAMELS_GB,1);
+0137 EventRR = NaN(n_CAMELS_GB,1);
+0138 EventRR_error_flag= NaN(n_CAMELS_GB,1);
+0139 EventRR_error_str = strings(n_CAMELS_GB,1);
+0140 
+0141 fprintf(<span class="string">'Calculating new signatures...\n'</span>)
+0142 <span class="keyword">for</span> i = 1:n_CAMELS_GB
+0143     
+0144     <span class="keyword">if</span> mod(i,100) == 0 <span class="comment">% check progress</span>
+0145         fprintf(<span class="string">'%.0f/%.0f\n'</span>,i,n_CAMELS_GB)
+0146     <span class="keyword">end</span>
+0147     
+0148     <span class="comment">% Since there are many missing values before 1989, we will only</span>
+0149     <span class="comment">% consider the period from October 1989 to September 2009.</span>
+0150     t = datetime(CAMELS_GB_data.Q{i}(:,1),<span class="string">'ConvertFrom'</span>,<span class="string">'datenum'</span>);
+0151     Q = CAMELS_GB_data.Q{i}(:,2);
+0152     P = CAMELS_GB_data.P{i}(:,2);
+0153     PET = CAMELS_GB_data.PET{i}(:,2);
+0154     
+0155     indices = 1:length(t);
+0156     start_ind = indices(t==datetime(1989,10,1));
+0157     <span class="comment">% in case time series starts after 1 Oct 1989</span>
+0158     <span class="keyword">if</span> isempty(start_ind); start_ind = 1; <span class="keyword">end</span>
+0159     end_ind = indices(t==datetime(2009,9,30));
+0160     t = t(start_ind:end_ind);
+0161     Q = Q(start_ind:end_ind);
+0162     P = P(start_ind:end_ind);
+0163     PET = PET(start_ind:end_ind);    
+0164 
+0165     [BaseflowRecessionK(i),BaseflowRecessionK_error_flag(i),BaseflowRecessionK_error_str(i)] = <span class="keyword">...</span>
+0166         sig_BaseflowRecessionK(Q,t,<span class="string">'recession_length'</span>,5);
+0167     
+0168     [RecessionParameters(i,:),~,RecessionParameters_error_flag(i),RecessionParameters_error_str(i)] <span class="keyword">...</span>
+0169         = sig_RecessionAnalysis(Q,t,<span class="string">'fit_individual'</span>,false);
+0170     
+0171     [EventRR(i),EventRR_error_flag(i),EventRR_error_str(i)] = sig_EventRR(Q,t,P);
+0172     
+0173 <span class="keyword">end</span>
+0174  
+0175 <span class="comment">%% Plot maps</span>
+0176 <span class="comment">% We can plot the resulting signatures on a map using a plotting function</span>
+0177 <span class="comment">% Note that the mapping toolbox is needed for plotting.</span>
+0178 
+0179 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,1./BaseflowRecessionK,<span class="keyword">...</span>
+0180     <span class="string">'attribute_name'</span>,<span class="string">'K [d]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0181     <span class="string">'colour_scheme'</span>,<span class="string">'bone'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0182     <span class="string">'c_limits'</span>,[0 30],<span class="keyword">...</span>
+0183     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0184     <span class="string">'figure_title'</span>,<span class="string">'(a)'</span>,<span class="string">'figure_name'</span>,<span class="string">'RecessionK'</span>,<span class="keyword">...</span>
+0185     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0186 
+0187 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,RecessionParameters(:,2),<span class="keyword">...</span>
+0188     <span class="string">'attribute_name'</span>,<span class="string">'\beta [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0189     <span class="string">'colour_scheme'</span>,<span class="string">'parula'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0190     <span class="string">'c_limits'</span>,[1 2],<span class="keyword">...</span>
+0191     <span class="string">'c_lower_limit_open'</span>,true,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0192     <span class="string">'figure_title'</span>,<span class="string">'(b)'</span>,<span class="string">'figure_name'</span>,<span class="string">'Recession_exponent'</span>,<span class="keyword">...</span>
+0193     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0194 
+0195 plotMapUK(CAMELS_GB_data.gauge_lat,CAMELS_GB_data.gauge_lon,EventRR,<span class="keyword">...</span>
+0196     <span class="string">'attribute_name'</span>,<span class="string">'EventRR [-]'</span>,<span class="string">'ID'</span>,CAMELS_GB_data.gauge_id,<span class="keyword">...</span>
+0197     <span class="string">'colour_scheme'</span>,<span class="string">'pink'</span>,<span class="string">'flip_colour_scheme'</span>,true,<span class="keyword">...</span>
+0198     <span class="string">'c_limits'</span>,[0.0 0.6],<span class="keyword">...</span>
+0199     <span class="string">'c_lower_limit_open'</span>,false,<span class="string">'c_upper_limit_open'</span>,true,<span class="keyword">...</span>
+0200     <span class="string">'figure_title'</span>,<span class="string">'(c)'</span>,<span class="string">'figure_name'</span>,<span class="string">'EventRR'</span>,<span class="keyword">...</span>
+0201     <span class="string">'save_figure'</span>,true,<span class="string">'figure_path'</span>,fig_path,<span class="string">'figure_type'</span>,<span class="string">'-dpng'</span>)
+0202 
+0203 <span class="comment">% We can see a clear patterns for all three signatures. The event runoff</span>
+0204 <span class="comment">% mostly ratio follows climate arditiy. It is high along the very wet west</span>
+0205 <span class="comment">% coast and low in the drier south east. The recession constant and the</span>
+0206 <span class="comment">% recession exponent vary less smoothly in space as they are influenced</span>
+0207 <span class="comment">% more strongly by the underlying geology. In areas underlain by highly</span>
+0208 <span class="comment">% productive aquifers (e.g. Chalk), both the recession constant and the</span>
+0209 <span class="comment">% recession exponent tend to be low.</span>
+0210 
+0211 <span class="comment">%% Further analysis of resulting signatures</span>
+0212 <span class="comment">% We can also show more directly how certain signatures relate to certain</span>
+0213 <span class="comment">% catchment attributes by plotting them against each other. We use the</span>
+0214 <span class="comment">% CAMELS GB attribute &quot;frac_high_perc&quot; which quantifies the fraction of a</span>
+0215 <span class="comment">% catchment underlain by highly productive fractured aquifers to show the</span>
+0216 <span class="comment">% influence of geology and aridity to show the influence of climate.</span>
+0217 
+0218 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0219 scatter(CAMELS_GB_data.aridity,BaseflowRecessionK,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0220 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0221 xlabel(<span class="string">'Aridity [-]'</span>)
+0222 ylabel(<span class="string">'K [1/d]'</span>)
+0223 
+0224 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0225 scatter(CAMELS_GB_data.aridity,RecessionParameters(:,2),25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0226 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0227 xlabel(<span class="string">'Aridity [-]'</span>)
+0228 ylabel(<span class="string">'\beta [-]'</span>); ylim([0 3])
+0229 
+0230 figure(<span class="string">'pos'</span>,[100 100 400 300])
+0231 scatter(CAMELS_GB_data.aridity,EventRR,25,CAMELS_GB_data.frac_high_perc,<span class="string">'filled'</span>)
+0232 caxis([0 1]); c = colorbar; title(c,<span class="string">'% fract. aquifer [-]'</span>)
+0233 xlabel(<span class="string">'Aridity [-]'</span>)
+0234 ylabel(<span class="string">'EventRR [-]'</span>); ylim([0 1])
+0235 
+0236 <span class="comment">% These plots correspond well with the patterns visible on the maps. The</span>
+0237 <span class="comment">% event runoff ratio is strongly correlated with aridity. Geology</span>
+0238 <span class="comment">% influences both the recession constant and the recession exponent, but</span>
+0239 <span class="comment">% also the event runoff ratio, which is lower if a catchment is underlain</span>
+0240 <span class="comment">% by a productive aquifer.</span>
+0241 
+0242 <span class="comment">%% Further information</span>
+0243 <span class="comment">% Further information can be found in the online documentation:</span>
+0244 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts.</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:15 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

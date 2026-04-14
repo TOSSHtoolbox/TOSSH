@@ -1,0 +1,467 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_MasterRecessionCurve</title>
+  <meta name="keywords" content="util_MasterRecessionCurve">
+  <meta name="description" content="util_MasterRecessionCurve fits a master recession curve to recession segments.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_MasterRecessionCurve.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_MasterRecessionCurve
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_MasterRecessionCurve fits a master recession curve to recession segments.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [MRC, fig_handles] = util_MasterRecessionCurve(Q, flow_section, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_MasterRecessionCurve fits a master recession curve to recession segments.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   flow_section: n-by-2 array where n is the number of recession segments;
+       columns are the indices into the flow array of the start and end of
+       the recession segments
+   OPTIONAL
+   fit_method: 'exponential' (approximates each recession segment as an
+       exponential before stacking into MRC), 'nonparameteric' (fits 
+       horizontal time shift for minimum standard deviation at each lag
+       time, does not assume any form of the curve)
+   match_method: how to space points on the MRC used for alignment,
+       'linear' or 'log'
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   MRC: two-column array of time and flow, specifying the MRC
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   flow_section = util_RecessionSegments(Q,t); % get recession segments
+   [mrc] = util_MasterRecessionCurve(Q, flow_section); % get MRC
+
+   References
+   Posavec, K., Bacani, A. and Nakic, Z., 2006. A visual basic spreadsheet
+   macro for recession curve analysis. Groundwater, 44(5), pp.764-767.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function f = mrc_nonparameteric(offsets, segments, S)</a></li><li><a href="#_sub2" class="code">function [segments_aligned_locs,locations] = offset_matrix(segments, S, offsets)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [MRC, fig_handles] = util_MasterRecessionCurve(Q, flow_section, varargin)</a>
+0002 <span class="comment">%util_MasterRecessionCurve fits a master recession curve to recession segments.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INPUT</span>
+0005 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0006 <span class="comment">%   flow_section: n-by-2 array where n is the number of recession segments;</span>
+0007 <span class="comment">%       columns are the indices into the flow array of the start and end of</span>
+0008 <span class="comment">%       the recession segments</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%   fit_method: 'exponential' (approximates each recession segment as an</span>
+0011 <span class="comment">%       exponential before stacking into MRC), 'nonparameteric' (fits</span>
+0012 <span class="comment">%       horizontal time shift for minimum standard deviation at each lag</span>
+0013 <span class="comment">%       time, does not assume any form of the curve)</span>
+0014 <span class="comment">%   match_method: how to space points on the MRC used for alignment,</span>
+0015 <span class="comment">%       'linear' or 'log'</span>
+0016 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OUTPUT</span>
+0019 <span class="comment">%   MRC: two-column array of time and flow, specifying the MRC</span>
+0020 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0021 <span class="comment">%       not requested)</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   EXAMPLE</span>
+0024 <span class="comment">%   % load example data</span>
+0025 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0026 <span class="comment">%   Q = data.Q;</span>
+0027 <span class="comment">%   t = data.t;</span>
+0028 <span class="comment">%   flow_section = util_RecessionSegments(Q,t); % get recession segments</span>
+0029 <span class="comment">%   [mrc] = util_MasterRecessionCurve(Q, flow_section); % get MRC</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%   References</span>
+0032 <span class="comment">%   Posavec, K., Bacani, A. and Nakic, Z., 2006. A visual basic spreadsheet</span>
+0033 <span class="comment">%   macro for recession curve analysis. Groundwater, 44(5), pp.764-767.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   Copyright (C) 2020</span>
+0036 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0037 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0038 
+0039 <span class="keyword">if</span> nargin &lt; 2
+0040     error(<span class="string">'Not enough input arguments.'</span>)
+0041 <span class="keyword">end</span>
+0042 
+0043 ip = inputParser;
+0044 ip.CaseSensitive = true;
+0045 
+0046 <span class="comment">% required input arguments</span>
+0047 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0048 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0049 addRequired(ip, <span class="string">'flow_section'</span>, @(flow_section) isnumeric(flow_section) &amp;&amp; (size(flow_section,2)==2))
+0050 
+0051 addParameter(ip, <span class="string">'fit_method'</span>, <span class="string">'exponential'</span>, @ischar) <span class="comment">% defines method for aligning flow segments</span>
+0052 addParameter(ip, <span class="string">'match_method'</span>, <span class="string">'log'</span>, @ischar) <span class="comment">% defines method for aligning flow segments</span>
+0053 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to show plot of MRC</span>
+0054 
+0055 parse(ip, Q, flow_section, varargin{:})
+0056 fit_method = ip.Results.fit_method;
+0057 match_method = ip.Results.match_method;
+0058 plot_results = ip.Results.plot_results;
+0059 
+0060 <span class="comment">% create empty figure handle</span>
+0061 fig_handles = [];
+0062 
+0063 <span class="comment">% calculate the master recession curve (MRC)</span>
+0064 <span class="comment">% MRC is an array [time after recession start, flow]</span>
+0065 
+0066 <span class="keyword">switch</span> fit_method
+0067     
+0068     <span class="keyword">case</span> <span class="string">'exponential'</span>
+0069         <span class="comment">% sort the flow sections according to highest starting value</span>
+0070         start_values = Q(flow_section(:,1).');
+0071         start_values = sortrows([(1:length(start_values)).',start_values],-2);
+0072         
+0073         <span class="comment">% start the MRC with the highest segment</span>
+0074         MRC = [(1:(flow_section(start_values(1,1),2)-flow_section(start_values(1,1),1)+1)).',<span class="keyword">...</span>
+0075             (Q(flow_section(start_values(1,1),1):flow_section(start_values(1,1),2)))];
+0076         
+0077         <span class="comment">% loop adding segment to MRC each time</span>
+0078         <span class="keyword">for</span> i = 2:size(flow_section,1)
+0079             <span class="comment">% fit an exponential to the mrc so far lny=ax+b</span>
+0080             <span class="comment">% Intercept is mdl(1), slope is mdl(2)</span>
+0081             mdl = [(MRC(:,1).^0) (MRC(:,1))]\log(MRC(:,2));
+0082             <span class="comment">% calculate the time shift required to place the initial point</span>
+0083             <span class="comment">% of the next recession segment on the first regression curve</span>
+0084             timeshift = ((log(start_values(i,2))-mdl(1))/mdl(2));
+0085             <span class="comment">% add the shifted segment to the master recession</span>
+0086             MRC = [MRC; <span class="keyword">...</span>
+0087                 [timeshift+(1:(flow_section(start_values(i,1),2)-flow_section(start_values(i,1),1)+1)).',<span class="keyword">...</span>
+0088                 (Q(flow_section(start_values(i,1),1):flow_section(start_values(i,1),2)))]];
+0089         <span class="keyword">end</span>
+0090         
+0091     <span class="keyword">case</span> <span class="string">'nonparametric_analytic'</span>
+0092         <span class="comment">% download all the flow segments, add jitter to avoid long constant</span>
+0093         <span class="comment">% flow values that can't be interpolated, sort values to avoid</span>
+0094         <span class="comment">% cases where flow is not decreasing, find min and max flow</span>
+0095         
+0096         <span class="comment">% constants</span>
+0097         jitter_size = 1e-8;
+0098         <span class="comment">% number of interpolated points in the MRC</span>
+0099         numflows = 500;
+0100         <span class="comment">% reset random number seed for reproducibility</span>
+0101         rng(<span class="string">'default'</span>)
+0102         
+0103         <span class="comment">% get number of flow segments</span>
+0104         numsegments = size(flow_section,1);
+0105         
+0106         <span class="comment">% order flow sections starting with the largest initial flow value</span>
+0107         flow_init_value = Q(flow_section(:,1));
+0108         [~,sortind]=sort(flow_init_value,<span class="string">'descend'</span>);
+0109         <span class="comment">% keep running tally of minimum</span>
+0110         running_min = max(flow_init_value);
+0111         
+0112         <span class="comment">% create cell array of recession segments, starting with highest flow</span>
+0113         <span class="comment">% add jitter to everything except the first value of each segment</span>
+0114         segments = [];
+0115         <span class="keyword">for</span> i = 1:size(flow_section,1)
+0116             <span class="comment">% retrieve the segment</span>
+0117             segment = Q(flow_section(sortind(i),1):flow_section(sortind(i),2));
+0118             <span class="comment">% add jitter</span>
+0119             segment(2:end) = segment(2:end) + <span class="keyword">...</span>
+0120                 normrnd(0,jitter_size,size(segment,1)-1,1);
+0121             <span class="comment">% avoid negative segment values</span>
+0122             segment = abs(segment)+1e-20;
+0123             <span class="comment">% sort the segment with jitter, in case eps parameter was used</span>
+0124             <span class="comment">% and so thereare small increases during the recessions</span>
+0125             segment = sort(segment,<span class="string">'descend'</span>);
+0126             <span class="comment">% store in cell array</span>
+0127             segments{i} = segment.';
+0128         <span class="keyword">end</span>
+0129         
+0130         <span class="comment">% get flow values where curves should be matched</span>
+0131         max_flow = max([segments{:}]);
+0132         min_flow = min([segments{:}]);
+0133         <span class="keyword">if</span> min_flow &lt;=0
+0134             min_flow = jitter_size;
+0135         <span class="keyword">end</span>
+0136         <span class="comment">% get interpolated flow values where MRC will be evaluated</span>
+0137         <span class="keyword">switch</span> match_method
+0138             <span class="keyword">case</span> <span class="string">'linear'</span>
+0139                 flow_vals = linspace(max_flow,min_flow,numflows);
+0140             <span class="keyword">case</span> <span class="string">'log'</span>
+0141                 frac_log = 0.2;
+0142                 gridspace = (max_flow - min_flow)/numflows;
+0143                 flow_vals = sort([linspace(max_flow-gridspace/2,min_flow+gridspace/2,numflows-floor(frac_log.*numflows)),<span class="keyword">...</span>
+0144                     logspace(log10(max_flow),log10(min_flow),floor(frac_log.*numflows))],<span class="string">'descend'</span>);
+0145                 flow_vals(end) = min_flow;
+0146                 flow_vals(1) = max_flow;
+0147                 flow_vals = sort(unique(flow_vals),<span class="string">'descend'</span>);
+0148                 numflows = numel(flow_vals);
+0149             <span class="keyword">otherwise</span>
+0150                 error(<span class="string">'Match method for MRC not a recognised option.'</span>)
+0151         <span class="keyword">end</span>
+0152         
+0153         <span class="comment">%Keep track of good segments</span>
+0154         short_segs = false(size(flow_section,1),1);
+0155         
+0156         <span class="comment">% extract and interpolate each segment, and check validity; remove</span>
+0157         <span class="comment">% invalid segments</span>
+0158         <span class="keyword">for</span> i = 1:numsegments
+0159                        
+0160             <span class="comment">% extract segment</span>
+0161             segment = segments{i};
+0162 
+0163             <span class="comment">% find indices of max and min interpolated flow values for this segment</span>
+0164             fmax_index = find(segment(1) &gt;= flow_vals,1,<span class="string">'first'</span>);
+0165             <span class="keyword">if</span> segment(end) &lt;= flow_vals(end)
+0166                 fmin_index = numel(flow_vals);
+0167             <span class="keyword">else</span>
+0168                 fmin_index = find(segment(end) &gt; flow_vals,1,<span class="string">'first'</span>)-1;
+0169             <span class="keyword">end</span>
+0170                        
+0171             <span class="comment">% find number of interpolated values</span>
+0172             nf = fmin_index-fmax_index+1;
+0173             
+0174             <span class="comment">% if no interpolated values (occurs when min and max of segment</span>
+0175             <span class="comment">% are too close together, remove the segment</span>
+0176             <span class="keyword">if</span> nf &lt;= 1
+0177                 <span class="comment">%Collect segment number</span>
+0178                 short_segs(i) = true;
+0179 
+0180             <span class="keyword">end</span>
+0181                  
+0182         <span class="keyword">end</span>
+0183         
+0184         <span class="comment">%If some segments were rejected, recalculate flow values for</span>
+0185         <span class="comment">%interpolation and flow value initialisations and counts</span>
+0186         <span class="keyword">if</span> sum(short_segs) &gt; 0
+0187             <span class="comment">%Remove segments without interpolated values</span>
+0188             segments(short_segs) = [];
+0189             numsegments = numel(segments);
+0190             <span class="comment">% keep running tally of minimum</span>
+0191             running_min = max(flow_init_value(sortind(~short_segs)));
+0192             <span class="comment">%Remove flow vals for interpolation if the reduced 'good' segment</span>
+0193             <span class="comment">%set no longer cover those values</span>
+0194             max_flow = max([segments{:}]);
+0195             min_flow = min([segments{:}]);
+0196             flow_vals(flow_vals &gt; max_flow)=[];
+0197             flow_vals(flow_vals &lt; min_flow)=[];
+0198             numflows = numel(flow_vals);
+0199         <span class="keyword">end</span>
+0200         
+0201         <span class="comment">% set up the optimisation matrix</span>
+0202         msp_matrix = zeros(numsegments*numflows*2,3);
+0203         b_matrix = zeros(numsegments*numflows,1);
+0204         <span class="comment">% initialise count into that matrix</span>
+0205         mcount = 1;
+0206         <span class="comment">% initialise count into sparse matrix</span>
+0207         mspcount = 1;
+0208         <span class="comment">%Keep track of any segments with no interpolated values</span>
+0209         bad_segs = [];
+0210         
+0211         
+0212         <span class="comment">% extract and interpolate each segment</span>
+0213         <span class="keyword">for</span> i = 1:numsegments
+0214                        
+0215             <span class="comment">% extract segment</span>
+0216             segment = segments{i};
+0217             <span class="comment">% if there is a gap between previous segments and this one,</span>
+0218             <span class="comment">% then interpolate with a vertical line</span>
+0219             <span class="keyword">if</span> segment(1) &lt; running_min
+0220                 segment = [running_min , segment];
+0221             <span class="keyword">end</span>
+0222             <span class="comment">% find indices of max and min interpolated flow values for this segment</span>
+0223             fmax_index = find(segment(1) &gt;= flow_vals,1,<span class="string">'first'</span>);
+0224             <span class="keyword">if</span> segment(end) &lt;= flow_vals(end)
+0225                 fmin_index = numel(flow_vals);
+0226             <span class="keyword">else</span>
+0227                 fmin_index = find(segment(end) &gt; flow_vals,1,<span class="string">'first'</span>)-1;
+0228             <span class="keyword">end</span>
+0229             <span class="comment">% interpolate each segment onto the flow values</span>
+0230             interp_segment = interp1(segment,1:numel(segment),flow_vals(fmax_index:fmin_index));
+0231             <span class="comment">% keep running tally of minimum</span>
+0232             running_min = min(running_min,flow_vals(fmin_index));
+0233             
+0234             <span class="comment">% find number of interpolated values</span>
+0235             nf = fmin_index-fmax_index+1;
+0236             
+0237             <span class="comment">% if no interpolated values (occurs when min and max of segment</span>
+0238             <span class="comment">% are too close together</span>
+0239             <span class="keyword">if</span> nf == 0
+0240                 <span class="comment">%Collect segment number</span>
+0241                 bad_segs = [bad_segs, i];
+0242                 <span class="comment">%Don't add to minimisation matrix</span>
+0243                 <span class="keyword">continue</span>
+0244             <span class="keyword">end</span>
+0245             
+0246             <span class="comment">% construct the minimisation matrix block for each segment</span>
+0247             <span class="keyword">if</span> i==1
+0248                 <span class="comment">% lag of the first segment is set to zero</span>
+0249                 msp_matrix(mspcount:mspcount+nf-1,:)=[[mspcount:mspcount+nf-1].',<span class="keyword">...</span>
+0250                     [numsegments+fmax_index-1:numsegments+fmin_index-1].',-ones(nf,1)];
+0251                 b_matrix(mcount:mcount+nf-1)=interp_segment(:);
+0252             <span class="keyword">else</span>
+0253                 <span class="comment">% lags of other segments can be minimised, along with the</span>
+0254                 <span class="comment">% fitted MRC</span>
+0255                 msp_matrix(mspcount:mspcount+2*nf-1,:) = [[mcount:mcount+nf-1,mcount:mcount+nf-1].',<span class="keyword">...</span>
+0256                     [(i-1)*ones(nf,1);<span class="keyword">...</span>
+0257                     [numsegments+fmax_index-1:numsegments+fmin_index-1].'],[ones(nf,1);-ones(nf,1)]];
+0258                 b_matrix(mcount:mcount+nf-1)=interp_segment(:);
+0259             <span class="keyword">end</span>
+0260             <span class="comment">% update count of rows in the optimisation matrix</span>
+0261             mcount = mcount + nf;
+0262             <span class="keyword">if</span> i==1
+0263                 mspcount = mspcount + nf;
+0264             <span class="keyword">else</span>
+0265                 mspcount = mspcount + 2*nf;
+0266             <span class="keyword">end</span>
+0267         <span class="keyword">end</span>
+0268         
+0269         <span class="comment">% create sparse matrix</span>
+0270         msp_matrix = msp_matrix(1:mspcount-1,:);
+0271         m_sparse = sparse(msp_matrix(:,1),msp_matrix(:,2),msp_matrix(:,3),mcount-1,numsegments-1+numflows);
+0272         
+0273         <span class="comment">% cut off unused rows of optimisation matrix</span>
+0274         B_mat = -b_matrix(1:mcount-1);
+0275         
+0276         <span class="comment">%Delete unused columns of minimimsation matrix</span>
+0277         seg_indices = [1:numsegments];
+0278         m_sparse(:,bad_segs-1)=[];
+0279         seg_indices(bad_segs)=[];
+0280         numsegments = numsegments - length(bad_segs);
+0281         
+0282         <span class="comment">% minimise the differences to a Master recession curve</span>
+0283         MRC_solve = m_sparse\B_mat;
+0284         
+0285         <span class="comment">% extract the time lags and flow values for the MRC</span>
+0286         lags = [0; MRC_solve(1:numsegments-1)];
+0287         mrc_time = MRC_solve(numsegments:end);
+0288         <span class="comment">% sort the MRC to avoid any places where not strictly decreasing</span>
+0289         mrc_time = sort(mrc_time,<span class="string">'ascend'</span>);
+0290         <span class="comment">%Have the MRC start at 0 time</span>
+0291         offset = min(mrc_time);
+0292         mrc_time = mrc_time - offset;
+0293         lags = lags - offset;
+0294         
+0295         <span class="comment">% output</span>
+0296         MRC = [mrc_time(:),flow_vals(:)];
+0297         
+0298         <span class="comment">% optional plotting</span>
+0299         <span class="keyword">if</span> plot_results
+0300             fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
+0301             <span class="keyword">for</span> i = 1:numsegments
+0302                 <span class="comment">% extract segment</span>
+0303                 segment = segments{seg_indices(i)};
+0304                 h1 = plot([1:length(segment)]+lags(i),segment,<span class="string">'b-'</span>);
+0305             <span class="keyword">end</span>
+0306             h2 = plot(mrc_time,flow_vals,<span class="string">'g'</span>,<span class="string">'linewidth'</span>,2);
+0307             xlabel(<span class="string">'Relative time'</span>)
+0308             ylabel(<span class="string">'Flow'</span>)
+0309             legend([h1 h2],{<span class="string">'Recession Segments'</span>,<span class="string">'Fitted MRC'</span>})
+0310             title(<span class="string">'Nonparametric MRC fit'</span>)
+0311             fig_handles.MRC_nonparametric = fig;
+0312         <span class="keyword">end</span>
+0313         
+0314     <span class="keyword">otherwise</span>
+0315         error(<span class="string">'Fit method for MRC not a recognised option.'</span>)
+0316 <span class="keyword">end</span>
+0317 
+0318 <span class="keyword">end</span>
+0319 
+0320 <a name="_sub1" href="#_subfunctions" class="code">function f = mrc_nonparameteric(offsets, segments, S)</a>
+0321 
+0322 [segments_aligned_locs,~] = <a href="#_sub2" class="code" title="subfunction [segments_aligned_locs,locations] = offset_matrix(segments, S, offsets)">offset_matrix</a>(segments, S, offsets);
+0323 
+0324 <span class="comment">% sum the standard deviations of each column, ignoring zero values</span>
+0325 segments_aligned_locs(segments_aligned_locs==0)=nan;
+0326 sd = var(segments_aligned_locs,1,<span class="string">'omitnan'</span>);
+0327 numvar = sum(segments_aligned_locs &gt; 0);
+0328 sd = sd.*numvar;
+0329 sd(isnan(sd))=0;
+0330 
+0331 f = sum(sd);
+0332 
+0333 <span class="keyword">end</span>
+0334 
+0335 <a name="_sub2" href="#_subfunctions" class="code">function [segments_aligned_locs,locations] = offset_matrix(segments, S, offsets)</a>
+0336 
+0337 offsets = [0, offsets];
+0338 num_segments = size(segments,2);
+0339 cellsz = cellfun(@length,segments,<span class="string">'uni'</span>,false);
+0340 max_length = ceil(max([(cellsz{:})]+offsets));
+0341 
+0342 <span class="comment">% line up all the segments, with offsets into an array</span>
+0343 <span class="keyword">if</span> ~(num_segments==floor(num_segments) &amp;&amp; max_length==floor(max_length))
+0344     error(<span class="string">'non integer dimensions'</span>)
+0345 <span class="keyword">end</span>
+0346 
+0347 <span class="comment">% offset each segment by the prescribed offset and add these locations to a</span>
+0348 <span class="comment">% master locations array</span>
+0349 locations = [];
+0350 <span class="keyword">for</span> i = 1:num_segments
+0351     segment_i = segments{i};
+0352     segment_loc = offsets(i)+1:offsets(i)+length(segment_i);
+0353     locations = [locations, segment_loc];
+0354 <span class="keyword">end</span>
+0355 
+0356 <span class="comment">% sort all the locations from all the segments into once increasing array</span>
+0357 locations = sort(locations);
+0358 <span class="comment">% set up an array where the segment values can be stored against their locations</span>
+0359 segments_aligned_locs = zeros(num_segments,length(locations));
+0360 
+0361 <span class="comment">% for each segment</span>
+0362 <span class="keyword">for</span> i = 1:num_segments
+0363     <span class="comment">% retrieve segment values from master array</span>
+0364     segment_i = segments{i};
+0365     <span class="comment">% recalculate the segment locations</span>
+0366     segment_loc = 1:length(segment_i);
+0367     locations_i = locations - offsets(i);
+0368     
+0369     <span class="comment">% find the start and end point of the segment within the locations array</span>
+0370     locations_start = find(segment_loc(1)&lt;=locations_i,1,<span class="string">'first'</span>);
+0371     locations_end = find(segment_loc(end)&gt;=locations_i,1,<span class="string">'last'</span>);
+0372     
+0373     <span class="comment">% interpolate the segment onto all the intervening locations</span>
+0374     Si=S{i};
+0375     segment_i_interp=Si(locations_i(locations_start:locations_end).');
+0376     
+0377     <span class="comment">% write the interpolated values into the master array</span>
+0378     segments_aligned_locs(i,locations_start:locations_end) = segment_i_interp;
+0379     
+0380 <span class="keyword">end</span>
+0381 
+0382 <span class="keyword">end</span>
+0383</pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
