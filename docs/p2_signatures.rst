@@ -7,7 +7,6 @@ Below we provide a list of signatures with a short description organised accordi
 A more detailed description of each signature can be found in the Matlab functions which can be opened by clicking on the function name.
 At the end of the page we also provide a list with all remaining signatures contained in TOSSH which are not (yet) part of any set.
 
-`Click here to browse through all Matlab functions contained in TOSSH. <./_static/matlab/TOSSH_code/index.html>`_
 
 List of signature sets
 ----------------------
@@ -15,7 +14,7 @@ List of signature sets
  
 Basic set
 ^^^^^^^^^
-The basic set of signatures (`calc_BasicSet.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_BasicSet.html>`_) 
+The basic set of signatures (`calc_BasicSet.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_BasicSet.m>`_) 
 is designed to cover the five components of a natural streamflow regime 
 as defined by Richter et al. (1996) [1]_ and Poff et al. (1997) [2]_: 
 magnitude, frequency, duration, timing, and rate of change.
@@ -35,7 +34,7 @@ Benchmark sets
 
 Addor et al. (2018) set
 """""""""""""""""""""""
-Addor et al. (2018) [3]_ use 15 signatures (`calc_Addor.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Addor.html>`_) 
+Addor et al. (2018) [3]_ use 15 signatures (`calc_Addor.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_Addor.m>`_) 
 that “characterize different parts of the hydrograph, 
 and [...] are sensitive to processes occurring over different time scales”. 
 The signatures are selected from those commonly used in the literature, 
@@ -49,7 +48,7 @@ and are used to explore the strength of relationships between signatures and cat
 
 Sawicz et al. (2011) set
 """"""""""""""""""""""""
-Sawicz et al. (2011) [4]_ use 6 signatures (`calc_Sawicz.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Sawicz.html>`_) 
+Sawicz et al. (2011) [4]_ use 6 signatures (`calc_Sawicz.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_Sawicz.m>`_) 
 drawn largely from Yadav et al. (2007) [5]_, 
 that are chosen to be uncorrelated and to be linked to catchment function. 
 The signatures are used to analyse hydrological similarity between catchments, 
@@ -63,7 +62,7 @@ and link the resulting clusters to climate and landscape attributes.
 
 Euser et al. (2013) set 
 """""""""""""""""""""""
-Euser et al. (2013) [6]_ use 8 signatures (`calc_Euser.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_Euser.html>`_) 
+Euser et al. (2013) [6]_ use 8 signatures (`calc_Euser.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_Euser.m>`_) 
 that represent different aspects of hydrological behaviour. 
 The signatures are used to test the consistency of model performance, 
 within the FARM model evaluation framework.
@@ -82,7 +81,7 @@ Process-based signature sets
 
 McMillan (2020) groundwater set
 """""""""""""""""""""""""""""""
-Calculates 15 signatures (`calc_McMillan_Groundwater.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_Groundwater.html>`_)
+Calculates 15 signatures (`calc_McMillan_Groundwater.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_McMillan_Groundwater.m>`_)
 from McMillan (2020) [7]_, related to groundwater 
 storage, groundwater dynamics and baseflow. These signatures come from 
 previous experimental studies that link catchment or hillslope 
@@ -103,7 +102,7 @@ from a qualitative description in the paper.
 McMillan (2020) overland flow set
 """""""""""""""""""""""""""""""""
 Calculates 10 overland flow (infiltration excess and saturation excess)
-signatures (`calc_McMillan_OverlandFlow.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_McMillan_OverlandFlow.html>`_)
+signatures (`calc_McMillan_OverlandFlow.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_McMillan_OverlandFlow.m>`_)
 from McMillan (2020) [7]_. These signatures come from previous
 experimental studies that link catchment or hillslope processes to
 streamflow response dynamics. Some signatures are implemented direct
@@ -118,7 +117,7 @@ Note that these signatures are all calculated with the same function.
 
 Wu et al., (2021) overland flow set
 """""""""""""""""""""""""""""""""
-A function `sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ 
+A function `sig_EventGraphThresholds.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_EventGraphThresholds.m>`_ 
 and sig_EventGraphThresholds_hourlyfrac.m contains 2 overland flow 
 signatures from Wu et al., (2021) [8]_. The implementation in this toolbox is the adapted and coded version by Bolotin and McMillan (2025) [9]_. 
 
@@ -135,7 +134,7 @@ This is a list of all remaining signatures contained in TOSSH as of 2021.
 Please note that newer functions might not be listed yet.
 
 ..
-	(`calc_All.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html>`_)
+	(`calc_All.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/calculation_functions/calc_All.m>`_)
 
 
 .. csv-table:: Remaining signatures

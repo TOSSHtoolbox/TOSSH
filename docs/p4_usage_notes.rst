@@ -17,7 +17,7 @@ These parameters have been manually tuned for selected signatures and U.S. gages
 
 - Parameter file: `params_overlandflow.csv <https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_overlandflow.csv>`_
 
-- Use these parameters for the event separation algorithm `util_EventSeparation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html>`_
+- Use these parameters for the event separation algorithm `util_EventSeparation.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/utility_functions/util_EventSeparation.m>`_
 
 - Parameters included: ``min_termination``, ``min_duration``, ``min_intensity_day``, ``min_intensity_day_during``, ``max_recessiondays`` per CONUS region
 
@@ -27,7 +27,7 @@ These parameters have been manually tuned for selected signatures and U.S. gages
 
 - Parameter file: `params_recession.csv <https://github.com/TOSSHtoolbox/TOSSH/tree/master/docs/_static/usages/params_recession.csv>`_ 
 
-- Use these parameters for the recession delineation algorithm `util_RecessionSegments.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_RecessionSegments.html>`_ 
+- Use these parameters for the recession delineation algorithm `util_RecessionSegments.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/utility_functions/util_RecessionSegments.m>`_ 
 
 - Parameters included: ``recession_length``, ``n_start``, ``eps``, ``filter_par`` for low or high rainfall area
 
@@ -36,9 +36,9 @@ These parameters have been manually tuned for selected signatures and U.S. gages
 How to Adjust Parameters Yourself
 ^^^^^^^^^
 If the provided parameters do not suit your dataset, here are some guidelines for tuning key parameters. 
-We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_EventGraphThresholds.html>`_ and `sig_RecessionAnalysis.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/signature_functions/sig_RecessionAnalysis.html>`_) to inspect how well the parameters fit your time series.
+We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_EventGraphThresholds.m>`_ and `sig_RecessionAnalysis.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_RecessionAnalysis.m>`_) to inspect how well the parameters fit your time series.
 
-- Key parameters for `util_EventSeparation.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_EventSeparation.html>`_: 
+- Key parameters for `util_EventSeparation.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/utility_functions/util_EventSeparation.m>`_: 
 	- ``min_termination``: 
 		- This parameter controls how long the shortest storm event should be. The default value can be set to **48 hours** for daily data. With this, once-in-3-days rainfall is being separated as the new event. 
 		- For persistent rainfall or slower-responding watersheds, increase the values (e.g., **72 hours**).
@@ -51,7 +51,7 @@ We highly recommend using TOSSH visualization tools (`sig_EventGraphThresholds.m
     - ``min_duration``:
         - The default value can be set to **1 day** (no tuning is required for daily data).
 
-- Key parameters for `util_RecessionSegments.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/utility_functions/util_RecessionSegments.html>`_:
+- Key parameters for `util_RecessionSegments.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/utility_functions/util_RecessionSegments.m>`_:
     - ``recession_length``:
         - The default value can be set to **5 days** with ``eps=0.08`` for most cases.
         - For low-flow conditions, use longer thresholds (e.g., **10 days** with ``eps=0.01``).
