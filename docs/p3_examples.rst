@@ -207,10 +207,10 @@ Further examples
 Example scripts can be found in *TOSSH/example/*. 
 
 * `workflow_1_basic.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_1_basic.m>`_ contains the code shown on this page which shows basic functionalities of TOSSH with example data from one catchment
-* `workflow_2_advanced.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/workflow_2_advanced.m>`_ contains code that shows advanced functionalities of TOSSH with example data from multiple catchments
-* `workflow_3_time_resolution.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/workflow_3_time_resolution.m>`_ contains code that shows how to use TOSSH with example data from the same catchment but with different time resolution
-* `workflow_4_CAMELS_US.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/workflow_4_CAMELS_US.m>`_ contains code that shows how to use TOSSH to calculate the Addor et al. (2018) [2]_ signatures using the CAMELS dataset
-* `workflow_5_CAMELS_GB.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/workflow_5_CAMELS_GB.m>`_ contains code that shows how to use TOSSH to calculate various signatures using the CAMELS GB dataset (Coxon et al., 2020) [1]_
+* `workflow_2_advanced.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_2_advanced.m>`_ contains code that shows advanced functionalities of TOSSH with example data from multiple catchments
+* `workflow_3_time_resolution.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_3_time_resolution.m>`_ contains code that shows how to use TOSSH with example data from the same catchment but with different time resolution
+* `workflow_4_CAMELS_US.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_4_CAMELS_US.m>`_ contains code that shows how to use TOSSH to calculate the Addor et al. (2018) [2]_ signatures using the CAMELS dataset
+* `workflow_5_CAMELS_GB.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/example/workflow_5_CAMELS_GB.m>`_ contains code that shows how to use TOSSH to calculate various signatures using the CAMELS GB dataset (Coxon et al., 2020) [1]_
 
 
 For each signature, we also provide small examples in the description of each m-file::
