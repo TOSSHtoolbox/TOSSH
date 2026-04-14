@@ -128,7 +128,7 @@ signatures from Wu et al., (2021) [8]_. The implementation in this toolbox is th
    :delim: ;
 
 
-TOSSH: all remaining signatures
+TOSSH: remaining signatures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This is a list of all remaining signatures contained in TOSSH as of 2021. 
@@ -138,7 +138,7 @@ Please note that newer functions might not be listed yet.
 	(`calc_All.m <./_static/matlab/TOSSH_code/TOSSH/TOSSH_code/calculation_functions/calc_All.html>`_)
 
 
-.. csv-table:: All remaining signatures
+.. csv-table:: Remaining signatures
    :file: ./_static/remaining_signatures.csv
    :header-rows: 1
    :delim: ;
