@@ -1,0 +1,7 @@
+Signature;Function (click for code);Unit;Description
+TotalRR;`sig_TotalRR.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_TotalRR.m>`_ ;--;Total runoff ratio
+FDC_slope;`sig_FDC_slope.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_FDC_slope.m>`_ ;--;Slope of the flow duration curve
+BFI;`sig_BFI.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_BFI.m>`_ ;--;Baseflow index
+QP_elasticity;`sig_QP_elasticity.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_QP_elasticity.m>`_ ;--;Streamflow-precipitation elasticity
+SnowDayRatio;`sig_SnowDayRatio.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_SnowDayRatio.m>`_ ;--;Snow day ratio
+RLD;`sig_RisingLimbDensity.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_RisingLimbDensity.m>`_ ;1/timestep;Rising limb density

@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sig_StorageFraction</title>
+  <meta name="keywords" content="sig_StorageFraction">
+  <meta name="description" content="sig_StorageFraction calculates ratio between active and total storage.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">signature_functions</a> &gt; sig_StorageFraction.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\signature_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>sig_StorageFraction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sig_StorageFraction calculates ratio between active and total storage.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [S_fraction, S_active, S_total, error_flag, error_str, fig_handles] =sig_StorageFraction(Q, t, P, PET, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">sig_StorageFraction calculates ratio between active and total storage.
+   Maximum storage deficit in the series (active storage) and total
+   storage volume (extrapolation to find storage deficit at near-zero
+   flow; see Pfister et al., 2017).
+
+   Notes:
+   This is our own implementation of Pfister et al. (2017) and it has not
+   been tested for a wide range of catchments. Please investigate the plot
+   to see if the signatures are calculated reasonably.
+
+   INPUT
+   Q: streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   P: precipitation [mm/timestep]
+   PET: potential evapotranspiration [mm/timestep]
+   OPTIONAL
+   field_capacity: field capacity [mm]
+   bin_size: bin size used to determine envelope (default: 10 mm)
+   fit_range: range of envelope to which linear line should be fitted
+       (default: 50th to 100th percentile, i.e. [0.5 1.0])
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   S_fraction: ratio between active and total storage capacity [-]
+   S_active: active storage capacity [mm]
+   S_total: total storage capacity [mm]
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   P = data.P;
+   PET = data.PET;
+   S_fraction = sig_StorageFraction(Q, t, P, PET);
+   [S_fraction, S_active, S_total] = sig_StorageFraction(Q, t, P, PET, 'plot_results', true);
+
+   References
+   Pfister, L., Martínez-Carreras, N., Hissler, C., Klaus, J., Carrer,
+   G.E., Stewart, M.K. and McDonnell, J.J., 2017. Bedrock geology controls
+   on catchment storage, mixing, and release: A comparative analysis of 16
+   nested catchments. Hydrological Processes, 31(10), pp.1828-1845.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [S_fraction, S_active, S_total, error_flag, error_str, fig_handles] = </a><span class="keyword">...</span>
+0002     sig_StorageFraction(Q, t, P, PET, varargin)
+0003 <span class="comment">%sig_StorageFraction calculates ratio between active and total storage.</span>
+0004 <span class="comment">%   Maximum storage deficit in the series (active storage) and total</span>
+0005 <span class="comment">%   storage volume (extrapolation to find storage deficit at near-zero</span>
+0006 <span class="comment">%   flow; see Pfister et al., 2017).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   Notes:</span>
+0009 <span class="comment">%   This is our own implementation of Pfister et al. (2017) and it has not</span>
+0010 <span class="comment">%   been tested for a wide range of catchments. Please investigate the plot</span>
+0011 <span class="comment">%   to see if the signatures are calculated reasonably.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   INPUT</span>
+0014 <span class="comment">%   Q: streamflow [mm/timestep]</span>
+0015 <span class="comment">%   t: time [Matlab datetime]</span>
+0016 <span class="comment">%   P: precipitation [mm/timestep]</span>
+0017 <span class="comment">%   PET: potential evapotranspiration [mm/timestep]</span>
+0018 <span class="comment">%   OPTIONAL</span>
+0019 <span class="comment">%   field_capacity: field capacity [mm]</span>
+0020 <span class="comment">%   bin_size: bin size used to determine envelope (default: 10 mm)</span>
+0021 <span class="comment">%   fit_range: range of envelope to which linear line should be fitted</span>
+0022 <span class="comment">%       (default: 50th to 100th percentile, i.e. [0.5 1.0])</span>
+0023 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   OUTPUT</span>
+0026 <span class="comment">%   S_fraction: ratio between active and total storage capacity [-]</span>
+0027 <span class="comment">%   S_active: active storage capacity [mm]</span>
+0028 <span class="comment">%   S_total: total storage capacity [mm]</span>
+0029 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0030 <span class="comment">%       (error in signature calculation)</span>
+0031 <span class="comment">%   error_str: string contraining error description</span>
+0032 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0033 <span class="comment">%       not requested)</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%   EXAMPLE</span>
+0036 <span class="comment">%   % load example data</span>
+0037 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0038 <span class="comment">%   Q = data.Q;</span>
+0039 <span class="comment">%   t = data.t;</span>
+0040 <span class="comment">%   P = data.P;</span>
+0041 <span class="comment">%   PET = data.PET;</span>
+0042 <span class="comment">%   S_fraction = sig_StorageFraction(Q, t, P, PET);</span>
+0043 <span class="comment">%   [S_fraction, S_active, S_total] = sig_StorageFraction(Q, t, P, PET, 'plot_results', true);</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%   References</span>
+0046 <span class="comment">%   Pfister, L., Martínez-Carreras, N., Hissler, C., Klaus, J., Carrer,</span>
+0047 <span class="comment">%   G.E., Stewart, M.K. and McDonnell, J.J., 2017. Bedrock geology controls</span>
+0048 <span class="comment">%   on catchment storage, mixing, and release: A comparative analysis of 16</span>
+0049 <span class="comment">%   nested catchments. Hydrological Processes, 31(10), pp.1828-1845.</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%   Copyright (C) 2020</span>
+0052 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0053 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0054 
+0055 <span class="comment">% check input parameters</span>
+0056 <span class="keyword">if</span> nargin &lt; 4
+0057     error(<span class="string">'Not enough input arguments.'</span>)
+0058 <span class="keyword">end</span>
+0059 
+0060 ip = inputParser;
+0061 ip.CaseSensitive = true;
+0062 
+0063 <span class="comment">% required input arguments</span>
+0064 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0065 addRequired(ip, <span class="string">'Q'</span>, @(Q) isnumeric(Q) &amp;&amp; (size(Q,1)==1 || size(Q,2)==1))
+0066 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0067 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0068 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0069 addRequired(ip, <span class="string">'P'</span>, @(P) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0070 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0071 addRequired(ip, <span class="string">'PET'</span>, @(PET) isnumeric(P) &amp;&amp; (size(P,1)==1 || size(P,2)==1))
+0072 
+0073 <span class="comment">% optional input arguments</span>
+0074 addParameter(ip, <span class="string">'field_capacity'</span>, [], @isnumeric) <span class="comment">% field capacity</span>
+0075 addParameter(ip, <span class="string">'bin_size'</span>, 10, @isnumeric) <span class="comment">% bin size used to determine envelope</span>
+0076 addParameter(ip, <span class="string">'fit_range'</span>, [0.5 0.99], @isnumeric) <span class="comment">% range of envelope to which linear line should be fitted</span>
+0077 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results</span>
+0078 
+0079 parse(ip, Q, t, P, PET, varargin{:})
+0080 field_capacity = ip.Results.field_capacity;
+0081 bin_size = ip.Results.bin_size;
+0082 fit_range = ip.Results.fit_range;
+0083 plot_results = ip.Results.plot_results;
+0084 
+0085 <span class="comment">% data checks</span>
+0086 [error_flag, error_str, timestep, t] = util_DataCheck(Q, t, <span class="string">'P'</span>, P, <span class="string">'PET'</span>, PET);
+0087 <span class="keyword">if</span> error_flag == 2
+0088     S_fraction = NaN;
+0089     S_active = NaN;
+0090     S_total = NaN;
+0091     <span class="keyword">return</span>
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">% calculate signature</span>
+0095 
+0096 <span class="comment">% get rid of NaN values (temporarily)</span>
+0097 isn = isnan(Q); <span class="comment">% store NaN indices</span>
+0098 Q(isnan(Q)) = median(Q,<span class="string">'omitnan'</span>); <span class="comment">% Q NaNs are set to the median flow</span>
+0099 P(isnan(P)) = 0; <span class="comment">% P NaNs are set to zero</span>
+0100 PET(isnan(PET)) = median(PET,<span class="string">'omitnan'</span>); <span class="comment">% PET NaNs are set to median PET</span>
+0101 
+0102 <span class="comment">% estimate storage</span>
+0103 [S, ~] = util_StorageAndAET(Q, t, P, PET, <span class="string">'field_capacity'</span>, field_capacity);
+0104 
+0105 Q(isn) = NaN; <span class="comment">% set Q and corresponding S back to NaN</span>
+0106 S(isn) = NaN;
+0107 S_max = max(S); <span class="comment">% maximum storage capacity</span>
+0108 D = S_max - S; <span class="comment">% storage deficit</span>
+0109 
+0110 <span class="comment">% get FDC and corresponding deficits</span>
+0111 [Q_sorted,ind] = sort(Q);
+0112 <span class="comment">% Q_ranked = tiedrank(Q_sorted);</span>
+0113 Q_ranked = [1:length(Q)]'; <span class="comment">% give unique (random) rank to every measurement</span>
+0114 FDC = 1 - Q_ranked./length(Q_ranked); <span class="comment">% flow duration curve with unique ranks</span>
+0115 D_sorted = D(ind);
+0116 
+0117 <span class="comment">% get deficit value determined from the 99th percentile of the observed FDC</span>
+0118 indices = 1:length(FDC);
+0119 ind99 = max(indices(FDC &gt;= 0.99));
+0120 S_active = D_sorted(ind99);
+0121 
+0122 <span class="comment">% calculate total storage capacity S_total</span>
+0123 D_rounded = round((1/bin_size).*D_sorted).*bin_size; <span class="comment">% round deficit and get unique values</span>
+0124 D_rounded(isnan(D_rounded)) = []; <span class="comment">% remove NaN values</span>
+0125 D_unique = unique(D_rounded);
+0126 D_envelope = NaN(size(D_unique));
+0127 Q_envelope = NaN(size(D_unique));
+0128 <span class="keyword">for</span> i = 1:length(D_unique)
+0129     Q_tmp = Q_sorted(D_rounded==D_unique(i));
+0130     D_tmp = D_sorted(D_rounded==D_unique(i));
+0131     [Q_envelope(i),index] = min(Q_tmp); <span class="comment">% get min of bin to obtain envelope points</span>
+0132     D_envelope(i) = D_tmp(index); <span class="comment">% get corresponding deficits</span>
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="comment">% fit line to envelope (default: use 50th to 100th percentile (upper limit))</span>
+0136 low = round(length(Q_envelope)*fit_range(1));
+0137 upp = round(length(Q_envelope)*fit_range(2));
+0138 
+0139 <span class="comment">% ephemeral catchments need special treatment</span>
+0140 <span class="keyword">if</span> min(Q) &lt; 0.001
+0141     S_total = max(D);
+0142     S_active = S_total;
+0143     error_flag = 1;
+0144     error_str = [<span class="string">'Warning: Storage ratio calculation unreliable for ephemeral catchments. '</span>, error_str];
+0145 <span class="keyword">else</span>
+0146     [m, c, ~] = util_FitLinear(Q_envelope(low:upp),D_envelope(low:upp));
+0147     <span class="comment">% todo: add uncertainty</span>
+0148     S_total = m + c.*0.001;
+0149     <span class="keyword">if</span> c &gt;= 0 <span class="comment">% slope of fitted line has to be negative</span>
+0150         c = NaN;
+0151         S_total = NaN;
+0152         error_flag = 1;
+0153         error_str = [<span class="string">'Warning: Total storage could not be estimated properly. '</span>, error_str];
+0154     <span class="keyword">end</span>
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="comment">% check results</span>
+0158 <span class="keyword">if</span> isempty(S_active) || isempty(S_total)
+0159     S_fraction = NaN;
+0160     S_total = NaN;
+0161     S_active = NaN;
+0162     error_flag = 3;
+0163     error_str = [<span class="string">'Error: Active or total storage could not be calculated. '</span>, error_str];
+0164     <span class="keyword">return</span>
+0165 <span class="keyword">end</span>
+0166     
+0167 <span class="keyword">if</span> S_active &gt; S_total
+0168     error_flag = 1;
+0169     error_str = [<span class="string">'Warning: Estimated active storage is larger than total storage. '</span>, error_str];
+0170 <span class="keyword">end</span>
+0171 
+0172 S_fraction = S_active/S_total; <span class="comment">% calculate storage fraction</span>
+0173 
+0174 <span class="comment">% optional plotting</span>
+0175 <span class="keyword">if</span> plot_results
+0176     fig = figure(<span class="string">'Position'</span>,[100 100 350 300]); hold on
+0177     p1 = plot(Q,D,<span class="string">'-'</span>,<span class="string">'color'</span>,[.9 .9 .9]);
+0178     p2 = plot(Q,D,<span class="string">'.'</span>,<span class="string">'color'</span>,[.5 .5 .5]);
+0179     p3 = plot(Q_envelope,D_envelope,<span class="string">'k o'</span>,<span class="string">'linewidth'</span>,2);
+0180     <span class="keyword">if</span> min(Q) &lt; 0.001
+0181         p4 = plot(NaN,NaN);
+0182     <span class="keyword">else</span>
+0183         p4 = plot([median(Q_envelope):-0.001:0.001],<span class="keyword">...</span>
+0184             m+[median(Q_envelope):-0.001:0.001].*c,<span class="string">'g-'</span>,<span class="string">'linewidth'</span>,1.5);
+0185     <span class="keyword">end</span>
+0186     p5 = plot(0.001,S_total,<span class="string">'g x'</span>,<span class="string">'linewidth'</span>,1.5);
+0187     p6 = plot(Q_sorted(ind99),S_active,<span class="string">'r o'</span>,<span class="string">'linewidth'</span>,2);
+0188     xlabel(<span class="string">'Flow [mm/d]'</span>)
+0189     ylabel(<span class="string">'Storage deficit [mm]'</span>)
+0190     legend([p2 p3 p5 p6 p4],<span class="keyword">...</span>
+0191         {<span class="string">'All points'</span>,<span class="string">'Envelope'</span>,<span class="string">'S_{total}'</span>,<span class="string">'S_{active}'</span>,<span class="string">'Fitted Line'</span>})
+0192     <span class="comment">%set(gca,'xScale','log');</span>
+0193     fig_handles.StorageFraction = fig;
+0194 <span class="keyword">end</span>
+0195 
+0196 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

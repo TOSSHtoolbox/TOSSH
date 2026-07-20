@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_AverageYear</title>
+  <meta name="keywords" content="util_AverageYear">
+  <meta name="description" content="util_AverageYear calculates average year, i.e. the mean on each day.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_AverageYear.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_AverageYear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_AverageYear calculates average year, i.e. the mean on each day.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [X_avg, t_avg, fig_handles] = util_AverageYear(X, t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_AverageYear calculates average year, i.e. the mean on each day.
+   Note that the mean is returned in mm/timestep, i.e. it has to be 
+   converted to mm/day if the daily flow is required. 
+
+   INPUT
+   X: time series, e.g. streamflow [mm/timestep]
+   t: time [Matlab datetime]
+   OPTIONAL
+   start_water_year: first month of water year, default = 1 (January)
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   X_avg: average flow on each date [mm/timestep]
+   t_avg: corresponding dates
+   fig_handles: figure handles to manipulate figures (empty if plotting is
+       not requested)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   Q_avg = util_AverageYear(Q,t);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [X_avg, t_avg, fig_handles] = util_AverageYear(X, t, varargin)</a>
+0002 <span class="comment">%util_AverageYear calculates average year, i.e. the mean on each day.</span>
+0003 <span class="comment">%   Note that the mean is returned in mm/timestep, i.e. it has to be</span>
+0004 <span class="comment">%   converted to mm/day if the daily flow is required.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT</span>
+0007 <span class="comment">%   X: time series, e.g. streamflow [mm/timestep]</span>
+0008 <span class="comment">%   t: time [Matlab datetime]</span>
+0009 <span class="comment">%   OPTIONAL</span>
+0010 <span class="comment">%   start_water_year: first month of water year, default = 1 (January)</span>
+0011 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   OUTPUT</span>
+0014 <span class="comment">%   X_avg: average flow on each date [mm/timestep]</span>
+0015 <span class="comment">%   t_avg: corresponding dates</span>
+0016 <span class="comment">%   fig_handles: figure handles to manipulate figures (empty if plotting is</span>
+0017 <span class="comment">%       not requested)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   EXAMPLE</span>
+0020 <span class="comment">%   % load example data</span>
+0021 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0022 <span class="comment">%   Q = data.Q;</span>
+0023 <span class="comment">%   t = data.t;</span>
+0024 <span class="comment">%   Q_avg = util_AverageYear(Q,t);</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   Copyright (C) 2020</span>
+0027 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0028 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0029 
+0030 <span class="comment">% check input parameters</span>
+0031 <span class="keyword">if</span> nargin &lt; 2
+0032     error(<span class="string">'Not enough input arguments.'</span>)
+0033 <span class="keyword">end</span>
+0034 
+0035 ip = inputParser;
+0036 ip.CaseSensitive = true; 
+0037 
+0038 <span class="comment">% required input arguments</span>
+0039 <span class="comment">% time series have to be numeric and either a (n,1) or a (1,n) vector</span>
+0040 addRequired(ip, <span class="string">'X'</span>, @(X) isnumeric(X) &amp;&amp; (size(X,1)==1 || size(X,2)==1))
+0041 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0042 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0043 
+0044 <span class="comment">% optional input arguments</span>
+0045 addParameter(ip, <span class="string">'start_water_year'</span>, 1, @isnumeric)
+0046 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results</span>
+0047 
+0048 parse(ip, X, t, varargin{:})
+0049 start_water_year = ip.Results.start_water_year;
+0050 plot_results = ip.Results.plot_results;
+0051 
+0052 <span class="comment">% create empty figure handle</span>
+0053 fig_handles = [];
+0054 
+0055 <span class="comment">% calculate average year</span>
+0056 months = [start_water_year:12, 1:start_water_year-1]';
+0057 n_days = [31 28 31 30 31 30 31 31 30 31 30 31]';
+0058 
+0059 X_avg = NaN(365,1);
+0060 t_avg = NaN(365,3);
+0061 index = 1;
+0062 
+0063 <span class="comment">% loop over months</span>
+0064 day_vec = day(t);
+0065 month_vec = month(t);
+0066 <span class="keyword">for</span> i = 1:12
+0067     m = months(i);
+0068     <span class="comment">% loop over days</span>
+0069     <span class="keyword">for</span> d = 1:n_days(m)
+0070         <span class="comment">% X_avg(index) = mean(X(day_vec == d &amp; month_vec == m),'omitnan');</span>
+0071         X_tmp = X(day_vec == d &amp; month_vec == m);
+0072         X_avg(index) = sum(X_tmp,<span class="string">'omitnan'</span>)/length(X_tmp);
+0073         t_avg(index,:) = [0,m,d]; <span class="comment">% dummy year</span>
+0074         index = index + 1;
+0075     <span class="keyword">end</span>
+0076 <span class="keyword">end</span>
+0077 t_avg = datetime(t_avg); <span class="comment">% dummy year</span>
+0078 
+0079 <span class="comment">% optional plotting</span>
+0080 <span class="keyword">if</span> plot_results
+0081     fig = figure(<span class="string">'pos'</span>,[100 100 350 300]); hold on
+0082     plot(t_avg,X_avg,<span class="string">'.'</span>)
+0083     xlabel(<span class="string">'Day'</span>)
+0084     ylabel(<span class="string">'Mean on that day [mm/timestep]'</span>)
+0085     fig_handles.AverageYear = fig;
+0086 <span class="keyword">end</span>
+0087 
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

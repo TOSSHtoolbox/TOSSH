@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of workflow_1_basic</title>
+  <meta name="keywords" content="workflow_1_basic">
+  <meta name="description" content="% TOSSH workflow 1 - basic workflow (also shown in online documentation)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="index.html">example</a> &gt; workflow_1_basic.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../index.html"><img alt="<" border="0" src="../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\example&nbsp;<img alt=">" border="0" src="../../right.png"></a></td></tr></table>-->
+
+<h1>workflow_1_basic
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% TOSSH workflow 1 - basic workflow (also shown in online documentation)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOSSH workflow 1 - basic workflow (also shown in online documentation)
+
+   This script shows the basic functionalities of TOSSH with some example 
+   data. You can go through this example step by step by evaluating each 
+   section (separated by %%) using Ctrl+Enter. 
+
+   The example data used in this workflow are taken from CAMELS-GB 
+   (Coxon et al., 2020), see README_example_data.txt for more information
+   on data sources.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOSSH workflow 1 - basic workflow (also shown in online documentation)</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%   This script shows the basic functionalities of TOSSH with some example</span>
+0004 <span class="comment">%   data. You can go through this example step by step by evaluating each</span>
+0005 <span class="comment">%   section (separated by %%) using Ctrl+Enter.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   The example data used in this workflow are taken from CAMELS-GB</span>
+0008 <span class="comment">%   (Coxon et al., 2020), see README_example_data.txt for more information</span>
+0009 <span class="comment">%   on data sources.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Copyright (C) 2020</span>
+0012 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0013 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0014 
+0015 close all
+0016 <span class="comment">% clear all</span>
+0017 clc
+0018 
+0019 <span class="comment">%% Check if required MATLAB toolboxes are installed</span>
+0020 <span class="comment">% Required are:</span>
+0021 <span class="comment">%   - MATLAB (TOSSH was developed using Matlab R2020a)</span>
+0022 <span class="comment">%   - Statistics and Machine Learning Toolbox</span>
+0023 <span class="comment">%   - Optimization Toolbox</span>
+0024 <span class="comment">% We can check which toolboxes we have installed using &quot;ver&quot;.</span>
+0025 <span class="comment">% ver</span>
+0026 
+0027 <span class="comment">%% Add directories to path</span>
+0028 <span class="comment">% We navigate to the TOSSH directory and add it to the Matlab path.</span>
+0029 <span class="comment">% If we already are in this directory, we can use the pwd command:</span>
+0030 mydir = pwd;
+0031 <span class="comment">% Alternatively, we can specify my_dir manually:</span>
+0032 <span class="comment">% mydir = 'D:/Sebastian/Documents/MATLAB/TOSSH';</span>
+0033 cd(mydir)
+0034 addpath(genpath(mydir));
+0035 
+0036 <span class="comment">%% Input data</span>
+0037 <span class="comment">% Every signature requires a streamflow (Q) time series and a corresponding</span>
+0038 <span class="comment">% date vector (t). The date vector should be in datetime format, but</span>
+0039 <span class="comment">% datenum format is also accepted and internally converted. Here is an</span>
+0040 <span class="comment">% example of Q and t vectors in the correct format:</span>
+0041 Q = [1.14;1.07;2.39;2.37;1.59;1.25;1.35;1.16;1.27;1.14]; 
+0042 t = [datetime(1999,10,1,0,0,0):datetime(1999,10,10,0,0,0)]';
+0043 
+0044 <span class="comment">% Typically, users will have their own data which they want to analyse.</span>
+0045 <span class="comment">% We provide an example file to get a more realistic time series.</span>
+0046 <span class="comment">% The example file also contains precipitation (P), potential</span>
+0047 <span class="comment">% evapotranspiration (PET), and temperature (T) data, which are required</span>
+0048 <span class="comment">% for some signatures. The paths are relative and assume that we are in</span>
+0049 <span class="comment">% the TOSSH directory.</span>
+0050 path = <span class="string">'./example/example_data/'</span>; <span class="comment">% specify path</span>
+0051 data = load(strcat(path,<span class="string">'33029_daily.mat'</span>)); <span class="comment">% load data</span>
+0052 t = data.t;
+0053 Q = data.Q; <span class="comment">% streamflow [mm/day]</span>
+0054 P = data.P; <span class="comment">% precipitation [mm/day]</span>
+0055 <span class="comment">% Note: PET and T example data are provided but not used here.</span>
+0056 <span class="comment">% PET = data.PET; % potential evapotranspiration [mm/day]</span>
+0057 <span class="comment">% T = data.T; % temperature [degC]</span>
+0058 
+0059 <span class="comment">%% Plot data</span>
+0060 <span class="comment">% We can plot the data to get a first idea of the hydrograph.</span>
+0061 figure(<span class="string">'pos'</span>,[100 100 350 200])
+0062 plot(t,Q,<span class="string">'k-'</span>,<span class="string">'linewidth'</span>,1.0)
+0063 xlabel(<span class="string">'Date'</span>)
+0064 ylabel(<span class="string">'Streamflow [mm/day]'</span>)
+0065 
+0066 <span class="comment">% More information on the input data can be found here:</span>
+0067 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/p1_overview.html.</span>
+0068 
+0069 <span class="comment">%% Calculate signatures</span>
+0070 <span class="comment">% Once the input data are loaded, we can calculate different signatures.</span>
+0071 <span class="comment">% We start by calculating the mean flow Q_mean.</span>
+0072 Q_mean = sig_Q_mean(Q,t);
+0073 fprintf(<span class="string">'Q_mean = %.2f \n'</span>,Q_mean)
+0074 
+0075 <span class="comment">% Some signatures can be calculated using different methods and/or</span>
+0076 <span class="comment">% parameter values. For example, there are different options to calculate</span>
+0077 <span class="comment">% the baseflow index (BFI). The default method is the UKIH smoothed minima</span>
+0078 <span class="comment">% method with a parameter of 5 days.</span>
+0079 BFI_UKIH = sig_BFI(Q,t);
+0080 fprintf(<span class="string">'BFI_UKIH = %.2f \n'</span>,BFI_UKIH)
+0081 <span class="comment">% Alternatively, we can use the Lyne-Hollick filter with a filter parameter</span>
+0082 <span class="comment">% of 0.925.</span>
+0083 BFI_LH = sig_BFI(Q,t,<span class="string">'method'</span>,<span class="string">'Lyne_Hollick'</span>);
+0084 fprintf(<span class="string">'BFI_LH = %.2f \n'</span>,BFI_LH)
+0085 <span class="comment">% We can also change the parameter value of the UKIH method to 10 days.</span>
+0086 BFI_UKIH10 = sig_BFI(Q,t,<span class="string">'method'</span>,<span class="string">'UKIH'</span>,<span class="string">'parameters'</span>,10);
+0087 fprintf(<span class="string">'BFI_UKIH10 = %.2f \n'</span>,BFI_UKIH10)
+0088 <span class="comment">% As we can see, all three options lead to slightly different values.</span>
+0089 <span class="comment">% More details and examples on the different methods/parameters can be</span>
+0090 <span class="comment">% found in the code of each function (e.g. sig_BFI.m).</span>
+0091 
+0092 <span class="comment">% Some signatures also require precipitation (P) input time series. For</span>
+0093 <span class="comment">% example, the total runoff ratio requires both Q and P time series.</span>
+0094 TotalRR = sig_TotalRR(Q,t,P);
+0095 fprintf(<span class="string">'TotalRR = %.2f \n'</span>,TotalRR)
+0096 
+0097 <span class="comment">% Some signature functions come with a plotting functionality. For example,</span>
+0098 <span class="comment">% we can calculate the slope of the flow duration curve (FDC) and plot the</span>
+0099 <span class="comment">% result.</span>
+0100 [FDC_slope] = sig_FDC_slope(Q,t,<span class="string">'plot_results'</span>,true);
+0101 fprintf(<span class="string">'FDC_slope = %.2f \n'</span>,FDC_slope)
+0102 
+0103 <span class="comment">% Some signatures are combinations of existing signatures, e.g. the</span>
+0104 <span class="comment">% baseflow fraction (K_b) defined as the ratio between mean baseflow Q_b</span>
+0105 <span class="comment">% and mean precipitation P. This signature can also be calculated as</span>
+0106 <span class="comment">% K_b = BFI*TotalRR. We therefore do not provide an extra signature</span>
+0107 <span class="comment">% function, but suggest to use the two existing functions.</span>
+0108 K_b = sig_BFI(Q,t)*sig_TotalRR(Q,t,P);
+0109 fprintf(<span class="string">'K_b = %.2f \n'</span>,K_b)
+0110 
+0111 <span class="comment">% More information on the signatures contained in TOSSH can be found here:</span>
+0112 <span class="comment">% https://sebastiangnann.github.io/TOSSH_development/p2_signatures.html</span>
+0113 
+0114 <span class="comment">%% Warnings and errors</span>
+0115 <span class="comment">% Each signature function can return a warning/error output. These</span>
+0116 <span class="comment">% warning/error outputs indicate problems during signature calculation, but</span>
+0117 <span class="comment">% they do not stop code execution like a normal Matlab error would do.</span>
+0118 <span class="comment">% Two outputs can be retrieved: an error flag (error_flag) that corresponds</span>
+0119 <span class="comment">% to a certain type of warning/error, and a string (error_str) that</span>
+0120 <span class="comment">% decribes the warning/error. If multiple warnings/errors occur, they are</span>
+0121 <span class="comment">% all listed in the error string, starting with the one that occurred last.</span>
+0122 
+0123 <span class="comment">% A warning (error_flag = 1) typically indicates that the signature can be</span>
+0124 <span class="comment">% calculated but should be interpreted with care, e.g. because there are</span>
+0125 <span class="comment">% NaN values in the time series.</span>
+0126 Q(1:10) = NaN;
+0127 [Q_mean, error_flag, error_str] = sig_Q_mean(Q,t);
+0128 fprintf(<span class="string">'Q_mean = %.2f \n'</span>,Q_mean)
+0129 fprintf(error_str+&quot;\n&quot;)
+0130 <span class="comment">% We get the same mean value as before since the ten removed values do not</span>
+0131 <span class="comment">% influence the result much. In other cases, significant amounts of NaN</span>
+0132 <span class="comment">% entries might cause more problems.</span>
+0133 
+0134 <span class="comment">% An error (error_flag &gt; 1) indicates that the signature could not be</span>
+0135 <span class="comment">% calculated, e.g. because there is a problem with the input data. For</span>
+0136 <span class="comment">% example, if the input time series contains negative and thus physically</span>
+0137 <span class="comment">% impossible values, NaN is returned.</span>
+0138 Q(1:10) = -1.0;
+0139 [Q_mean, error_flag, error_str] = sig_Q_mean(Q,t);
+0140 fprintf(<span class="string">'Q_mean = %.2f \n'</span>,Q_mean)
+0141 fprintf(error_str+&quot;\n&quot;)
+0142 <span class="comment">% Since these warnings/errors do not stop the execution of the code, we can</span>
+0143 <span class="comment">% run the signature code for many catchments without breaking, even if</span>
+0144 <span class="comment">% for some of the catchments the signature cannot be calculated.</span>
+0145 
+0146 <span class="comment">% There are also &quot;normal&quot; errors which can happen if the input parameters</span>
+0147 <span class="comment">% are specified incorrectly (wrong format, wrong range, etc.).</span>
+0148 <span class="comment">% For example, if we swap Q and t in the input, we will get an error.</span>
+0149 Q_mean = sig_Q_mean(t,Q);
+0150 <span class="comment">% While this will stop code execution, such errors should be easily</span>
+0151 <span class="comment">% avoidable by specifying all inputs correctly.</span>
+0152 
+0153 <span class="comment">%% Further information</span>
+0154 <span class="comment">% Further information can be found in the online documentation:</span>
+0155 <span class="comment">% https://TOSSHtoolbox.github.io/TOSSH/ and in the other example scripts</span>
+0156 <span class="comment">% (e.g. 'workflow_2_advanced.m').</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:15 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

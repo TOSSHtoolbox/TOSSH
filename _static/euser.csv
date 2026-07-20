@@ -1,0 +1,9 @@
+Signature;Function (click for code);Unit;Description
+AC1;`sig_Autocorrelation.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_Autocorrelation.m>`_ ;--;Lag-1 autocorrelation
+AC1_low;`sig_Autocorrelation.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_Autocorrelation.m>`_ ;--;Lag-1 autocorrelation for low flow period
+RLD;`sig_RisingLimbDensity.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_RisingLimbDensity.m>`_ ;1/timestep;Rising limb density
+PeakDistribution;`sig_PeakDistribution.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_PeakDistribution.m>`_ ;--;Slope of distribution of peaks
+PeakDistribution_low;`sig_PeakDistribution.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_PeakDistribution.m>`_ ;--;Slope of distribution of peaks for low flow period
+FDC :sup:`a`;`sig_FDC.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_FDC.m>`_ ;--;Flow duration curve
+FDC_low<sup>a</sup>;`sig_FDC.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_FDC.m>`_ ;--;Flow duration curve for low flow period
+FDC_high<sup>a</sup>;`sig_FDC.m <https://github.com/TOSSHtoolbox/TOSSH/blob/master/TOSSH_code/signature_functions/sig_FDC.m>`_ ;--;Flow duration curve for high flow period

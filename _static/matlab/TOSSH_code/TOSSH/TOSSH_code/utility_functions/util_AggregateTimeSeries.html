@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_AggregateTimeSeries</title>
+  <meta name="keywords" content="util_AggregateTimeSeries">
+  <meta name="description" content="util_AggregateTimeSeries calculates annual and monthly sums of time series.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_AggregateTimeSeries.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_AggregateTimeSeries
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_AggregateTimeSeries calculates annual and monthly sums of time series.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [X_annual, X_monthly, year_list, days_per_year, error_flag, error_str] =util_AggregateTimeSeries(X, t, start_water_year) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_AggregateTimeSeries calculates annual and monthly sums of time series.
+   Start of water year can be specified so that the average is taken over
+   a water year.
+
+   INPUT
+   X: time series - should be continuous (e.g. Q, typically [mm/timestep])
+   t: time [Matlab datetime]
+   start_water_year: first month of water year, default = 1 (January)
+
+   OUTPUT
+   X_annual: annual sums [mm/year]
+   X_monthly: monthly sums [mm/month]
+   year_list: corresponding years
+   days_per_year: amount of non-NaN days per year
+   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3
+       (error in signature calculation)
+   error_str: string contraining error description
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   Q = data.Q;
+   t = data.t;
+   start_water_year = 10;
+   [Q_annual, Q_monthly, year_list, leap_year] = ...
+       util_AggregateTimeSeries(Q, t, start_water_year);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [X_annual, X_monthly, year_list, days_per_year, error_flag, error_str] = </a><span class="keyword">...</span>
+0002     util_AggregateTimeSeries(X, t, start_water_year)
+0003 <span class="comment">%util_AggregateTimeSeries calculates annual and monthly sums of time series.</span>
+0004 <span class="comment">%   Start of water year can be specified so that the average is taken over</span>
+0005 <span class="comment">%   a water year.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT</span>
+0008 <span class="comment">%   X: time series - should be continuous (e.g. Q, typically [mm/timestep])</span>
+0009 <span class="comment">%   t: time [Matlab datetime]</span>
+0010 <span class="comment">%   start_water_year: first month of water year, default = 1 (January)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%   X_annual: annual sums [mm/year]</span>
+0014 <span class="comment">%   X_monthly: monthly sums [mm/month]</span>
+0015 <span class="comment">%   year_list: corresponding years</span>
+0016 <span class="comment">%   days_per_year: amount of non-NaN days per year</span>
+0017 <span class="comment">%   error_flag: 0 (no error), 1 (warning), 2 (error in data check), 3</span>
+0018 <span class="comment">%       (error in signature calculation)</span>
+0019 <span class="comment">%   error_str: string contraining error description</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   EXAMPLE</span>
+0022 <span class="comment">%   % load example data</span>
+0023 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0024 <span class="comment">%   Q = data.Q;</span>
+0025 <span class="comment">%   t = data.t;</span>
+0026 <span class="comment">%   start_water_year = 10;</span>
+0027 <span class="comment">%   [Q_annual, Q_monthly, year_list, leap_year] = ...</span>
+0028 <span class="comment">%       util_AggregateTimeSeries(Q, t, start_water_year);</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   Copyright (C) 2020</span>
+0031 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0032 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0033 
+0034 <span class="keyword">if</span> nargin &lt; 3
+0035     start_water_year = 1;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% default setting reads as good data</span>
+0039 error_flag = 0;
+0040 error_str = <span class="string">''</span>;
+0041 
+0042 <span class="comment">% get years and months</span>
+0043 [year_vec, month_vec, day_vec] = ymd(t);
+0044 
+0045 <span class="keyword">if</span> start_water_year == 1
+0046     <span class="comment">% calendar year</span>
+0047     year_start = min(year_vec);
+0048     year_end = max(year_vec);
+0049 <span class="keyword">else</span>
+0050     <span class="comment">% water year always corresponds to the last day of the water year,</span>
+0051     <span class="comment">% e.g. water year starting from 1 October 1999 is water year 2000</span>
+0052     year_start = min(year_vec)+1;
+0053     year_end = max(year_vec);
+0054 <span class="keyword">end</span>
+0055 year_list = [year_start:year_end]';
+0056 
+0057 <span class="keyword">if</span> month_vec(1) ~= start_water_year &amp;&amp; day_vec(1)~=1
+0058     error_flag = 1;
+0059     error_str = [<span class="string">'Warning: Time series and water year do not match. Incomplete years possible. '</span>, error_str];
+0060 <span class="keyword">elseif</span> month_vec(end) ~= start_water_year-1 &amp;&amp; day_vec(end)&lt;28
+0061     error_flag = 1;
+0062     error_str = [<span class="string">'Warning: Time series and water year do not match. Incomplete years possible. '</span>, error_str];
+0063 <span class="keyword">end</span>
+0064 
+0065 X_annual = NaN(year_end-year_start,1);
+0066 X_monthly = NaN(year_end-year_start,12);
+0067 days_per_year = NaN(size(year_list));
+0068 
+0069 <span class="comment">% extract years and months</span>
+0070 <span class="keyword">for</span> y = 1:length(year_list)
+0071     year = year_list(y);
+0072     X_water_year = <span class="keyword">...</span>
+0073         [X(year_vec==year-1 &amp; month_vec&gt;=start_water_year); <span class="keyword">...</span>
+0074         X(year_vec==year &amp; month_vec&lt;start_water_year)];
+0075     X_annual(y) = sum(X_water_year,<span class="string">'omitnan'</span>);
+0076     days_per_year(y) = length(X_water_year(~isnan(X_water_year)));        
+0077     <span class="keyword">for</span> m = start_water_year:12
+0078         X_monthly(y,m-start_water_year+1) = sum(X(year_vec==year-1 &amp; month_vec==m),<span class="string">'omitnan'</span>);
+0079     <span class="keyword">end</span>
+0080     <span class="keyword">for</span> m = 1:start_water_year-1
+0081         X_monthly(y,m+13-start_water_year) = sum(X(year_vec==year &amp; month_vec==m),<span class="string">'omitnan'</span>);
+0082     <span class="keyword">end</span>
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

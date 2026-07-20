@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calc_McMillan_OverlandFlow</title>
+  <meta name="keywords" content="calc_McMillan_OverlandFlow">
+  <meta name="description" content="calc_McMillan_OverlandFlow calculates various overland flow signatures.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">calculation_functions</a> &gt; calc_McMillan_OverlandFlow.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\calculation_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>calc_McMillan_OverlandFlow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>calc_McMillan_OverlandFlow calculates various overland flow signatures.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">calc_McMillan_OverlandFlow calculates various overland flow signatures.
+   Calculates 10 overland flow (infiltration excess and saturation excess)
+   signatures from McMillan (2020). These signatures come from previous
+   experimental studies that link catchment or hillslope processes to
+   streamflow response dynamics. Some signatures are implemented direct
+   from the original papers, others are interpreted from a qualitative
+   description in the paper.
+
+   INPUT
+   Q_mat: streamflow [mm/timestep] matrix (cell array)
+   t_mat: time [Matlab datenum] matrix (cell array)
+   P_mat: precipitation [mm/timestep] matrix (cell array)
+   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)
+   OPTIONAL
+   plot_results: whether to plot results, default = false
+
+   OUTPUT
+   results: struc array with all results (each signature for each time
+       series and associated error strings)
+
+   EXAMPLE
+   % load example data
+   data = load('example/example_data/33029_daily.mat');
+   % create consistent cell arrays
+   Q_mat = {data.Q};
+   t_mat = {data.t};
+   P_mat = {data.P};
+   PET_mat = {data.PET};
+   results = calc_McMillan_OverlandFlow(Q_mat,t_mat,P_mat,PET_mat);
+
+   References
+   McMillan, H., 2020. Linking hydrologic signatures to hydrologic
+   processes: A review. Hydrological Processes, 34(6), pp.1393-1409.
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [results] = calc_McMillan_OverlandFlow(Q_mat, t_mat, P_mat, PET_mat, varargin)</a>
+0002 <span class="comment">%calc_McMillan_OverlandFlow calculates various overland flow signatures.</span>
+0003 <span class="comment">%   Calculates 10 overland flow (infiltration excess and saturation excess)</span>
+0004 <span class="comment">%   signatures from McMillan (2020). These signatures come from previous</span>
+0005 <span class="comment">%   experimental studies that link catchment or hillslope processes to</span>
+0006 <span class="comment">%   streamflow response dynamics. Some signatures are implemented direct</span>
+0007 <span class="comment">%   from the original papers, others are interpreted from a qualitative</span>
+0008 <span class="comment">%   description in the paper.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   INPUT</span>
+0011 <span class="comment">%   Q_mat: streamflow [mm/timestep] matrix (cell array)</span>
+0012 <span class="comment">%   t_mat: time [Matlab datenum] matrix (cell array)</span>
+0013 <span class="comment">%   P_mat: precipitation [mm/timestep] matrix (cell array)</span>
+0014 <span class="comment">%   PET_mat: pot. evapotranspiration [mm/timestep] matrix (cell array)</span>
+0015 <span class="comment">%   OPTIONAL</span>
+0016 <span class="comment">%   plot_results: whether to plot results, default = false</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OUTPUT</span>
+0019 <span class="comment">%   results: struc array with all results (each signature for each time</span>
+0020 <span class="comment">%       series and associated error strings)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   EXAMPLE</span>
+0023 <span class="comment">%   % load example data</span>
+0024 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0025 <span class="comment">%   % create consistent cell arrays</span>
+0026 <span class="comment">%   Q_mat = {data.Q};</span>
+0027 <span class="comment">%   t_mat = {data.t};</span>
+0028 <span class="comment">%   P_mat = {data.P};</span>
+0029 <span class="comment">%   PET_mat = {data.PET};</span>
+0030 <span class="comment">%   results = calc_McMillan_OverlandFlow(Q_mat,t_mat,P_mat,PET_mat);</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   References</span>
+0033 <span class="comment">%   McMillan, H., 2020. Linking hydrologic signatures to hydrologic</span>
+0034 <span class="comment">%   processes: A review. Hydrological Processes, 34(6), pp.1393-1409.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   Copyright (C) 2020</span>
+0037 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0038 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0039 
+0040 <span class="comment">% check input parameters</span>
+0041 <span class="keyword">if</span> nargin &lt; 4
+0042     error(<span class="string">'Not enough input arguments.'</span>)
+0043 <span class="keyword">end</span>
+0044 
+0045 ip = inputParser;
+0046 ip.CaseSensitive = true;
+0047 
+0048 <span class="comment">% required input arguments</span>
+0049 <span class="comment">% Please input time series as a cell array of the following format:</span>
+0050 <span class="comment">% {x_1; x_2; ...; x_n}, where each entry (1, 2, ..., n) corresponds to one</span>
+0051 <span class="comment">% time series, e.g. from one catchment. For one catchment only, please</span>
+0052 <span class="comment">% input {x}. Example: {Q_1; Q_2; ...; Q_n} for streamflow.</span>
+0053 addRequired(ip, <span class="string">'Q_mat'</span>, @(Q_mat) iscell(Q_mat))
+0054 addRequired(ip, <span class="string">'t_mat'</span>, @(t_mat) iscell(t_mat))
+0055 addRequired(ip, <span class="string">'P_mat'</span>, @(P_mat) iscell(P_mat))
+0056 addRequired(ip, <span class="string">'PET_mat'</span>, @(PET_mat) iscell(PET_mat))
+0057 
+0058 <span class="comment">% optional input arguments</span>
+0059 addParameter(ip, <span class="string">'plot_results'</span>, false, @islogical) <span class="comment">% whether to plot results</span>
+0060 
+0061 parse(ip, Q_mat, t_mat, P_mat, PET_mat, varargin{:})
+0062 plot_results = ip.Results.plot_results;
+0063 
+0064 <span class="comment">% initialise arrays</span>
+0065 
+0066 <span class="comment">% Infiltration and saturation excess importance, based on their average</span>
+0067 <span class="comment">% coefficients in regression equations to predict event flow</span>
+0068 <span class="comment">% characteristics, adapted from qualitative description in Estrany et al.</span>
+0069 <span class="comment">% (2010).</span>
+0070 IE_effect = NaN(size(Q_mat,1),1);
+0071 SE_effect = NaN(size(Q_mat,1),1);
+0072 
+0073 <span class="comment">% Significance (using likelihood ratio test) and location of a threshold in</span>
+0074 <span class="comment">% a plot of quickflow volume vs. maximum intensity, signifying IE process</span>
+0075 <span class="comment">% (Ali et al., 2013). IE is indicated when IE_thresh_sig &lt; 0.05.</span>
+0076 IE_thresh_signif = NaN(size(Q_mat,1),1);
+0077 IE_thresh = NaN(size(Q_mat,1),1);
+0078 
+0079 <span class="comment">% Significance, location and above-threshold slope of a threshold in a plot</span>
+0080 <span class="comment">% of quickflow volume vs. total precipitation. SE is indicated when</span>
+0081 <span class="comment">% SE_thresh_sig &lt; 0.05. Where there is no threshold, indicates flow</span>
+0082 <span class="comment">% generation from riparian areas (Tani, 1997). Slope above threshold</span>
+0083 <span class="comment">% indicates rate at which saturated areas expand (Tani, 1997; Becker and</span>
+0084 <span class="comment">% McDonnell 1998).</span>
+0085 SE_thresh_signif = NaN(size(Q_mat,1),1);
+0086 SE_thresh = NaN(size(Q_mat,1),1);
+0087 SE_slope = NaN(size(Q_mat,1),1);
+0088 
+0089 <span class="comment">% Significance and location of a threshold in a plot of quickflow volume</span>
+0090 <span class="comment">% vs. antecedent precipitation index + total precipitation. SE is indicated</span>
+0091 <span class="comment">% when storage_thresh_sig &lt; 0.05 (Ali et al., 2013; McGrath et al., 2007).</span>
+0092 Storage_thresh_signif = NaN(size(Q_mat,1),1);
+0093 Storage_thresh = NaN(size(Q_mat,1),1);
+0094 
+0095 <span class="comment">% Minimum quickflow as a percentage of precipitation indicates impermeable</span>
+0096 <span class="comment">% area contribution (Becker and McDonnell, 1998).</span>
+0097 min_Qf_perc = NaN(size(Q_mat,1),1);
+0098 
+0099 <span class="comment">% variable to store error strings</span>
+0100 OF_error_str = strings(size(Q_mat,1),1);
+0101 
+0102 <span class="comment">% loop over all catchments</span>
+0103 <span class="keyword">for</span> i = 1:size(Q_mat,1)
+0104     
+0105     [IE_effect(i),SE_effect(i),IE_thresh_signif(i),IE_thresh(i), <span class="keyword">...</span>
+0106         SE_thresh_signif(i),SE_thresh(i),SE_slope(i),Storage_thresh(i), <span class="keyword">...</span>
+0107         Storage_thresh_signif(i),min_Qf_perc(i),~,OF_error_str(i)] <span class="keyword">...</span>
+0108         = sig_EventGraphThresholds(Q_mat{i},t_mat{i},P_mat{i},<span class="string">'plot_results'</span>,plot_results);
+0109     
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">% add results to struct array</span>
+0113 results.IE_effect = IE_effect;
+0114 results.SE_effect = SE_effect;
+0115 results.IE_thresh_signif = IE_thresh_signif;
+0116 results.SE_thresh_signif = SE_thresh_signif;
+0117 results.IE_thresh = IE_thresh;
+0118 results.SE_thresh = SE_thresh;
+0119 results.SE_slope = SE_slope;
+0120 results.Storage_thresh_signif = Storage_thresh_signif;
+0121 results.Storage_thresh = Storage_thresh;
+0122 results.min_Qf_perc = min_Qf_perc;
+0123 results.OF_error_str = OF_error_str;
+0124 
+0125 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

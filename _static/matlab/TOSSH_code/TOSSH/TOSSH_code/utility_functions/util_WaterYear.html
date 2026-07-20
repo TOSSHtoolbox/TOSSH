@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of util_WaterYear</title>
+  <meta name="keywords" content="util_WaterYear">
+  <meta name="description" content="util_WaterYear gets the water year associated with a date.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="#">TOSSH</a> &gt; <a href="#">TOSSH_code</a> &gt; <a href="index.html">utility_functions</a> &gt; util_WaterYear.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for TOSSH\TOSSH_code\utility_functions&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>util_WaterYear
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>util_WaterYear gets the water year associated with a date.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [water_year] = util_WaterYear(t, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">util_WaterYear gets the water year associated with a date.
+
+   INPUT
+   t: time [Matlab datetime, scalar or array]
+   OPTIONAL
+   WY_start_month: numeric month in which water year starts
+
+   OUTPUT
+   water_year: water year in which date falls
+
+   EXAMPLE
+   % load example data 
+   data = load('example/example_data/33029_daily.mat'); 
+   t = data.t;
+   water_year = util_WaterYear(t, 'WY_start_month',10);
+
+   Copyright (C) 2020
+   This software is distributed under the GNU Public License Version 3.
+   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [water_year] = util_WaterYear(t, varargin)</a>
+0002 <span class="comment">%util_WaterYear gets the water year associated with a date.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INPUT</span>
+0005 <span class="comment">%   t: time [Matlab datetime, scalar or array]</span>
+0006 <span class="comment">%   OPTIONAL</span>
+0007 <span class="comment">%   WY_start_month: numeric month in which water year starts</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   OUTPUT</span>
+0010 <span class="comment">%   water_year: water year in which date falls</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   EXAMPLE</span>
+0013 <span class="comment">%   % load example data</span>
+0014 <span class="comment">%   data = load('example/example_data/33029_daily.mat');</span>
+0015 <span class="comment">%   t = data.t;</span>
+0016 <span class="comment">%   water_year = util_WaterYear(t, 'WY_start_month',10);</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   Copyright (C) 2020</span>
+0019 <span class="comment">%   This software is distributed under the GNU Public License Version 3.</span>
+0020 <span class="comment">%   See &lt;https://www.gnu.org/licenses/gpl-3.0.en.html&gt; for details.</span>
+0021 
+0022 <span class="comment">% check input parameters</span>
+0023 <span class="keyword">if</span> nargin &lt; 1
+0024     error(<span class="string">'Not enough input arguments.'</span>)
+0025 <span class="keyword">end</span>
+0026 
+0027 ip = inputParser;
+0028 
+0029 <span class="comment">% required input arguments</span>
+0030 <span class="comment">% date time series has to be numeric or datetime and either a (n,1) or a (1,n) vector</span>
+0031 addRequired(ip, <span class="string">'t'</span>, @(t) (isnumeric(t) || isdatetime(t)) &amp;&amp; (size(t,1)==1 || size(t,2)==1))
+0032 
+0033 <span class="comment">% optional input arguments</span>
+0034 addParameter(ip, <span class="string">'WY_start_month'</span>, 10, <span class="keyword">...</span>
+0035     @(WY_start_month) (isnumeric(WY_start_month)&amp;&amp;floor(WY_start_month)==WY_start_month) <span class="keyword">...</span>
+0036     &amp;&amp; (WY_start_month&gt;=1 &amp;&amp; WY_start_month&lt;=12)) 
+0037 
+0038 parse(ip, t, varargin{:})
+0039 WY_start_month = ip.Results.WY_start_month;
+0040 
+0041 <span class="comment">% % timestep checks</span>
+0042 <span class="comment">% if isnumeric(t)</span>
+0043 <span class="comment">%     t = datetime(t,'ConvertFrom','datenum');</span>
+0044 <span class="comment">%     warning('Converted datenum to datetime.')</span>
+0045 <span class="comment">% end</span>
+0046 
+0047 <span class="comment">% get month and year of each datetime</span>
+0048 water_year = year(t);
+0049 month_vals = month(t);
+0050 
+0051 <span class="comment">% get months associated with previous year and subtract 1 from year value</span>
+0052 <span class="comment">% water_year(month_vals&lt;WY_start_month) = water_year(month_vals&lt;WY_start_month) - 1;</span>
+0053 
+0054 <span class="comment">% get months associated with previous year and add 1 from year value</span>
+0055 <span class="comment">% USGS: the water year is designated by the calendar year in which it ends</span>
+0056 water_year(month_vals&gt;WY_start_month) = water_year(month_vals&gt;WY_start_month) + 1;     
+0057 
+0058 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 02-Feb-2021 09:27:04 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
