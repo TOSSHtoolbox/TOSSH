@@ -222,6 +222,8 @@ if error_flag == 3
     Storage_thresh = NaN;
     Storage_thresh_signif = NaN;
     min_Qf_perc = NaN;
+    R_Pvol_RC = NaN;
+    R_Pint_RC = NaN;
     return
 else
     error_flag = max([error_flag_tmp, error_flag]);
@@ -298,6 +300,8 @@ if all(event_array(:,6)==0) || all(event_array(:,7)==0) || all(event_array(:,8)=
     Storage_thresh = NaN;
     Storage_thresh_signif = NaN;
     min_Qf_perc = NaN;
+    R_Pvol_RC = NaN;
+    R_Pint_RC = NaN;
     error_flag = 3;
     error_str = ['Error: Event flow or quickflow volumes are zero for all events. ', error_str];
     return
@@ -320,6 +324,8 @@ if numel(flow_events(flow_events==1)) <= 1
     Storage_thresh = NaN;
     Storage_thresh_signif = NaN;
     min_Qf_perc = NaN;
+    R_Pvol_RC = NaN;
+    R_Pint_RC = NaN;
     error_flag = 3;
     error_str = ['Error: Fewer than two suitable storm events found, try relaxing storm event criteria. ', error_str];
     return
@@ -341,6 +347,8 @@ if numel(flow_events(flow_events==1)) <= 1
     Storage_thresh = NaN;
     Storage_thresh_signif = NaN;
     min_Qf_perc = NaN;
+    R_Pvol_RC = NaN;
+    R_Pint_RC = NaN;
     error_flag = 3;
     error_str = ['Error: Fewer than two suitable storm events found, try relaxing storm event criteria. ', error_str];
     return
